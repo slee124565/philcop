@@ -5,6 +5,9 @@ api_version: 1
 threadsafe: false
 
 handlers:
+- url: /static
+  static_dir: assets
+
 - url: /.*
   script: phicops.wsgi.application
 

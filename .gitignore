@@ -1,1 +1,3 @@
 *.pyc
+
+/assets/js/flot/examples

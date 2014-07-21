@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Flot Examples: Time Axes</title>
+	<link href="/static/js/flot/examples/examples.css" rel="stylesheet" type="text/css">
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/static/js/flot/excanvas.min.js"></script><![endif]-->
+	<script language="javascript" type="text/javascript" src="/static/js/flot/jquery.js"></script>
+	<script language="javascript" type="text/javascript" src="/static/js/flot/jquery.flot.js"></script>
+	<script language="javascript" type="text/javascript" src="/static/js/flot/jquery.flot.time.js"></script>
+	<script type="text/javascript">
+
+	$(function() {
+
+		var d = {{ dataset }};
+
+		$.plot("#placeholder", [d], {
+			xaxis: { mode: "time" }
+		});
+
+		$("#whole").click(function () {
+			$.plot("#placeholder", [d], {
+				xaxis: { mode: "time" }
+			});
+		});
+
+		$("#nineties").click(function () {
+			$.plot("#placeholder", [d], {
+				xaxis: {
+					mode: "time",
+					min: (new Date(1990, 0, 1)).getTime(),
+					max: (new Date()).getTime()
+				}
+			});
+		});
+
+		$("#latenineties").click(function () {
+			$.plot("#placeholder", [d], {
+				xaxis: {
+					mode: "time",
+					minTickSize: [1, "year"],
+					min: (new Date(1996, 0, 1)).getTime(),
+					max: (new Date()).getTime()
+				}
+			});
+		});
+
+		$("#ninetyninequarters").click(function () {
+			$.plot("#placeholder", [d], {
+				xaxis: {
+					mode: "time",
+					minTickSize: [1, "quarter"],
+					min: (new Date(1999, 0, 1)).getTime(),
+					max: (new Date()).getTime()
+				}
+			});
+		});
+
+		$("#ninetynine").click(function () {
+			$.plot("#placeholder", [d], {
+				xaxis: {
+					mode: "time",
+					minTickSize: [1, "month"],
+					min: (new Date(1999, 0, 1)).getTime(),
+					max: (new Date()).getTime()
+				}
+			});
+		});
+
+		$("#lastweekninetynine").click(function () {
+			$.plot("#placeholder", [d], {
+				xaxis: {
+					mode: "time",
+					minTickSize: [1, "day"],
+					min: (new Date(1999, 11, 25)).getTime(),
+					max: (new Date()).getTime(),
+					timeformat: "%a"
+				}
+			});
+		});
+
+		$("#lastdayninetynine").click(function () {
+			$.plot("#placeholder", [d], {
+				xaxis: {
+					mode: "time",
+					minTickSize: [1, "hour"],
+					min: (new Date(1999, 11, 31)).getTime(),
+					max: (new Date()).getTime(),
+					twelveHourClock: true
+				}
+			});
+		});
+
+		// Add the Flot version string to the footer
+
+		$("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
+	});
+
+	</script>
+</head>
+<body>
+
+	<div id="header">
+		<h2>{{ fund_name }}</h2>
+	</div>
+
+	<div id="content">
+
+		<div class="demo-container">
+			<div id="placeholder" class="demo-placeholder"></div>
+		</div>
+		<p>{{ html_table | safe }}</p>
+
+	</div>
+
+	<div id="footer">
+		Copyright &copy; 2007 - 2014 IOLA and Ole Laursen
+	</div>
+
+</body>
+</html>
