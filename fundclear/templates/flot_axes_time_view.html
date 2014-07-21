@@ -93,7 +93,8 @@
 
 		// Add the Flot version string to the footer
 
-		$("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
+		//$("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
+		$("#footer").append("<br/> &ndash; " + "Flot " + $.plot.version );
 	});
 
 	</script>
@@ -114,7 +115,8 @@
 	</div>
 
 	<div id="footer">
-		Copyright &copy; 2007 - 2014 IOLA and Ole Laursen
+		This page is developed by Lee Shiueh	(lee.shiueh@gmail.com)<br/>
+		Taipei Taiwan
 	</div>
 
 </body>
