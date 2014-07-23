@@ -7,5 +7,6 @@ urlpatterns = patterns('',
 
     #url(r'^admin/', include(admin.site.urls)),
     url(r'^fundclear/', include('fundclear.urls')),
+    url(r'^bot/', include('bankoftaiwan.urls')),
     
 )

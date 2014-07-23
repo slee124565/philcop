@@ -5,7 +5,6 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 import logging
 
-from urlsrc.models import WebContentModel
 from models import FundClearModel
 
 
@@ -38,6 +37,7 @@ def flot_axes_time_view(request,fund_id):
         return HttpResponse('Table Dataset Parsing Fail!!!')
     
     args = {
+            'page_title' : 'FundClear-' + fund_id,
             #'fund_name' : fund_id,
             'fund_name' : webHtml.fund_name,
             'dataset': str(dataset).replace('L',''),
