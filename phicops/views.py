@@ -25,7 +25,7 @@ def default_view(request):
             fund_value.append([calendar.timegm((t_entry[0]).timetuple()) * 1000 , t_entry[1]])
     
     args = {
-            'fund_label' : fund.fund_name,
+            'fund_label' : fund_id,
             'fund_data' : str(fund_value).replace('L', ''),
             'exchange_data' : str(exchange_data).replace('L', ''),
             }

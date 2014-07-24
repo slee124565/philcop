@@ -60,6 +60,7 @@ class BotExchangeModel(WebContentModel):
                 data_list.append([t_date,t_value])
             else:
                 logging.debug('skip csv list content: ' + t_list)
-                
+        
+        data_list.sort(key=lambda x: x[0])
         logging.debug('get_exchange_list (' + str(len(data_list)) + '):\n' + str(data_list))
         return data_list
