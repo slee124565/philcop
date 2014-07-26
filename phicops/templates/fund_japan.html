@@ -16,16 +16,13 @@
 		//var fund_data = {{ fund_data }};
 		//var exchange_data = {{ exchange_data }};
 		
-		var data = [
-		
-					];
-		var plot;
 
 		function doPlot(position) {
 			plot = $.plot("#placeholder", 
 				[
-					{ data: fund_data, label: "{{ fund_label }} = 0000" },
-					{ data: exchange_data, label: "JPY/TWN = 0.0000", yaxis: 2 }
+					//{ data: fund_data, label: "{{ fund_label }} = 0000.0000" },
+					//{ data: exchange_data, label: "JPY/TWN = 0.0000", yaxis: 2 }
+					{{ plot.data | safe }}
 				], 
 				{
 					xaxes: [ { mode: "time" } ],
@@ -91,7 +88,7 @@
 					p = series.data[j];
 
 				if (i != (dataset.length-1)) {
-					legends.eq(i).text(series.label.replace(/=.*/, "= " + p[1].toFixed(0)));
+					legends.eq(i).text(series.label.replace(/=.*/, "= " + p[1].toFixed(4)));
 				} else {
 					legends.eq(i).text(series.label.replace(/=.*/, "= " + p[1].toFixed(4)));
 				}

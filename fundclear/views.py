@@ -6,7 +6,8 @@ from dateutil.relativedelta import relativedelta
 import logging
 
 from models import FundClearModel
-
+import phicops.utils
+import calendar
 
 URL_TEMPLATE = 'http://announce.fundclear.com.tw/MOPSFundWeb/D02_02P.jsp?fundId={fund_id}&beginDate={begin_date}&endDate={end_date}'
 
@@ -31,7 +32,11 @@ def flot_axes_time_view(request,fund_id):
     else:
         logging.info('webHtml exist in datastore and not expired.')
     
-    dataset = webHtml.get_dateset()
+    #dataset = webHtml.get_dateset()
+    dataset = webHtml.get_discrete_value_list(phicops.utils.MONTH_DAY_END)
+    for t_entry in dataset:
+        t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000
+    
     html_table = webHtml.get_single_html_table()
     if dataset == None:
         return HttpResponse('Table Dataset Parsing Fail!!!')

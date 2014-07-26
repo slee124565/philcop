@@ -12,6 +12,8 @@ from dateutil.relativedelta import relativedelta
 
 from urlsrc.models import WebContentModel
 
+import phicops.utils
+
 URL_TEMPLATE = 'http://announce.fundclear.com.tw/MOPSFundWeb/D02_02P.jsp?fundId={fund_id}&beginDate={begin_date}&endDate={end_date}'
 
 class FundClearModel(WebContentModel):
@@ -57,6 +59,10 @@ class FundClearModel(WebContentModel):
                         html += etree.tostring(t_child)
         html += '</table>'
         return html
+        
+    def get_discrete_value_list(self, p_select_day):
+        value_list = self.get_value_list()
+        return phicops.utils.get_discrete_date_data_list(value_list, p_select_day)
         
     def get_value_list(self):
         '''

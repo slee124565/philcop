@@ -1,5 +1,4 @@
 import logging
-import calendar
 
 from google.appengine.ext import db
 
@@ -9,6 +8,7 @@ from dateutil.relativedelta import relativedelta
 
 from urlsrc.models import WebContentModel
 from bankoftaiwan import exchange
+import phicops.utils
 
 URL_EXCHANGE_TEMPLATE = 'http://rate.bot.com.tw/Pages/UIP004/Download0042.ashx?lang=zh-TW&fileType=1&afterOrNot=1&whom={currency_type}&date1={date1}&date2={date2}'
 
@@ -42,8 +42,10 @@ class BotExchangeModel(WebContentModel):
         return bot_model
     
     def get_discrete_exchange_list(self, p_exchange_field, p_select_day):
-        data_list = []
+        #data_list = []
         exchange_list = self.get_exchange_list(p_exchange_field)
+        return phicops.utils.get_discrete_date_data_list(exchange_list, p_select_day)
+        '''
         DATE_INDEX = 0
         if exchange_list:
             if p_select_day != exchange.MONTH_DAY_END:
@@ -59,6 +61,7 @@ class BotExchangeModel(WebContentModel):
                     prev_entry_index += 1
         logging.debug(__name__ + ': get_discrete_exchange_list\n' + str(data_list))
         return data_list
+        '''
             
     def get_exchange_list(self, p_exchange_field):
         if p_exchange_field > exchange.FIELD_SELL_ON_DEMAND:
