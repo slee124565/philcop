@@ -14,8 +14,11 @@
 
 		var d = {{ dataset }};
 
-		$.plot("#placeholder", [d], {
-			xaxis: { mode: "time" }
+		$.plot("#placeholder", 
+			[{ data: {{ dataset }},
+				lines: { show: true },
+				points: { show: true} }], 
+			{xaxis: { mode: "time" }
 		});
 
 		$("#whole").click(function () {

@@ -26,15 +26,17 @@ class WebContentModel(db.Model):
         '''
         webContent = cls.get_or_insert(p_key_name)
         webContent.url = p_url
-        if ( (webContent.expired_date == None) or (date.today() > webContent.expired_date)):
+        if ( (webContent.expired_date == None) or \
+             (date.today() > webContent.expired_date) or \
+             (p_expired_date == None)):
             if (webContent.do_urlfetch()):
                 webContent.expired_date = p_expired_date
                 webContent.put()
             else:
-                logging.warning('WebContentModel urlfetch Fail!!!')
+                logging.warning(__name__ + ': WebContentModel urlfetch Fail!!!')
                 return None
         else:
-            logging.info('web content exist in datastore and not expired.')
+            logging.info(__name__ + ': web content exist in datastore and not expired.')
         
         return webContent
         
@@ -53,16 +55,17 @@ class WebContentModel(db.Model):
                 url_fetch_exception_handle()
         '''
         if self.url == None:
-            logging.warn('object attribute [url] is None!!!')
+            logging.warning(__name__ + ': Invalid Parameter url ' + self.url)
             return None
         try:
+            logging.debug('fetch url resource: \n' + self.url)
             result = urlfetch.fetch(self.url)
             if result.status_code == 200:
                 self.content = db.Blob(result.content)
                 return self
             else:
-                logging.warn('do_urlfetch failed!!! fetch result code is ' + result.status_code + '!!!\nurl:' + self.url)
+                logging.warning(__name__ + ': do_urlfetch failed!!! fetch result code is ' + result.status_code + '!!!\nurl:' + self.url)
                 return None
         except DownloadError:
-            logging.warn('Internet Download Error')
+            logging.warning(__name__ + ': Internet Download Error')
             return None
