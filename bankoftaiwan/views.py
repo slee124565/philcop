@@ -23,9 +23,9 @@ def exchange_jpy_view(request):
         webCsv.put()
         logging.debug('currency name not exist, set as ' + currency_type)
 
-    #exchange_list = webCsv.get_exchange_list(exchange.FIELD_SELL_ON_DEMAND)
+    exchange_list = webCsv.get_exchange_list(exchange.FIELD_SELL_ON_DEMAND)
     #exchange_list = webCsv.get_discrete_exchange_list(exchange.FIELD_SELL_ON_DEMAND,exchange.MONTH_DAY_BEGIN)
-    exchange_list = webCsv.get_discrete_exchange_list(exchange.FIELD_SELL_ON_DEMAND,exchange.MONTH_DAY_END)
+    #exchange_list = webCsv.get_discrete_exchange_list(exchange.FIELD_SELL_ON_DEMAND,exchange.MONTH_DAY_END)
     #exchange_list = webCsv.get_discrete_exchange_list(exchange.FIELD_SELL_ON_DEMAND,exchange.MONTH_DAY_MIDDLE)
     #exchange_list = webCsv.get_discrete_exchange_list(exchange.FIELD_SELL_ON_DEMAND,exchange.MONTH_DAY_TODAY)
     dataset = []

@@ -43,6 +43,7 @@ INSTALLED_APPS = (
     'phicops',
     'fundclear',
     'bankoftaiwan',
+    'mfinvest',
 )
 
 MIDDLEWARE_CLASSES = (

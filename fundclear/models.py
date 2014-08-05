@@ -15,6 +15,8 @@ from urlsrc.models import WebContentModel
 import phicops.utils
 
 URL_TEMPLATE = 'http://announce.fundclear.com.tw/MOPSFundWeb/D02_02P.jsp?fundId={fund_id}&beginDate={begin_date}&endDate={end_date}'
+DATE_INDEX = 0
+VALUE_INDEX = 1
 
 class FundClearModel(WebContentModel):
     fund_name = db.StringProperty()
@@ -39,6 +41,18 @@ class FundClearModel(WebContentModel):
 
         return fund_model
     
+    def get_nav_by_date(self, p_date):
+        nav_list = self.get_value_list()
+        t_count = 0
+        if (nav_list[0][DATE_INDEX]).date() <= p_date:
+            for t_entry in nav_list:
+                if p_date == t_entry[DATE_INDEX].date():
+                    logging.debug(__name__ + ': get_nav_by_date: matched entry ' + str(nav_list[t_count]))
+                    return nav_list[t_count-1][VALUE_INDEX]
+                t_count += 1
+        logging.warning(__name__ + ': get_nav_by_date: no matched date value exist!')
+        return False
+    
     def get_single_html_table(self):
         stk_data = str(self.content).decode('big5')
         t_page = document_fromstring(stk_data)
@@ -60,7 +74,7 @@ class FundClearModel(WebContentModel):
         html += '</table>'
         return html
         
-    def get_discrete_value_list(self, p_select_day):
+    def get_discrete_value_list(self, p_select_day=phicops.utils.MONTH_DAY_END):
         value_list = self.get_value_list()
         return phicops.utils.get_discrete_date_data_list(value_list, p_select_day)
         
@@ -133,6 +147,9 @@ class FundClearModel(WebContentModel):
         
         
     def get_dateset(self):
+        '''
+        return Flow diagram data list
+        '''
         dataset = []
         
         stk_data = str(self.content).decode('big5')

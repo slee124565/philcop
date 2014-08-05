@@ -11,6 +11,8 @@ from bankoftaiwan import exchange
 import phicops.utils
 
 URL_EXCHANGE_TEMPLATE = 'http://rate.bot.com.tw/Pages/UIP004/Download0042.ashx?lang=zh-TW&fileType=1&afterOrNot=1&whom={currency_type}&date1={date1}&date2={date2}'
+DATE_INDEX = 0
+VALUE_INDEX = 1
 
 def _parsing_bot_date_str(p_date_str):
     if len(p_date_str) != 8:
@@ -41,7 +43,19 @@ class BotExchangeModel(WebContentModel):
         
         return bot_model
     
-    def get_discrete_exchange_list(self, p_exchange_field, p_select_day):
+    def get_rate(self, p_datetime, p_exchange_field=exchange.FIELD_SELL_ON_DEMAND):
+        exchange_list = self.get_exchange_list(p_exchange_field)
+        t_count = 0
+        if (exchange_list[0][DATE_INDEX]).date() <= p_datetime:
+            for t_entry in exchange_list:
+                if p_datetime == t_entry[DATE_INDEX].date():
+                    return exchange_list[t_count-1][VALUE_INDEX]
+                t_count += 1
+        logging.warning(__name__ + ': get_rate: no matched date value exist!')
+        return 0
+    
+    
+    def get_discrete_exchange_list(self, p_exchange_field=exchange.FIELD_SELL_ON_DEMAND, p_select_day=phicops.utils.MONTH_DAY_END):
         #data_list = []
         exchange_list = self.get_exchange_list(p_exchange_field)
         return phicops.utils.get_discrete_date_data_list(exchange_list, p_select_day)
@@ -92,8 +106,6 @@ class BotExchangeModel(WebContentModel):
         #-> add holiday entry with previous day's value
         t_total = len(data_list)
         logging.debug(__name__ + ': t_total ' + str(t_total))
-        DATE_INDEX = 0
-        VALUE_INDEX = 1
         t_date_check = data_list[0][DATE_INDEX] + relativedelta(days=+1)
         logging.debug('t_date_check: ' + str(t_date_check))
         logging.debug(__name__ + ': first entry: ' + str(data_list[0]))
