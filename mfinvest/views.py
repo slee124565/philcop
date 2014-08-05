@@ -1,3 +1,5 @@
+# -*- coding: utf8 -*-
+
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 
@@ -19,19 +21,26 @@ def mf_japan_view(request):
     t_fund_id = 'LU0069970746'
     t_currency_type = bankoftaiwan.exchange.CURRENCY_JPY
     mf_report = MFReport.get_mfreport_by_id(t_fund_id, t_currency_type)
+    
+    nav_report = mf_report.report_nav
+    for t_entry in nav_report:
+        t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
 
     cost_report = mf_report.report_cost
     for t_entry in cost_report:
         t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
     
     plot = {
-            'data': '{data: ' + str(cost_report).replace('L', '') + ', label: "Cost", lines: {show: true, steps: true}},'
+            'data': '{data: ' + str(cost_report).replace('L', '') + ', label: "Cost", lines: {show: true, steps: true}},' + \
+                    '{data: ' + str(nav_report).replace('L', '') + ', label: "' + t_fund_id + '", lines: {show: true}, yaxis: 2},' 
             }
+    
     args = {
             'page_title' : 'My_Review_MF_Japan',
-            'plot' : plot
+            'page_head' : u'LU0069970746 法巴百利達日本小型股票基金 C (日幣)'.encode('utf8'),
+            'plot' : plot,
             }
-    return render_to_response('fund_japan.html', args)
+    return render_to_response('my_fund_japan.html', args)
     
 def test(request):
     trade_list = MutualFundInvestModel.all().order('date_invest')
