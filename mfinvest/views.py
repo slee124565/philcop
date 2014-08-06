@@ -12,7 +12,6 @@ import calendar
 from mfinvest.models import MutualFundInvestModel
 from fundclear.models import FundClearModel
 from bankoftaiwan.models import BotExchangeModel
-from phicops import utils
 import bankoftaiwan.exchange
 from mfinvest.mfreport import MFReport
 
@@ -22,6 +21,10 @@ def mf_japan_view(request):
     t_currency_type = bankoftaiwan.exchange.CURRENCY_JPY
     mf_report = MFReport.get_mfreport_by_id(t_fund_id, t_currency_type)
     
+    exchange_report = mf_report.report_exchange
+    for t_entry in exchange_report:
+        t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
+    
     profit_report = mf_report.report_profit
     for t_entry in profit_report:
         t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
@@ -30,19 +33,21 @@ def mf_japan_view(request):
     for t_entry in nav_report:
         t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
 
-    cost_report = mf_report.report_cost2
+    cost_report = mf_report.report_cost
     for t_entry in cost_report:
         t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
     
     plot = {
             'data': '{data: ' + str(cost_report).replace('L', '') + ', label: "Cost", lines: {show: true, steps: true}},' + \
-                    '{data: ' + str(nav_report).replace('L', '') + ', label: "' + t_fund_id + '", lines: {show: true}, yaxis: 2},' + \
-                    '{data: ' + str(profit_report).replace('L', '') + ', label: "Profit(%)", lines: {show: true}, yaxis: 3},'
+                    '{data: ' + str(nav_report).replace('L', '') + ', label: "NAV", lines: {show: true}, yaxis: 2},' + \
+                    '{data: ' + str(profit_report).replace('L', '') + ', label: "Profit (%)", lines: {show: true}, yaxis: 3},' + \
+                    '{data: ' + str(exchange_report).replace('L', '') + ', label: "JPY/TWN", lines: {show: true}, yaxis: 4},'
             }
     
     args = {
             'page_title' : 'My_Review_MF_Japan',
-            'page_head' : u'LU0069970746 法巴百利達日本小型股票基金 C (日幣)'.encode('utf8'),
+            'fund_title' : u'法巴百利達日本小型股票基金 C (日幣)',
+            'fund_id' : t_fund_id,
             'plot' : plot,
             }
     return render_to_response('my_fund_japan.html', args)
@@ -57,6 +62,32 @@ def test(request):
     response['Content-type'] = 'text/plain'
     return response
 
+def add_my_trade(request):
+    _add_trade_record(date_invest = date(2014,7,15), \
+                      fund_id = 'LU0069970746', \
+                      amount_trade = 100000.0, \
+                      trade_fee = 1950.0, \
+                      currency_type = bankoftaiwan.exchange.CURRENCY_JPY, \
+                      share = 49.144, \
+                      fund_nav = 6872.0, \
+                      exchange_rate = 0.2961
+                      )
+    return HttpResponse('add_my_trade done')
+    
+def _add_trade_record(date_invest, fund_id, amount_trade, trade_fee, currency_type, share, fund_nav, exchange_rate):
+
+    key_name = fund_id + '@' + date_invest.strftime("%m/%d/%Y")
+    fund_invest = MutualFundInvestModel.get_or_insert(key_name)
+    fund_invest.id = fund_id
+    fund_invest.currency = currency_type
+    fund_invest.date_invest = date_invest
+    fund_invest.share = share
+    fund_invest.amount_trade = amount_trade
+    fund_invest.trade_fee = trade_fee
+    fund_invest.nav = fund_nav
+    fund_invest.exchange_rate = exchange_rate
+    fund_invest.put()
+    
 def add_sample(request):
     '''
     periodic investment since last 8 months

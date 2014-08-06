@@ -35,19 +35,30 @@ class MFReport():
         #report.report_exchange = report.m_exchange.get_discrete_exchange_list()
         report.report_exchange = report.m_exchange.get_sample_value_list(report._sample_date_list)
 
-        #-> TODO
         report._get_history_cost_n_share_report()
 
-        #-> TODO
         report._get_history_market_value_report()
+
         return report
     
     def __init__(self, fund_id, currency_type):
+        '''
+        date_begin: the end day of the month which 12 months ago
+        date_end: yesterday
+        _sample_date_list: each end day of month between date_begin and date_end + date_end
+        '''
         self.fund_id = fund_id
         self.currency_type = currency_type
+        
+        #-> date_begin: the end day of the month which 12 months ago
         t_date_sample_start = date.today() - relativedelta(months=+12)
         self.date_begin = date(t_date_sample_start.year,t_date_sample_start.month+1,1) - relativedelta(days=+1)
-        self.date_end = date(date.today().year,date.today().month,1) - relativedelta(days=+1)
+        
+        #-> date_end: yesterday
+        self.date_end = date.today() - relativedelta(days=+1)
+        #self.date_end = date(date.today().year,date.today().month,1) - relativedelta(days=+1)
+        
+        #-> _sample_date_list
         t_check_date = self.date_begin
         while (t_check_date <= self.date_end):
             self._sample_date_list.append(t_check_date)
@@ -61,7 +72,7 @@ class MFReport():
         '''
         history = MutualFundInvestModel.all().filter('id =', self.fund_id).order('date_invest')
         if self.date_begin < history[0].date_invest:
-            self.report_cost.append([self.date_begin, 0.0, 0.0])
+            self.report_cost.append([self.date_begin, 0.0])
         
         #-> create invest cost report
         cost = 0.0
@@ -80,6 +91,7 @@ class MFReport():
         
         if self.date_end > history[history.count()-1].date_invest:
             self.report_cost.append([self.date_end, cost])
+            
         logging.debug(__name__ + ': invest cost report \n' + str(self.report_cost))
         
         #-> create invest cost2 & share reports

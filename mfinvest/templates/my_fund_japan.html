@@ -14,6 +14,16 @@
 	function percentFormatter(v, axis) {
 		return v.toFixed(axis.tickDecimals) + "%";
 	}
+	
+	function currencyFormatter(val, axis) {
+		return (val/1000).toFixed(axis.tickDecimals) + "k";
+	}
+	
+	function yenFormatter(val, axis) {
+		return val.toFixed(axis.tickDecimals) + "¥";
+	}
+	
+	
 	$(function() {
 
 
@@ -24,13 +34,22 @@
 					{ mode: "time",} 
 					],
 			yaxes: [ 
-					{ position: "left", },
-					{ position: "right", },
 					{ position: "left", 
-					  tickFormatter: percentFormatter
+					  tickFormatter: currencyFormatter,
+					  min: 80000,
+					  max: 1000000,
 					},
+					{ position: "right", 
+					  tickFormatter: yenFormatter,
+					},
+					{ position: "left", 
+					  tickFormatter: percentFormatter,
+					  min: -10,
+					  max: 10,
+					},
+					{ position: "right", },
 					],
-			legend: { position: "se" },
+			legend: { position: "sw" },
 		});
 
 	});
@@ -39,7 +58,7 @@
 </head>
 <body>
 	<div id="header">
-		<h2>{{ page_head }}</h2>
+		<h2>{{ fund_title }} <br/> ({{ fund_id }}) </h2>
 	</div>
 
 	<div id="content">
