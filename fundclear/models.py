@@ -41,6 +41,20 @@ class FundClearModel(WebContentModel):
 
         return fund_model
     
+    def get_sample_value_list(self, p_date_list):
+        '''
+        return a list of [date, nav] according to date list p_date_list
+        '''
+        t_sample_list = []
+        nav_list = self.get_value_list()
+        for t_entry in nav_list:
+            t_date = t_entry[DATE_INDEX]
+            t_nav = t_entry[VALUE_INDEX]
+            if t_date in p_date_list:
+                t_sample_list.append([t_date,t_nav])
+        logging.debug(__name__ + ': get_sample_value_list for p_date_list\n' + str(p_date_list) + '\n' + str(t_sample_list))
+        return t_sample_list
+    
     def get_nav_by_date(self, p_date):
         nav_list = self.get_value_list()
         t_count = 0
@@ -137,7 +151,7 @@ class FundClearModel(WebContentModel):
                     dataset[t_count][1] = dataset[t_count-1][1]
             #if (t_count > 192):
             #    logging.info('DEBUG:' + str([t_date,t_value]))
-            dataset[t_count][0] = parser.parse(t_date)
+            dataset[t_count][0] = parser.parse(t_date).date()
             dataset[t_count][1] = float(dataset[t_count][1])
             t_count += 1
             

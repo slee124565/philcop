@@ -30,7 +30,7 @@ def mf_japan_view(request):
     for t_entry in nav_report:
         t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
 
-    cost_report = mf_report.report_cost
+    cost_report = mf_report.report_cost2
     for t_entry in cost_report:
         t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
     

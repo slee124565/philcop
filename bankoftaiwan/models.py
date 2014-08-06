@@ -17,7 +17,7 @@ VALUE_INDEX = 1
 def _parsing_bot_date_str(p_date_str):
     if len(p_date_str) != 8:
         logging.error(__name__ + ': Invalid Date String Param: ' + p_date_str)
-    return parser.parse(p_date_str[0:4] + '/' + p_date_str[4:6] + '/' + p_date_str[6:])
+    return parser.parse(p_date_str[0:4] + '/' + p_date_str[4:6] + '/' + p_date_str[6:]).date()
     
 class BotExchangeModel(WebContentModel):
     currency_name = db.StringProperty()
@@ -42,6 +42,21 @@ class BotExchangeModel(WebContentModel):
             logging.warning(__name__ + ': BotExchangeMode get_bot_exchange fail')
         
         return bot_model
+    
+    def get_sample_value_list(self, p_date_list,p_exchange_field=exchange.FIELD_SELL_ON_DEMAND):
+        '''
+        return a list of [date, exchange_rate] according to date list p_date_list
+        '''
+        t_sample_list = []
+        rate_list = self.get_exchange_list(p_exchange_field)
+        for t_entry in rate_list:
+            t_date = t_entry[DATE_INDEX]
+            t_rate = t_entry[VALUE_INDEX]
+            if t_date in p_date_list:
+                t_sample_list.append([t_date,t_rate])
+        logging.debug(__name__ + ': get_sample_value_list for p_date_list\n' + str(p_date_list) + '\n' + str(t_sample_list))
+        return t_sample_list
+
     
     def get_rate(self, p_datetime, p_exchange_field=exchange.FIELD_SELL_ON_DEMAND):
         exchange_list = self.get_exchange_list(p_exchange_field)

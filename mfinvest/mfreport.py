@@ -12,26 +12,33 @@ class MFReport():
     currency_type = None
     date_begin = None
     date_end = None
-    m_fund = None       #-> FundClearModel
-    #m_invest = None     #-> MutualFundInvestModel
-    m_exchange = None   #-> BotExchangeModel
-    report_cost = []
-    report_cost2 = []
-    report_share = []
-    report_market_value = []
-    report_nav = []
-    report_exchange = []
-    report_profit = []
+    m_fund = None               #-> FundClearModel
+    m_exchange = None           #-> BotExchangeModel
+    _sample_date_list = []
+    report_cost = []            #-> only contain date that change
+    report_cost2 = []           #-> sync with _sample_date_list
+    report_share = []           #-> sync with _sample_date_list
+    report_market_value = []    #-> sync with _sample_date_list
+    report_nav = []             #-> sync with _sample_date_list
+    report_exchange = []        #-> sync with _sample_date_list
+    report_profit = []          #-> sync with _sample_date_list
     
     @classmethod
     def get_mfreport_by_id(cls, p_fund_id, p_currency_type):
         report = MFReport(fund_id=p_fund_id, currency_type=p_currency_type )
-        #report.m_invest = MutualFundInvestModel.all().filter('id =', report.fund_id).order('date_invest')
         report.m_fund = FundClearModel.get_fund(report.fund_id)
-        report.report_nav = report.m_fund.get_discrete_value_list()
         report.m_exchange = BotExchangeModel.get_bot_exchange(exchange.CURRENCY_JPY)
-        report.report_exchange = report.m_exchange.get_discrete_exchange_list()
+
+        #report.report_nav = report.m_fund.get_discrete_value_list()
+        report.report_nav = report.m_fund.get_sample_value_list(report._sample_date_list)
+        
+        #report.report_exchange = report.m_exchange.get_discrete_exchange_list()
+        report.report_exchange = report.m_exchange.get_sample_value_list(report._sample_date_list)
+
+        #-> TODO
         report._get_history_cost_n_share_report()
+
+        #-> TODO
         report._get_history_market_value_report()
         return report
     
@@ -41,6 +48,11 @@ class MFReport():
         t_date_sample_start = date.today() - relativedelta(months=+12)
         self.date_begin = date(t_date_sample_start.year,t_date_sample_start.month+1,1) - relativedelta(days=+1)
         self.date_end = date(date.today().year,date.today().month,1) - relativedelta(days=+1)
+        t_check_date = self.date_begin
+        while (t_check_date <= self.date_end):
+            self._sample_date_list.append(t_check_date)
+            t_check_date = date(t_check_date.year,t_check_date.month,1) + relativedelta(months=+2) - relativedelta(days=+1)
+        self._sample_date_list.append(date.today() - relativedelta(days=+1))
         
     def _get_history_cost_n_share_report(self):
         '''
@@ -54,6 +66,7 @@ class MFReport():
         #-> create invest cost report
         cost = 0.0
         share = 0.0
+        DATE_KEY_FORMAT = '%Y-%m'
         t_dict_share = {}
         t_dict_cost = {}
         for t_entry in history:
@@ -61,7 +74,7 @@ class MFReport():
                 cost += (t_entry.amount_trade + t_entry.trade_fee)
                 self.report_cost.append([t_entry.date_invest, cost])
                 share += t_entry.share
-                t_key = t_entry.date_invest.strftime("%Y-%m")
+                t_key = t_entry.date_invest.strftime(DATE_KEY_FORMAT)
                 t_dict_share[t_key] = share
                 t_dict_cost[t_key] = cost
         
@@ -69,21 +82,19 @@ class MFReport():
             self.report_cost.append([self.date_end, cost])
         logging.debug(__name__ + ': invest cost report \n' + str(self.report_cost))
         
-        #-> create invest share report
-        t_check_date = self.date_begin
+        #-> create invest cost2 & share reports
         t_last_share = 0.0
         t_last_cost = 0.0
-        while (t_check_date <= self.date_end):
-            t_key = t_check_date.strftime('%Y-%m')
+        for t_date in self._sample_date_list:
+            t_key = t_date.strftime(DATE_KEY_FORMAT)
             if t_key in t_dict_share:
-                self.report_share.append([t_check_date, t_dict_share[t_key]])
-                self.report_cost2.append([t_check_date, t_dict_cost[t_key]])
+                self.report_cost2.append([t_date,t_dict_cost[t_key]])
+                self.report_share.append([t_date, t_dict_share[t_key]])
                 t_last_share = t_dict_share[t_key]
                 t_last_cost = t_dict_cost[t_key]
             else:
-                self.report_share.append([t_check_date, t_last_share])
-                self.report_cost2.append([t_check_date, t_last_cost])
-            t_check_date = date(t_check_date.year,t_check_date.month,1) + relativedelta(months=+2) - relativedelta(days=+1)
+                self.report_share.append([t_date, t_last_share])
+                self.report_cost2.append([t_date, t_last_cost])
         logging.debug(__name__ + ': invest share report \n' + str(self.report_share))
         logging.debug(__name__ + ': invest 2nd cost report \n' + str(self.report_cost2))
 

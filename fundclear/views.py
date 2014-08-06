@@ -1,7 +1,7 @@
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 
-from datetime import date
+from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 import logging
 
@@ -11,6 +11,24 @@ import calendar
 
 URL_TEMPLATE = 'http://announce.fundclear.com.tw/MOPSFundWeb/D02_02P.jsp?fundId={fund_id}&beginDate={begin_date}&endDate={end_date}'
 
+def _test_get_sample_value_list(request):
+    #fund_id = 'AJSCY3'
+    fund_id = 'LU0069970746'
+    fund = FundClearModel.get_fund(fund_id)
+    
+    t_date_sample_start = datetime.now()- relativedelta(months=+12)
+    date_begin = date(t_date_sample_start.year,t_date_sample_start.month+1,1) - relativedelta(days=+1)
+    date_end = date(datetime.now().year,datetime.now().month,1) - relativedelta(days=+1)
+    t_check_date = date_begin
+    _sample_date_list = []
+    while (t_check_date <= date_end):
+        _sample_date_list.append(t_check_date)
+        t_check_date = date(t_check_date.year,t_check_date.month,1) + relativedelta(months=+2) - relativedelta(days=+1)
+    _sample_date_list.append(date.today() - relativedelta(days=+1))
+    
+    sample_value_list = fund.get_sample_value_list(_sample_date_list)
+    return HttpResponse(str(sample_value_list))
+    
 def flot_axes_time_view(request,fund_id):
     if (fund_id == ''):
         #fund_id = 'AJSCY3'
