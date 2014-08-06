@@ -22,6 +22,10 @@ def mf_japan_view(request):
     t_currency_type = bankoftaiwan.exchange.CURRENCY_JPY
     mf_report = MFReport.get_mfreport_by_id(t_fund_id, t_currency_type)
     
+    profit_report = mf_report.report_profit
+    for t_entry in profit_report:
+        t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
+    
     nav_report = mf_report.report_nav
     for t_entry in nav_report:
         t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
@@ -32,7 +36,8 @@ def mf_japan_view(request):
     
     plot = {
             'data': '{data: ' + str(cost_report).replace('L', '') + ', label: "Cost", lines: {show: true, steps: true}},' + \
-                    '{data: ' + str(nav_report).replace('L', '') + ', label: "' + t_fund_id + '", lines: {show: true}, yaxis: 2},' 
+                    '{data: ' + str(nav_report).replace('L', '') + ', label: "' + t_fund_id + '", lines: {show: true}, yaxis: 2},' + \
+                    '{data: ' + str(profit_report).replace('L', '') + ', label: "Profit(%)", lines: {show: true}, yaxis: 3},'
             }
     
     args = {

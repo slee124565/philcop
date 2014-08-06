@@ -17,11 +17,14 @@
 		var plot = $.plot("#placeholder", [
 			{{ plot.data | safe }}
 		], {
-			xaxes: [ { 
-						mode: "time", 
-					} ],
-			yaxes: [ {},
-					{position: "right",} ],
+			xaxes: [ 
+					{ mode: "time",} 
+					],
+			yaxes: [ 
+					{position: "left", },
+					{position: "right", },
+					{position: "left", },
+					],
 			legend: { position: "se" },
 		});
 
