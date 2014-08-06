@@ -11,6 +11,9 @@
 	<script language="javascript" type="text/javascript" src="/static/js/flot/jquery.flot.crosshair.js"></script>
 	<script type="text/javascript">
 
+	function percentFormatter(v, axis) {
+		return v.toFixed(axis.tickDecimals) + "%";
+	}
 	$(function() {
 
 
@@ -21,9 +24,11 @@
 					{ mode: "time",} 
 					],
 			yaxes: [ 
-					{position: "left", },
-					{position: "right", },
-					{position: "left", },
+					{ position: "left", },
+					{ position: "right", },
+					{ position: "left", 
+					  tickFormatter: percentFormatter
+					},
 					],
 			legend: { position: "se" },
 		});
