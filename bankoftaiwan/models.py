@@ -41,6 +41,10 @@ class BotExchangeModel(WebContentModel):
         if bot_model == None:
             logging.warning(__name__ + ': BotExchangeMode get_bot_exchange fail')
         
+        if bot_model.currency_name == None:
+            bot_model.currency_name = p_currency_type
+            bot_model.put()
+            
         return bot_model
     
     def get_sample_value_list(self, p_date_list,p_exchange_field=exchange.FIELD_SELL_ON_DEMAND):
@@ -100,11 +104,8 @@ class BotExchangeModel(WebContentModel):
         data_list = []
         t_csv_list = str(self.content).decode('big5').splitlines()
         logging.debug(__name__ + ': csv_list lenght ' + str(len(t_csv_list)))
-        logging.debug('currency_name: ' + self.currency_name)
         for t_list in t_csv_list:
             t_entry_list = t_list.split(',')
-            logging.debug(t_entry_list)
-            logging.debug(t_entry_list[exchange.FIELD_CURRENCY_NAME].strip())
             if t_entry_list[exchange.FIELD_CURRENCY_NAME].strip() == self.currency_name:
                 #logging.debug([t_entry_list[exchange.FIELD_DATE],t_entry_list[p_exchange_field]])
                 t_date = _parsing_bot_date_str(t_entry_list[exchange.FIELD_DATE])
