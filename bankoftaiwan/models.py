@@ -100,9 +100,11 @@ class BotExchangeModel(WebContentModel):
         data_list = []
         t_csv_list = str(self.content).decode('big5').splitlines()
         logging.debug(__name__ + ': csv_list lenght ' + str(len(t_csv_list)))
+        logging.debug('currency_name: ' + self.currency_name)
         for t_list in t_csv_list:
             t_entry_list = t_list.split(',')
-            #logging.debug(t_entry_list)
+            logging.debug(t_entry_list)
+            logging.debug(t_entry_list[exchange.FIELD_CURRENCY_NAME].strip())
             if t_entry_list[exchange.FIELD_CURRENCY_NAME].strip() == self.currency_name:
                 #logging.debug([t_entry_list[exchange.FIELD_DATE],t_entry_list[p_exchange_field]])
                 t_date = _parsing_bot_date_str(t_entry_list[exchange.FIELD_DATE])
