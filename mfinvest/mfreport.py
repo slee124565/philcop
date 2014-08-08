@@ -25,7 +25,7 @@ class MFReport():
     
     @classmethod
     def get_mfreport_by_id(cls, p_fund_id, p_currency_type):
-        report = MFReport(fund_id=p_fund_id, currency_type=p_currency_type )
+        report = MFReport(fund_id=p_fund_id, currency_type=p_currency_type)
         report.m_fund = FundClearModel.get_fund(report.fund_id)
         report.m_exchange = BotExchangeModel.get_bot_exchange(exchange.CURRENCY_JPY)
 
@@ -64,6 +64,14 @@ class MFReport():
             self._sample_date_list.append(t_check_date)
             t_check_date = date(t_check_date.year,t_check_date.month,1) + relativedelta(months=+2) - relativedelta(days=+1)
         self._sample_date_list.append(date.today() - relativedelta(days=+1))
+        
+        self.report_cost = []
+        self.report_cost2 = []
+        self.report_exchange = []
+        self.report_market_value = []
+        self.report_nav = []
+        self.report_profit = []
+        self.report_share = []
         
     def _get_history_cost_n_share_report(self):
         '''
@@ -119,7 +127,7 @@ class MFReport():
         logging.debug('report_nav len:' + str(len(self.report_nav)))
         logging.debug('report_exchange len:' + str(len(self.report_exchange)))
         logging.debug('report_share len:' + str(len(self.report_share)))
-        for i in range (len(self.report_share)):
+        for i in range (len(self._sample_date_list)):
             t_date = self.report_share[i][0]
             self.report_market_value.append([t_date, \
                                              self.report_share[i][1]*t_fund_nav_list[i][1]*t_exchange_list[i][1]])
