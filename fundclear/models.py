@@ -38,6 +38,10 @@ class FundClearModel(WebContentModel):
         fund_model = FundClearModel.get_or_insert_webcontent(p_fund_id, t_url, date.today())
         if fund_model == None:
             logging.warning('FundClearModel get_fund fail')
+            
+        if fund_model.fund_name == None:
+            fund_model.fund_name = p_fund_id
+            fund_model.put()
 
         return fund_model
     
