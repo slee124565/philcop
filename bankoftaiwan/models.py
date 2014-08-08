@@ -124,13 +124,13 @@ class BotExchangeModel(WebContentModel):
         #-> add holiday entry with previous day's value
         t_total = len(data_list)
         logging.debug(__name__ + ': t_total ' + str(t_total))
-        logging.debug(__name__ + ': data_list \n' + str(data_list[0]))
+        #logging.debug(__name__ + ': data_list \n' + str(data_list[0]))
         t_date_check = data_list[0][DATE_INDEX] + relativedelta(days=+1)
         logging.debug('t_date_check: ' + str(t_date_check))
         logging.debug(__name__ + ': first entry: ' + str(data_list[0]))
         index = 1
         while index < t_total:
-            logging.debug(__name__ + ': checking entry: ' + str(data_list[index]) + ' with index ' + str(index) + ' date ' + str(t_date_check))
+            #logging.debug(__name__ + ': checking entry: ' + str(data_list[index]) + ' with index ' + str(index) + ' date ' + str(t_date_check))
             if data_list[index][DATE_INDEX] == t_date_check:
                 #-> date_check entry exist; skip to check next entry
                 index += 1

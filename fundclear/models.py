@@ -39,10 +39,6 @@ class FundClearModel(WebContentModel):
         if fund_model == None:
             logging.warning('FundClearModel get_fund fail')
             
-        if fund_model.fund_name == None:
-            fund_model.fund_name = p_fund_id
-            fund_model.put()
-
         return fund_model
     
     def get_sample_value_list(self, p_date_list):
@@ -151,7 +147,7 @@ class FundClearModel(WebContentModel):
                     del dataset[t_count]
                     continue
                 else:
-                    logging.debug('replace value with previous one, date ' + str(dataset[t_count]))
+                    #logging.debug('replace value with previous one, date ' + str(dataset[t_count]))
                     dataset[t_count][1] = dataset[t_count-1][1]
             #if (t_count > 192):
             #    logging.info('DEBUG:' + str([t_date,t_value]))

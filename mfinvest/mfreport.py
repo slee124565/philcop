@@ -116,6 +116,9 @@ class MFReport():
         '''
         t_fund_nav_list = self.report_nav
         t_exchange_list = self.report_exchange
+        logging.debug('report_nav len:' + str(len(self.report_nav)))
+        logging.debug('report_exchange len:' + str(len(self.report_exchange)))
+        logging.debug('report_share len:' + str(len(self.report_share)))
         for i in range (len(self.report_share)):
             t_date = self.report_share[i][0]
             self.report_market_value.append([t_date, \
