@@ -7,6 +7,29 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 import logging
 
+def get_sample_date_list(p_count=12,p_inc_last_day=True):
+    t_sample_date_list = []
+    
+    #-> date_begin: the end day of the month which 12 months ago
+    t_date_sample_start = date.today() - relativedelta(months=p_count)
+    t_date_begin = date(t_date_sample_start.year,t_date_sample_start.month+1,1) - relativedelta(days=+1)
+    
+    #-> date_end: yesterday
+    t_date_end = date.today() - relativedelta(days=+1)
+    #self.date_end = date(date.today().year,date.today().month,1) - relativedelta(days=+1)
+    
+    #-> _sample_date_list
+    t_check_date = t_date_begin
+    while (t_check_date <= t_date_end):
+        t_sample_date_list.append(t_check_date)
+        t_check_date = date(t_check_date.year,t_check_date.month,1) + relativedelta(months=+2) - relativedelta(days=+1)
+    
+    #-> add yesterday into sample list
+    if p_inc_last_day:
+        t_sample_date_list.append(date.today() - relativedelta(days=+1))
+    
+    return t_sample_date_list
+
 class MFReport():
     fund_id = None
     currency_type = None

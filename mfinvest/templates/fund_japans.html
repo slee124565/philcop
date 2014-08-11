@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>{{ page_title }}</title>
+	<link href="/static/js/flot/examples.css" rel="stylesheet" type="text/css">
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/static/js/flot/excanvas.min.js"></script><![endif]-->
+	<script language="javascript" type="text/javascript" src="/static/js/flot/jquery.js"></script>
+	<script language="javascript" type="text/javascript" src="/static/js/flot/jquery.flot.js"></script>
+	<script language="javascript" type="text/javascript" src="/static/js/flot/jquery.flot.time.js"></script>
+	<script language="javascript" type="text/javascript" src="/static/js/flot/jquery.flot.crosshair.js"></script>
+	<script type="text/javascript">
+
+	function percentFormatter(v, axis) {
+		return v.toFixed(axis.tickDecimals) + "%";
+	}
+	
+	function currencyFormatter(val, axis) {
+		return (val/1000).toFixed(axis.tickDecimals) + "k";
+	}
+	
+	function yenFormatter(val, axis) {
+		return val.toFixed(axis.tickDecimals) + "¥";
+	}
+	
+	
+	$(function() {
+
+
+		var plot = $.plot("#placeholder", [
+			{{ data | safe }}
+		], {
+			xaxes: [ 
+					{ mode: "time",} 
+					],
+			legend: { position: "sw" },
+		});
+
+	});
+
+	</script>
+</head>
+<body>
+	<div id="header">
+		<h2>{{ page_title }}</h2>
+	</div>
+
+	<div id="content">
+
+		<div class="demo-container">
+			<div id="placeholder" class="demo-placeholder"></div>
+		</div>
+
+	</div>
+
+	<div id="footer">
+		Developed by lee.shiueh@gmail.com
+	</div>
+
+</body>
+</html>
