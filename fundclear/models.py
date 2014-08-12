@@ -35,7 +35,7 @@ class FundClearModel(WebContentModel):
         begin_date = end_date - relativedelta(months=p_months)
         t_url = URL_TEMPLATE.format(fund_id=p_fund_id,begin_date=begin_date.strftime("%Y/%m/%d"),end_date=end_date.strftime("%Y/%m/%d"))
         
-        fund_model = FundClearModel.get_or_insert_webcontent(p_fund_id, t_url, date.today())
+        fund_model = FundClearModel.get_or_insert_webcontent(p_fund_id,t_url,date.today(),p_months)
         if fund_model == None:
             logging.warning('FundClearModel get_fund fail')
             

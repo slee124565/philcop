@@ -37,7 +37,7 @@ class BotExchangeModel(WebContentModel):
             t_expired_date = None
         else:
             t_expired_date = date.today()
-        bot_model = BotExchangeModel.get_or_insert_webcontent(p_currency_type, t_url, t_expired_date)
+        bot_model = BotExchangeModel.get_or_insert_webcontent(p_currency_type,t_url,t_expired_date,p_months)
         if bot_model == None:
             logging.warning(__name__ + ': BotExchangeMode get_bot_exchange fail')
         

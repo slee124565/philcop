@@ -10,9 +10,10 @@ class WebContentModel(db.Model):
     url = db.StringProperty()
     content = db.BlobProperty()
     expired_date = db.DateProperty()
+    rank = db.IntegerProperty(default=0)
     
     @classmethod
-    def get_or_insert_webcontent(cls, p_key_name, p_url, p_expired_date=None):
+    def get_or_insert_webcontent(cls, p_key_name, p_url, p_expired_date=None, p_rank=0):
         '''
         This function make used of function WebContentModel.do_urlfetch() to fetch web content
         and will check attribute 'expired_date' before do_urlfetch;
@@ -26,11 +27,12 @@ class WebContentModel(db.Model):
         '''
         webContent = cls.get_or_insert(p_key_name)
         webContent.url = p_url
-        if ( (webContent.expired_date == None) or \
+        if ( (webContent.expired_date == None) or (p_expired_date == None) or \
              (date.today() > webContent.expired_date) or \
-             (p_expired_date == None)):
+             (p_rank > webContent.rank)):
             if (webContent.do_urlfetch()):
                 webContent.expired_date = p_expired_date
+                webContent.rank = p_rank
                 webContent.put()
             else:
                 logging.warning(__name__ + ': WebContentModel urlfetch Fail!!!')
