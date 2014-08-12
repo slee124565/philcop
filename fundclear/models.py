@@ -148,7 +148,7 @@ class FundClearModel(WebContentModel):
             dataset[t_count][1] = float(dataset[t_count][1])
             t_count += 1
             
-        logging.debug(dataset)
+        #logging.debug(dataset)
 
         return dataset
         

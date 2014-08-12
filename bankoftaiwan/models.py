@@ -134,5 +134,5 @@ class BotExchangeModel(WebContentModel):
         
         #-> append entries until to previous day
         
-        logging.debug(__name__ + ': get_exchange_list (' + str(len(data_list)) + '):\n' + str(data_list))
+        #logging.debug(__name__ + ': get_exchange_list (' + str(len(data_list)) + '):\n' + str(data_list))
         return data_list

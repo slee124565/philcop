@@ -2,7 +2,8 @@ from django.conf.urls import patterns, include, url
 
 urlpatterns = patterns('',
 
-    url(r'^jpy_compare/$', 'mfinvest.views.japan_compare_view'),
+    url(r'^jpy_compare/$', 'mfinvest.views.japan_nav_compare_view'),
+    url(r'^jpy_yoy_compare/$', 'mfinvest.views.japan_yoy_compare_view'),
     url(r'^fund_jpy/$', 'mfinvest.views.mf_japan_view'),
 
     url(r'^add_trade/$', 'mfinvest.views.add_my_trade'),

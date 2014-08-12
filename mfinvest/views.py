@@ -14,23 +14,79 @@ from bankoftaiwan.models import BotExchangeModel
 import bankoftaiwan.exchange
 from mfinvest.mfreport import MFReport, get_sample_date_list
 
-def japan_compare_view(request):
+TARGET_FUND_ID_LIST = ['AJSCY3','AJSCA3','LU0069970746','LU0107058785','AJSPY3']
+
+def get_funds_dict(p_fund_id_list, p_fund_data_months):
+    t_fund_dict = {}
+    for t_fund_id in p_fund_id_list:
+        t_fund = FundClearModel.get_fund(t_fund_id, p_fund_data_months)
+        if t_fund:
+            t_fund_dict[t_fund_id] = t_fund
+        else:
+            logging.warning('Fund Object Error,_fund_id: ' + t_fund_id)
+    
+    return t_fund_dict
+    
+
+def japan_yoy_compare_view(request):
     fund_data_months = 25
-    fund_id_list = ['AJSCY3','AJSCA3','LU0069970746','LU0107058785','AJSPY3']
+    fund_id_list = TARGET_FUND_ID_LIST
     #fund_id_list = ['AJSCY3','AJSCA3']
     
     #-> download fund data from FundClear
-    t_fund_list = {}
+    t_fund_list = get_funds_dict(fund_id_list,fund_data_months)
+
+    #-> sampling fund data 
+    t_sample_date_list = get_sample_date_list(25,False)
+    t_fund_data_list = {}
+    t_fund_yoy_dict = {}
+
+    for t_fund_id in t_fund_list:
+        t_fund_data_list[t_fund_id] = t_fund_list[t_fund_id].get_sample_value_list(t_sample_date_list)
+        t_fund_yoy_dict[t_fund_id] = []
+        
+        #-> compute YoY value for last 12 months
+        t_check_date_1 = date.today()
+        for i in range(12):
+            t_check_date_1 = date(t_check_date_1.year, t_check_date_1.month, 1) - relativedelta(days=+1)
+            t_check_date_2 = date(t_check_date_1.year-1,t_check_date_1.month,t_check_date_1.day)
+            logging.debug('t_check_date_1: ' + str(t_check_date_1))
+            logging.debug('t_check_date_2: ' + str(t_check_date_2))
+            t_col_1_list = [row[0] for row in t_fund_data_list[t_fund_id]]
+            nav1 = t_fund_data_list[t_fund_id][t_col_1_list.index(t_check_date_1)][1]
+            nav2 = t_fund_data_list[t_fund_id][t_col_1_list.index(t_check_date_2)][1]
+            yoy = (nav1-nav2)/nav1
+            t_fund_yoy_dict[t_fund_id].append([t_check_date_1,yoy])
+        t_fund_yoy_dict[t_fund_id].sort(key=lambda x: x[0])
     
-    for t_fund_id in fund_id_list:
-        t_fund = FundClearModel.get_fund(t_fund_id, fund_data_months)
-        if t_fund:
-            t_fund_list[t_fund_id] = t_fund
-        else:
-            logging.warn('Fund Object Error,_fund_id: ' + t_fund_id)
+    #-> formating date column for FLOT
+    for t_fund_id in t_fund_yoy_dict:
+        for t_entry in t_fund_yoy_dict[t_fund_id]:
+            t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000 
+
+    t_data_str = ''
+    for t_fund_id in t_fund_yoy_dict:
+        t_data_str += '{data: ' + str(t_fund_yoy_dict[t_fund_id]).replace('L', '') + ', label:"' + t_fund_id + '"},'
+
+
+    t_tpl_args = {
+                  'data' : t_data_str,
+                  'page_title' : 'Fund_Japan_YoY_Compare',
+                  }
+    return render_to_response('fund_japans.html', t_tpl_args)
     
+    
+    
+def japan_nav_compare_view(request):
+    fund_data_months = 25
+    fund_id_list = TARGET_FUND_ID_LIST
+    #fund_id_list = ['AJSCY3','AJSCA3']
+    
+    #-> download fund data from FundClear
+    t_fund_list = get_funds_dict(fund_id_list,fund_data_months)
+    
+    #-> sampling fund data & formating date column for FLOT
     t_sample_date_list = get_sample_date_list(25)
-    
     t_fund_data_list = {}
     for t_fund_id in t_fund_list:
         t_fund_data_list[t_fund_id] = t_fund_list[t_fund_id].get_sample_value_list(t_sample_date_list)
@@ -43,7 +99,7 @@ def japan_compare_view(request):
 
     t_tpl_args = {
                   'data' : t_data_str,
-                  'page_title' : 'Fund_Japan_Compare',
+                  'page_title' : 'Fund_Japan_NAV_Compare',
                   }
     return render_to_response('fund_japans.html', t_tpl_args)
 
