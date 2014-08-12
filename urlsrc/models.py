@@ -39,6 +39,20 @@ class WebContentModel(db.Model):
             logging.info(__name__ + ': web content exist in datastore and not expired.')
         
         return webContent
+    
+    def sample_value_list(self, p_sample_key_list, p_matrix):
+        t_sample_list = []
+        
+        t_row1_list = [row[0] for row in p_matrix]
+        for t_key in p_sample_key_list:
+            if t_key in t_row1_list:
+                t_index = t_row1_list.index(t_key)
+                t_sample_list.append(p_matrix[t_index])
+            else:
+                t_sample_list.append([t_key, None])
+        
+        logging.debug(__name__ + ': sample_value_list for p_sample_key_list\n' + str(p_sample_key_list) + '\n' + str(t_sample_list))
+        return t_sample_list
         
     def do_urlfetch(self):
         '''

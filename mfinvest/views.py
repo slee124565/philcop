@@ -3,7 +3,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 
-from dateutil import parser
 from dateutil.relativedelta import relativedelta
 from datetime import date
 import logging
@@ -24,7 +23,11 @@ def japan_compare_view(request):
     t_fund_list = {}
     
     for t_fund_id in fund_id_list:
-        t_fund_list[t_fund_id] = FundClearModel.get_fund(t_fund_id, fund_data_months)
+        t_fund = FundClearModel.get_fund(t_fund_id, fund_data_months)
+        if t_fund:
+            t_fund_list[t_fund_id] = t_fund
+        else:
+            logging.warn('Fund Object Error,_fund_id: ' + t_fund_id)
     
     t_sample_date_list = get_sample_date_list(25)
     

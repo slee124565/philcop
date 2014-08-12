@@ -51,15 +51,8 @@ class BotExchangeModel(WebContentModel):
         '''
         return a list of [date, exchange_rate] according to date list p_date_list
         '''
-        t_sample_list = []
         rate_list = self.get_exchange_list(p_exchange_field)
-        for t_entry in rate_list:
-            t_date = t_entry[DATE_INDEX]
-            t_rate = t_entry[VALUE_INDEX]
-            if t_date in p_date_list:
-                t_sample_list.append([t_date,t_rate])
-        logging.debug(__name__ + ': get_sample_value_list for p_date_list\n' + str(p_date_list) + '\n' + str(t_sample_list))
-        return t_sample_list
+        return self.sample_value_list(p_date_list, rate_list)
 
     
     def get_rate(self, p_datetime, p_exchange_field=exchange.FIELD_SELL_ON_DEMAND):
@@ -122,14 +115,12 @@ class BotExchangeModel(WebContentModel):
         data_list.sort(key=lambda x: x[0])
         
         #-> add holiday entry with previous day's value
-        t_total = len(data_list)
-        logging.debug(__name__ + ': t_total ' + str(t_total))
-        #logging.debug(__name__ + ': data_list \n' + str(data_list[0]))
+        t_end_date = date.today() - relativedelta(days=+1)
+
         t_date_check = data_list[0][DATE_INDEX] + relativedelta(days=+1)
-        logging.debug('t_date_check: ' + str(t_date_check))
-        logging.debug(__name__ + ': first entry: ' + str(data_list[0]))
         index = 1
-        while index < t_total:
+        #while index < t_total:
+        while t_date_check <= t_end_date:
             #logging.debug(__name__ + ': checking entry: ' + str(data_list[index]) + ' with index ' + str(index) + ' date ' + str(t_date_check))
             if data_list[index][DATE_INDEX] == t_date_check:
                 #-> date_check entry exist; skip to check next entry
@@ -140,5 +131,8 @@ class BotExchangeModel(WebContentModel):
                 logging.debug(__name__ + ': append entry ' + str([(t_date_check),data_list[index-1][VALUE_INDEX]]))
             t_date_check = t_date_check + relativedelta(days=+1)
         data_list.sort(key=lambda x: x[0])
+        
+        #-> append entries until to previous day
+        
         logging.debug(__name__ + ': get_exchange_list (' + str(len(data_list)) + '):\n' + str(data_list))
         return data_list

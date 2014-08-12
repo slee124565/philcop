@@ -45,15 +45,8 @@ class FundClearModel(WebContentModel):
         '''
         return a list of [date, nav] according to date list p_date_list
         '''
-        t_sample_list = []
         nav_list = self.get_value_list()
-        for t_entry in nav_list:
-            t_date = t_entry[DATE_INDEX]
-            t_nav = t_entry[VALUE_INDEX]
-            if t_date in p_date_list:
-                t_sample_list.append([t_date,t_nav])
-        logging.debug(__name__ + ': get_sample_value_list for p_date_list\n' + str(p_date_list) + '\n' + str(t_sample_list))
-        return t_sample_list
+        return self.sample_value_list(p_date_list, nav_list)
     
     def get_nav_by_date(self, p_date):
         nav_list = self.get_value_list()
