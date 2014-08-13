@@ -49,7 +49,8 @@ class FundReview():
             logging.debug(__name__ + ', date ' + str(t_check_date_2) + ' nav ' + str(nav2))
             yoy = (nav1-nav2)/nav2
             self.yoy_list.append([t_check_date_1,yoy])
-            
+        
+        logging.debug(__name__ + ', yoy_list befor sorting:\n' + str(self.yoy_list))
         self.yoy_list.sort(key=lambda x: x[0])
         self.nav_list = self.nav_list[-TOTAL_SAMPLE_MONTHS_COUNT:]
         logging.debug(__name__ + ', __init__ fund_id ' + fund_id + ' for year ' + str(review_year) + '\n' + \
