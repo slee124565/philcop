@@ -13,6 +13,7 @@ from fundclear.models import FundClearModel
 from bankoftaiwan.models import BotExchangeModel
 import bankoftaiwan.exchange
 from mfinvest.mfreport import MFReport, get_sample_date_list
+from mfinvest.fundreview import FundReview
 
 TARGET_FUND_ID_LIST = ['AJSCY3','AJSCA3','LU0069970746','LU0107058785','AJSPY3']
 
@@ -27,17 +28,41 @@ def get_funds_dict(p_fund_id_list, p_fund_data_months):
     
     return t_fund_dict
     
+def fund_review_view(request, fund_id='LU0069970746', years=1):
+    '''
+    review NAV + YoY
+    '''
+    fund_review = FundReview(fund_id,years)
 
-def japan_yoy_compare_view(request):
-    fund_data_months = 25
+    for t_entry in fund_review.nav_list:
+        t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000 
+    
+    for t_entry in fund_review.yoy_list:
+        t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000 
+    
+    t_data_str = ''
+    t_data_str += '{data: ' + str(fund_review.nav_list).replace('L', '') + ', label:"NAV", yaxis: 1},'
+    t_data_str += '{data: ' + str(fund_review.yoy_list).replace('L', '') + ', label:"YoY", yaxis: 2},'
+
+    t_tpl_args = {
+                  'data' : t_data_str,
+                  'page_title' : fund_review.fund_name,
+                  }
+    return render_to_response('fund_review.html', t_tpl_args)
+    
+def japan_yoy_compare_view(request,years=1):
     fund_id_list = TARGET_FUND_ID_LIST
     #fund_id_list = ['AJSCY3']
-    
+
+    #-> calculate total sample months needed
+    TOTAL_SAMPLE_MONTHS_COUNT = 12 * int(years)
+    fund_data_months = TOTAL_SAMPLE_MONTHS_COUNT*2+1
+     
     #-> download fund data from FundClear
     t_fund_list = get_funds_dict(fund_id_list,fund_data_months)
 
     #-> sampling fund data 
-    t_sample_date_list = get_sample_date_list(25,False)
+    t_sample_date_list = get_sample_date_list(fund_data_months,False)
     t_fund_data_list = {}
     t_fund_yoy_dict = {}
 
@@ -47,16 +72,14 @@ def japan_yoy_compare_view(request):
         
         #-> compute YoY value for last 12 months
         t_check_date_1 = date.today()
-        for i in range(12):
+        for i in range(TOTAL_SAMPLE_MONTHS_COUNT):
             t_check_date_1 = date(t_check_date_1.year, t_check_date_1.month, 1) - relativedelta(days=+1)
-            t_check_date_2 = date(t_check_date_1.year-1,t_check_date_1.month,t_check_date_1.day)
-            #logging.debug('t_check_date_1: ' + str(t_check_date_1))
-            #logging.debug('t_check_date_2: ' + str(t_check_date_2))
+            t_check_date_2 = date(t_check_date_1.year-1,t_check_date_1.month,1) + relativedelta(months=+1) - relativedelta(days=+1)
             t_col_1_list = [row[0] for row in t_fund_data_list[t_fund_id]]
             nav1 = t_fund_data_list[t_fund_id][t_col_1_list.index(t_check_date_1)][1]
             nav2 = t_fund_data_list[t_fund_id][t_col_1_list.index(t_check_date_2)][1]
-            logging.debug('date ' + str(t_check_date_1) + ' nav ' + str(nav1))
-            logging.debug('date ' + str(t_check_date_2) + ' nav ' + str(nav2))
+            #logging.debug('date ' + str(t_check_date_1) + ' nav ' + str(nav1))
+            #logging.debug('date ' + str(t_check_date_2) + ' nav ' + str(nav2))
             yoy = (nav1-nav2)/nav2
             t_fund_yoy_dict[t_fund_id].append([t_check_date_1,yoy])
         t_fund_yoy_dict[t_fund_id].sort(key=lambda x: x[0])
@@ -74,7 +97,7 @@ def japan_yoy_compare_view(request):
 
     t_tpl_args = {
                   'data' : t_data_str,
-                  'page_title' : 'Fund_Japan_YoY_Compare',
+                  'page_title' : 'Fund_Japan_YoY_Compare_Year_' + str(years),
                   }
     return render_to_response('fund_japans.html', t_tpl_args)
     

@@ -106,7 +106,9 @@ class FundClearModel(WebContentModel):
         #t_fund_name = str(t_fund_name).encode('big5').splitlines()
         #t_fund_name = t_fund_name[0]
         logging.info('fund_name: ' + t_fund_name)
-        self.fund_name = t_fund_name
+        if self.fund_name == None:
+            self.fund_name = t_fund_name
+            self.put()
         t_count = 5
         while (t_count <= (t_total-1)):
             #logging.info('table child len ' + str(len(t_tables[t_count])))

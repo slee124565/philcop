@@ -10,7 +10,7 @@ import phicops.utils
 import calendar
 
 URL_TEMPLATE = 'http://announce.fundclear.com.tw/MOPSFundWeb/D02_02P.jsp?fundId={fund_id}&beginDate={begin_date}&endDate={end_date}'
-
+    
 def _test_get_sample_value_list(request):
     #fund_id = 'AJSCY3'
     fund_id = 'LU0069970746'
@@ -32,7 +32,7 @@ def _test_get_sample_value_list(request):
 def flot_axes_time_view(request,fund_id):
     if (fund_id == ''):
         #fund_id = 'AJSCY3'
-        logging.warn('PARAM [fund_id] ERROR')
+        logging.warning('PARAM [fund_id] ERROR')
         return HttpResponse('PARAM ERROR')
 
     end_date = date.today() - relativedelta(days=+1)
