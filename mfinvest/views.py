@@ -31,7 +31,7 @@ def get_funds_dict(p_fund_id_list, p_fund_data_months):
 def japan_yoy_compare_view(request):
     fund_data_months = 25
     fund_id_list = TARGET_FUND_ID_LIST
-    #fund_id_list = ['AJSCY3','AJSCA3']
+    #fund_id_list = ['AJSCY3']
     
     #-> download fund data from FundClear
     t_fund_list = get_funds_dict(fund_id_list,fund_data_months)
@@ -50,17 +50,20 @@ def japan_yoy_compare_view(request):
         for i in range(12):
             t_check_date_1 = date(t_check_date_1.year, t_check_date_1.month, 1) - relativedelta(days=+1)
             t_check_date_2 = date(t_check_date_1.year-1,t_check_date_1.month,t_check_date_1.day)
-            logging.debug('t_check_date_1: ' + str(t_check_date_1))
-            logging.debug('t_check_date_2: ' + str(t_check_date_2))
+            #logging.debug('t_check_date_1: ' + str(t_check_date_1))
+            #logging.debug('t_check_date_2: ' + str(t_check_date_2))
             t_col_1_list = [row[0] for row in t_fund_data_list[t_fund_id]]
             nav1 = t_fund_data_list[t_fund_id][t_col_1_list.index(t_check_date_1)][1]
             nav2 = t_fund_data_list[t_fund_id][t_col_1_list.index(t_check_date_2)][1]
-            yoy = (nav1-nav2)/nav1
+            logging.debug('date ' + str(t_check_date_1) + ' nav ' + str(nav1))
+            logging.debug('date ' + str(t_check_date_2) + ' nav ' + str(nav2))
+            yoy = (nav1-nav2)/nav2
             t_fund_yoy_dict[t_fund_id].append([t_check_date_1,yoy])
         t_fund_yoy_dict[t_fund_id].sort(key=lambda x: x[0])
     
     #-> formating date column for FLOT
     for t_fund_id in t_fund_yoy_dict:
+        logging.debug(__name__ + ': japan_yoy_compare_view ' + t_fund_id + ':\n' + str(t_fund_yoy_dict[t_fund_id]))
         for t_entry in t_fund_yoy_dict[t_fund_id]:
             t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000 
 
