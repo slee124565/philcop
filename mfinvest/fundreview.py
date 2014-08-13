@@ -34,6 +34,7 @@ class FundReview():
         
         #-> nav_report
         self.nav_list = t_fund.get_sample_value_list(t_sample_date_list)
+        logging.debug(__name__ + ', 1st nav_list:\n' + str(self.nav_list))
 
         #-> yoy_report
         #-> compute YoY value for last 12 months
@@ -44,12 +45,14 @@ class FundReview():
             t_col_1_list = [row[0] for row in self.nav_list]
             nav1 = self.nav_list[t_col_1_list.index(t_check_date_1)][1]
             nav2 = self.nav_list[t_col_1_list.index(t_check_date_2)][1]
+            logging.debug(__name__ + ', date ' + str(t_check_date_1) + ' nav ' + str(nav1))
+            logging.debug(__name__ + ', date ' + str(t_check_date_2) + ' nav ' + str(nav2))
             yoy = (nav1-nav2)/nav2
             self.yoy_list.append([t_check_date_1,yoy])
             
         self.yoy_list.sort(key=lambda x: x[0])
         self.nav_list = self.nav_list[-TOTAL_SAMPLE_MONTHS_COUNT:]
-        logging.debug(__name__ + ', __init__ fund_id ' + fund_id + 'for year ' + str(review_year) + '\n' + \
-                      str(self.nav_list) + '\n' + \
-                      str(self.yoy_list))
+        logging.debug(__name__ + ', __init__ fund_id ' + fund_id + ' for year ' + str(review_year) + '\n' + \
+                      'nav_list:\n' + str(self.nav_list) + '\n' + \
+                      'yoy_list:\n' + str(self.yoy_list))
         

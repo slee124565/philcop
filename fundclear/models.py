@@ -106,7 +106,7 @@ class FundClearModel(WebContentModel):
         #t_fund_name = str(t_fund_name).encode('big5').splitlines()
         #t_fund_name = t_fund_name[0]
         logging.info('fund_name: ' + t_fund_name)
-        if self.fund_name == None:
+        if (self.fund_name == None) or (self.fund_name != t_fund_name):
             self.fund_name = t_fund_name
             self.put()
         t_count = 5
