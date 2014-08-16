@@ -6,11 +6,19 @@ from dateutil.relativedelta import relativedelta
 import logging
 
 from models import FundClearModel
+from fcreader import get_fund_code_name
 import phicops.utils
 import calendar
 
 URL_TEMPLATE = 'http://announce.fundclear.com.tw/MOPSFundWeb/D02_02P.jsp?fundId={fund_id}&beginDate={begin_date}&endDate={end_date}'
     
+def _test_get_fund_code_name(request):
+    codeName = get_fund_code_name()
+    t_str = ''
+    for code in codeName:
+        t_str += code + ': ' + codeName[code] + '<br/>'
+    return HttpResponse(t_str)
+
 def _test_get_sample_value_list(request):
     #fund_id = 'AJSCY3'
     fund_id = 'LU0069970746'

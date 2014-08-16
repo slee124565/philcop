@@ -28,15 +28,16 @@ class FundReview():
         if t_fund == None:
             return HttpResponse('FundClearModel ERROR')
         
-        self.fund_name = t_fund.fund_name
-        logging.info(__name__ + ', fund_name ' + self.fund_name)
-    
         #-> sampling fund data 
         t_sample_date_list = get_sample_date_list(fund_data_months,False)
         
         #-> nav_report
         self.nav_list = t_fund.get_sample_value_list(t_sample_date_list)
         #logging.debug(__name__ + ', 1st nav_list:\n' + str(self.nav_list))
+        self.fund_name = t_fund.fund_name
+        if self.fund_name != None:
+            logging.debug(__name__ + ', fund_name ' + self.fund_name)
+    
 
         #-> yoy_report
         self.yoy_list = []
@@ -49,7 +50,11 @@ class FundReview():
             nav2 = self.nav_list[t_col_1_list.index(t_check_date_2)][1]
             #logging.debug(__name__ + ', date ' + str(t_check_date_1) + ' nav ' + str(nav1))
             #logging.debug(__name__ + ', date ' + str(t_check_date_2) + ' nav ' + str(nav2))
-            yoy = (nav1-nav2)/nav2
+            if nav1 is not None and nav2 is not None:
+                yoy = (nav1-nav2)/nav2
+            else:
+                logging.warning(__name__ + ', __init__: Can not compute YoY for NAV ' + str(nav1) + ',' + str(nav2))
+                yoy = None
             self.yoy_list.append([t_check_date_1,yoy])
         
         #logging.debug(__name__ + ', yoy_list befor sorting:\n' + str(self.yoy_list))

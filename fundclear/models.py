@@ -95,7 +95,7 @@ class FundClearModel(WebContentModel):
         t_page = document_fromstring(stk_data)
         t_tables = t_page.xpath("//table")
         t_total = len(t_tables)
-        logging.info('total table count: ' + str(t_total))
+        logging.debug('total table count: ' + str(t_total))
         if t_total < 4:
             logging.warning(__name__ + 'Source HTML TABLE ERROR, count ' + str(t_total))
             return None
@@ -105,7 +105,7 @@ class FundClearModel(WebContentModel):
         t_fund_name = t_fund_name.replace('\r\n','')
         #t_fund_name = str(t_fund_name).encode('big5').splitlines()
         #t_fund_name = t_fund_name[0]
-        logging.info('fund_name: ' + t_fund_name)
+        logging.debug('fund_name: ' + t_fund_name)
         if (self.fund_name == None) or (self.fund_name != t_fund_name):
             self.fund_name = t_fund_name
             self.put()
