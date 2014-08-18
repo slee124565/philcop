@@ -10,5 +10,5 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'phicops.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
-    url(r'^$', 'phicops.views.default_view'),
+    url(r'^$', 'phicops.views.home'),
 )

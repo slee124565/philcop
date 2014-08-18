@@ -1,0 +1,27 @@
+{% load static %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="{% static "css/default.css" %}" />
+		{% block head %}HEAD_TITLE{% endblock%}
+	</head>
+
+	<body>
+		<div id="page">
+			<div id="sidebar">
+				{% block sidebar %}
+				<ul>
+					<li><a href="/mf/fund_jpy/">My JPY Fund</a></li>
+				</ul>
+				{% endblock %}
+			</div>
+			<div id="content">
+				{% block content %}
+				This is the content area.
+				{% endblock %}
+			</div>
+		</div>
+	</body>
+</html>

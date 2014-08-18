@@ -134,6 +134,8 @@ def mf_japan_view(request):
     t_fund_id = 'LU0069970746'
     t_currency_type = bankoftaiwan.exchange.CURRENCY_JPY
     mf_report = MFReport.get_mfreport_by_id(t_fund_id, t_currency_type)
+    if mf_report is None:
+        return HttpResponse('MFReport Fail')
     
     exchange_report = mf_report.report_exchange
     for t_entry in exchange_report:
@@ -164,7 +166,8 @@ def mf_japan_view(request):
             'fund_id' : t_fund_id,
             'plot' : plot,
             }
-    return render_to_response('my_fund_japan.html', args)
+    #return render_to_response('my_fund_japan.html', args)
+    return render_to_response('mf_my_japan.html', args)
     
 def test(request):
     trade_list = MutualFundInvestModel.all().order('date_invest')

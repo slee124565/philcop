@@ -1,12 +1,14 @@
 import calendar
 import logging
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 
 from fundclear.models import FundClearModel
 from bankoftaiwan.models import BotExchangeModel, exchange
 
+def home(request):
+    return HttpResponseRedirect('/mf/fund_jpy/')
 
 def default_view(request):
     bot_exchange = BotExchangeModel.get_bot_exchange(exchange.CURRENCY_JPY)

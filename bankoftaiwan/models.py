@@ -41,9 +41,9 @@ class BotExchangeModel(WebContentModel):
         if bot_model == None:
             logging.warning(__name__ + ': BotExchangeMode get_bot_exchange fail')
         
-        if bot_model.currency_name == None:
-            bot_model.currency_name = p_currency_type
-            bot_model.put()
+            if bot_model.currency_name == None:
+                bot_model.currency_name = p_currency_type
+                bot_model.put()
             
         return bot_model
     

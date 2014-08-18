@@ -71,6 +71,10 @@ class MFReport():
         report = MFReport(fund_id=p_fund_id, currency_type=p_currency_type)
         report.m_fund = FundClearModel.get_fund(report.fund_id)
         report.m_exchange = BotExchangeModel.get_bot_exchange(exchange.CURRENCY_JPY)
+        
+        if report.m_fund is None or report.m_exchange is None:
+            logging.warning(__name__ + ', get_mfreport_by_id: fund or exchange data download fail!!!')
+            return None
 
         #report.report_nav = report.m_fund.get_discrete_value_list()
         report.report_nav = report.m_fund.get_sample_value_list(report._sample_date_list)
