@@ -16,7 +16,7 @@ def review_fundcode_list(request):
     t_fundcode_list = get_fundcode_list()
     t_str = ''
     for t_fundcode in t_fundcode_list:
-        t_str += t_fundcode[0] + ',' + t_fundcode[1] + ', ' + t_fundcode[2] + '<br/>' 
+        t_str += str(t_fundcode[0]) + ',' + t_fundcode[1] + ', ' + t_fundcode[2] + '<br/>' 
     return HttpResponse(t_str)
 
 def _test_get_fundcode_list(request):
