@@ -18,11 +18,14 @@ URL_TEMPLATE = 'http://announce.fundclear.com.tw/MOPSFundWeb/D02_02P.jsp?fundId=
 DATE_INDEX = 0
 VALUE_INDEX = 1
 
+class FundCodeModel(db.Model):
+    content = db.BlobProperty()
+    
 class FundClearModel(WebContentModel):
     fund_name = db.StringProperty()
     
     @classmethod
-    def get_fund(cls, p_fund_id, p_months=12):
+    def get_fund(cls, p_fund_id, p_months=25):
         if (p_fund_id == ''):
             logging.warn('Invalid Parameter Value p_fund_id ' + p_fund_id)
             return None

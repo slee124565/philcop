@@ -4,7 +4,63 @@ from django.http import HttpResponse
 import logging, os
 
 from models import FundClearModel
+from fcreader import get_fundcode_list
 
+NUM_INDEX =0
+CODE_INDEX = 1
+NAME_INDEX = 2
+
+def chain_update_taskhandler(request):
+
+    #-> get index
+    t_index = int(request.REQUEST['index'])
+    logging.info(__name__ + ', chain_update_taskhandler ' + request.method + ' with index ' + str(t_index))
+    
+    #-> update fund with t_index
+    t_fund_info_list = get_fundcode_list()[:100]
+    #t_fund_info_list = [[0,'a','a1'],[1,'b','b1'],[2,'c','c1']]
+    if t_index < len(t_fund_info_list):
+        
+        #-> udpate FundClearModel
+        t_fundinfo = t_fund_info_list[t_index]
+        logging.debug(__name__ + ', chain_update_taskhandler: fund code ' + t_fundinfo[CODE_INDEX])
+        FundClearModel.get_fund(t_fundinfo[CODE_INDEX])
+
+        #-> add next chain_task
+        t_index += 1
+        if t_index < len(t_fund_info_list):
+            logging.debug(__name__ + ', chain_update_taskhandler add chain_task with index ' + str(t_index))
+            #logging.debug(request.get_full_path())
+            t_taskhandler_path = os.path.dirname(request.get_full_path()) + '/'
+            t_url = t_taskhandler_path
+            taskqueue.add(method = 'GET', \
+                          url = t_url, \
+                          countdown = 5, \
+                          params = {
+                                    'index': t_index
+                                    })
+        else:
+            logging.debug(__name__ + ', chain_update_taskhandler: stop')
+    else:
+        logging.warning(__name__ + ', chain_update_taskhandler: index PARAM ERROR')
+            
+    t_response = HttpResponse()
+    t_response.status_code = 200
+    return t_response
+    
+def chain_update_test(request):
+    logging.debug('chain_update_test enter')
+    t_full_path = request.get_full_path()
+    t_taskhandler_path = os.path.dirname(os.path.dirname(t_full_path)) + '/chain_update/'
+    t_url = t_taskhandler_path
+    taskqueue.add(method = 'GET', \
+                  url = t_url, \
+                  params = {
+                            'index': 0
+                            })
+    t_msg = 'add task with handler url:\n' + t_taskhandler_path
+    return HttpResponse(t_msg)
+    
 def update_taskhandler(request,fund_id):
     '''
     update FundClearModel for fund_id
