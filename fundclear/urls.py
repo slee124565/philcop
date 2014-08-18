@@ -9,11 +9,14 @@ urlpatterns = patterns('',
 
     url(r'^flot/(?P<fund_id>\w+)/$', 'fundclear.views.flot_axes_time_view'),
 
+    url(r'^func/save_fundcode/$', 'fundclear.views.save_fundcode'),
+    url(r'^func/review_fundcode/$', 'fundclear.views.review_fundcode_list'),
+
     #url(r'^func/test/$', 'fundclear.views._test_get_sample_value_list'),
     #url(r'^func/test/$', 'fundclear.views._test_get_fund_code_name'),
     #url(r'^func/test/$', 'fundclear.views._test_get_fund_info_list'),
-    #url(r'^func/test/$', 'fundclear.views._test_save_fundcode_config'),
-    url(r'^func/test/$', 'fundclear.views._test_get_fundcode_list'),
+    url(r'^func/test/$', 'fundclear.views._test_save_fundcode_config'),
+    #url(r'^func/test/$', 'fundclear.views._test_get_fundcode_list'),
     
     
     

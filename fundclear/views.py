@@ -12,6 +12,13 @@ import calendar
 
 URL_TEMPLATE = 'http://announce.fundclear.com.tw/MOPSFundWeb/D02_02P.jsp?fundId={fund_id}&beginDate={begin_date}&endDate={end_date}'
 
+def review_fundcode_list(request):
+    t_fundcode_list = get_fundcode_list()
+    t_str = ''
+    for t_fundcode in t_fundcode_list:
+        t_str += t_fundcode[0] + ',' + t_fundcode[1] + ', ' + t_fundcode[2] + '<br/>' 
+    return HttpResponse(t_str)
+
 def _test_get_fundcode_list(request):
     t_fundcode_list = get_fundcode_list()
     t_str = ''
@@ -19,6 +26,9 @@ def _test_get_fundcode_list(request):
         t_str += t_fundcode[1] + ', ' + t_fundcode[2] + '<br/>' 
     return HttpResponse(t_str)
 
+def save_fundcode(request):
+    return HttpResponse(save_fundcode_config())
+    
 def _test_save_fundcode_config(request):
     return HttpResponse(save_fundcode_config())
     
