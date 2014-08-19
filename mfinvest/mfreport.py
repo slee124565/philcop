@@ -106,6 +106,7 @@ class MFReport():
         #self.date_end = date(date.today().year,date.today().month,1) - relativedelta(days=+1)
         
         #-> _sample_date_list
+        self._sample_date_list = []
         t_check_date = self.date_begin
         while (t_check_date <= self.date_end):
             self._sample_date_list.append(t_check_date)

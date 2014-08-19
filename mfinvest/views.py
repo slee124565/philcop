@@ -148,7 +148,6 @@ def mf_japan_view(request):
     
     exchange_report = mf_report.report_exchange
     for t_entry in exchange_report:
-        logging.debug('t_entry: ' + str(t_entry))
         t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
     
     profit_report = mf_report.report_profit
