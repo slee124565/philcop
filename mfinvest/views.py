@@ -14,8 +14,9 @@ from bankoftaiwan.models import BotExchangeModel
 import bankoftaiwan.exchange
 from mfinvest.mfreport import MFReport, get_sample_date_list
 from mfinvest.fundreview import FundReview
+from fundclear.fcreader import get_fundcode_list
 
-TARGET_FUND_ID_LIST = ['AJSCY3','AJSCA3','LU0069970746','LU0107058785','AJSPY3']
+TARGET_FUND_ID_LIST = ['AJSCY3','AJSCA3','LU0069970746','LU0107058785','AJSPY3', 'AJNHA3']
 
 def get_funds_dict(p_fund_id_list, p_fund_data_months):
     t_fund_dict = {}
@@ -50,7 +51,8 @@ def fund_review_view(request, fund_id='LU0069970746', years=1):
                   }
     return render_to_response('fund_review.html', t_tpl_args)
     
-def japan_yoy_compare_view(request,years=1):
+def japan_yoy_compare_view(request):
+    years = 2
     fund_id_list = TARGET_FUND_ID_LIST
     #fund_id_list = ['AJSCY3']
 
@@ -90,16 +92,22 @@ def japan_yoy_compare_view(request,years=1):
         for t_entry in t_fund_yoy_dict[t_fund_id]:
             t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000 
 
+    t_fundcode_list = get_fundcode_list()
+    t_code_list = [row[1] for row in t_fundcode_list]
     t_data_str = ''
+    t_fund_name = ''
     for t_fund_id in t_fund_yoy_dict:
-        t_data_str += '{data: ' + str(t_fund_yoy_dict[t_fund_id]).replace('L', '') + ', label:"' + t_fund_id + '"},'
+        if t_fund_id in t_code_list:
+            t_fund_name = t_fundcode_list[t_code_list.index(t_fund_id)][2]
+        t_data_str += '{data: ' + str(t_fund_yoy_dict[t_fund_id]).replace('L', '') + ', label:"' + t_fund_id + ', ' + t_fund_name + '"},'
 
 
     t_tpl_args = {
                   'data' : t_data_str,
                   'page_title' : 'Fund_Japan_YoY_Compare_Year_' + str(years),
                   }
-    return render_to_response('fund_japans.html', t_tpl_args)
+    #return render_to_response('fund_japans.html', t_tpl_args)
+    return render_to_response('mf_japan_tops.html', t_tpl_args)
     
     
     
@@ -127,7 +135,8 @@ def japan_nav_compare_view(request):
                   'data' : t_data_str,
                   'page_title' : 'Fund_Japan_NAV_Compare',
                   }
-    return render_to_response('fund_japans.html', t_tpl_args)
+    #return render_to_response('fund_japans.html', t_tpl_args)
+    return render_to_response('mf_japan_tops.html', t_tpl_args)
 
 def mf_japan_view(request):
 
@@ -139,6 +148,7 @@ def mf_japan_view(request):
     
     exchange_report = mf_report.report_exchange
     for t_entry in exchange_report:
+        logging.debug('t_entry: ' + str(t_entry))
         t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
     
     profit_report = mf_report.report_profit

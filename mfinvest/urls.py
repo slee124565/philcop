@@ -3,7 +3,7 @@ from django.conf.urls import patterns, include, url
 urlpatterns = patterns('',
 
     url(r'^jpy_compare/$', 'mfinvest.views.japan_nav_compare_view'),
-    url(r'^jpy_yoy_compare/(?P<years>\d+)/$', 'mfinvest.views.japan_yoy_compare_view'),
+    url(r'^jpy_yoy_compare/$', 'mfinvest.views.japan_yoy_compare_view'),
     url(r'^fund_jpy/$', 'mfinvest.views.mf_japan_view'),
 
     url(r'^fund_review/(?P<fund_id>\w+)/(?P<years>\d+)/$', 'mfinvest.views.fund_review_view'),
