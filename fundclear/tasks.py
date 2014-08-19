@@ -10,6 +10,19 @@ NUM_INDEX =0
 CODE_INDEX = 1
 NAME_INDEX = 2
 
+def update_all_taskhandler(request):
+    logging.debug(__name__ + ', update_all_taskhandler activated')
+    t_full_path = request.get_full_path()
+    t_taskhandler_path = os.path.dirname(os.path.dirname(t_full_path)) + '/chain_update/'
+    t_url = t_taskhandler_path
+    taskqueue.add(method = 'GET', \
+                  url = t_url, \
+                  params = {
+                            'index': 0
+                            })
+    t_msg = 'add task with handler url:\n' + t_taskhandler_path
+    return HttpResponse(t_msg)
+    
 def chain_update_taskhandler(request):
 
     #-> get index
