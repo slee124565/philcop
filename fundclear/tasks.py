@@ -30,7 +30,7 @@ def chain_update_taskhandler(request):
     logging.info(__name__ + ', chain_update_taskhandler ' + request.method + ' with index ' + str(t_index))
     
     #-> update fund with t_index
-    t_fund_info_list = get_fundcode_list()[:150]
+    t_fund_info_list = get_fundcode_list()[:5]
     #t_fund_info_list = [[0,'a','a1'],[1,'b','b1'],[2,'c','c1']]
     if t_index < len(t_fund_info_list):
         
