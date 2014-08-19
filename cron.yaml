@@ -1,5 +1,5 @@
 cron:
 - description: update all FundClearModel on 5th day of every month
   url: /fc/task/update_all/
-  schedule: 19 of month 13:08
+  schedule: 5 of month 07:10
   timezone: Asia/Taipei
