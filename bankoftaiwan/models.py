@@ -128,7 +128,7 @@ class BotExchangeModel(WebContentModel):
             else:
                 #-> date_checck entry not exist; add with previous entry's value
                 data_list.append([(t_date_check),data_list[index-1][VALUE_INDEX]])
-                logging.debug(__name__ + ': append entry ' + str([(t_date_check),data_list[index-1][VALUE_INDEX]]))
+                #logging.debug(__name__ + ': append entry ' + str([(t_date_check),data_list[index-1][VALUE_INDEX]]))
             t_date_check = t_date_check + relativedelta(days=+1)
         data_list.sort(key=lambda x: x[0])
         

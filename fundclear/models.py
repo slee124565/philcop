@@ -98,7 +98,7 @@ class FundClearModel(WebContentModel):
         t_page = document_fromstring(stk_data)
         t_tables = t_page.xpath("//table")
         t_total = len(t_tables)
-        logging.debug('total table count: ' + str(t_total))
+        logging.debug(__name__ + ', get_value_list: total table count: ' + str(t_total))
         if t_total < 4:
             logging.warning(__name__ + 'Source HTML TABLE ERROR, count ' + str(t_total))
             return None
@@ -108,7 +108,7 @@ class FundClearModel(WebContentModel):
         t_fund_name = t_fund_name.replace('\r\n','')
         #t_fund_name = str(t_fund_name).encode('big5').splitlines()
         #t_fund_name = t_fund_name[0]
-        logging.debug('fund_name: ' + t_fund_name)
+        logging.debug(__name__ + ', get_value_list: fund_name: ' + t_fund_name)
         if (self.fund_name == None) or (self.fund_name != t_fund_name):
             self.fund_name = t_fund_name
             self.put()
@@ -129,10 +129,11 @@ class FundClearModel(WebContentModel):
                             #logging.info([t_date_list[i],t_value_list[i]])
                             #dataset.append([calendar.timegm((parser.parse(t_date_list[i])).timetuple()) * 1000,t_value_list[i]])
                             dataset.append([t_date_list[i],t_value_list[i]])
-                        else:
-                            logging.debug('remove element ('+ str(t_count) + '#' + str(i) + '): ' + str([t_date_list[i],t_value_list[i]]))
+                        #else:
+                        #    logging.debug('remove element ('+ str(t_count) + '#' + str(i) + '): ' + str([t_date_list[i],t_value_list[i]]))
             else:
-                logging.debug('skip table:\n' + etree.tostring(t_tables[t_count]))
+                #logging.debug('skip table:\n' + etree.tostring(t_tables[t_count]))
+                logging.debug(__name__ + ', get_value_list: skip table ' + str(t_count))
             t_count += 1
             #break
         t_count = 0
@@ -141,7 +142,7 @@ class FundClearModel(WebContentModel):
             (t_date,t_value) = dataset[t_count]
             if (t_value == '--') or (t_value == 'N/A'):
                 if (t_count ==0):
-                    logging.debug('removeing dataset element ' + str(dataset[t_count]))
+                    #logging.debug(__name__ + ', get_value_list: removeing dataset element ' + str(dataset[t_count]))
                     del dataset[t_count]
                     continue
                 else:
