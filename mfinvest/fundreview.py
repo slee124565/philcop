@@ -54,7 +54,7 @@ class FundReview():
                 yoy = (nav1-nav2)/nav2
             else:
                 logging.warning(__name__ + ', __init__: Can not compute YoY for NAV ' + str(nav1) + ',' + str(nav2))
-                yoy = None
+                yoy = 0
             self.yoy_list.append([t_check_date_1,yoy])
         
         #logging.debug(__name__ + ', yoy_list befor sorting:\n' + str(self.yoy_list))
