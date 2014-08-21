@@ -1,0 +1,29 @@
+{% extends "mf_base.html" %}
+
+{% block head %}
+	<title>{{ page_title }}</title>
+{% endblock %}
+
+{% block content %}
+
+	<div id="header">
+		<h2>{{ page_title }}</h2>
+	</div>
+
+	<div id="content">
+		<form action="{{ action_url }}" method="post">{% csrf_token %}
+			<select name="fund_code">
+				{% for fund_info in fund_info_list %}
+				<option value="{{fund_info.code}}"
+				{% if fund_code == fund_info.code %} selected="selected"{% endif %}>
+				{{fund_info.name}}</option>
+				{% endfor %}
+			</select><br/>
+			
+			<input type="submit" value="Select" /><br/>
+		
+		</form>
+		<br/>
+	</div>
+
+{% endblock %}

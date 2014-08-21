@@ -2,6 +2,7 @@
 
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
+from django.core.context_processors import csrf
 
 from dateutil.relativedelta import relativedelta
 from datetime import date
@@ -14,7 +15,7 @@ from bankoftaiwan.models import BotExchangeModel
 import bankoftaiwan.exchange
 from mfinvest.mfreport import MFReport, get_sample_date_list
 from mfinvest.fundreview import FundReview
-from fundclear.fcreader import get_fundcode_list
+from fundclear.fcreader import get_fundcode_list, get_fundcode_dictlist, get_name_with_fundcode_list
 
 TARGET_FUND_ID_LIST = ['AJSCY3','AJSCA3','LU0069970746','LU0107058785','AJSPY3', 'AJNHA3']
 
@@ -28,7 +29,45 @@ def get_funds_dict(p_fund_id_list, p_fund_data_months):
             logging.warning('Fund Object Error,_fund_id: ' + t_fund_id)
     
     return t_fund_dict
+
+def fund_review_view_2(request):
+    t_fund_info_list = get_fundcode_dictlist()
+    if request.POST:
+        f_fund_id = request.POST['fund_code']
+        
+        t_years = 2
+        fund_review = FundReview(f_fund_id,t_years)
     
+        for t_entry in fund_review.nav_list:
+            t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000 
+        
+        for t_entry in fund_review.yoy_list:
+            t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000 
+        
+        t_data_str = ''
+        t_data_str += '{data: ' + str(fund_review.nav_list).replace('L', '') + ', label:"NAV", yaxis: 1},'
+        t_data_str += '{data: ' + str(fund_review.yoy_list).replace('L', '') + ', label:"YoY", yaxis: 2},'
+    
+        t_tpl_args = {
+                        'data' : t_data_str,
+                        'page_title' : 'Fund Review - ' + fund_review.fund_name, #get_name_with_fundcode_list(f_fund_id),
+                        'action_url': request.get_full_path(),
+                        'fund_info_list': t_fund_info_list,
+                        'fund_code': f_fund_id,
+                      }
+        t_tpl_args.update(csrf(request))
+        return render_to_response('mf_fund_review.html', t_tpl_args)
+    else:
+        args = {
+                'page_title': 'Fund Review',
+                'action_url': request.get_full_path(),
+                'fund_info_list': t_fund_info_list,
+                'fund_code': '',
+                }
+        args.update(csrf(request))
+        return render_to_response('mf_fund_review_page.html', args)
+        
+        
 def fund_review_view(request, fund_id='LU0069970746', years=1):
     '''
     review NAV + YoY

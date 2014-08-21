@@ -6,7 +6,9 @@ urlpatterns = patterns('',
     url(r'^jpy_yoy_compare/$', 'mfinvest.views.japan_yoy_compare_view'),
     url(r'^fund_jpy/$', 'mfinvest.views.mf_japan_view'),
 
-    url(r'^fund_review/(?P<fund_id>\w+)/(?P<years>\d+)/$', 'mfinvest.views.fund_review_view'),
+    #url(r'^fund_review/(?P<fund_id>\w+)/(?P<years>\d+)/$', 'mfinvest.views.fund_review_view'),
+    url(r'^fund_review/$', 'mfinvest.views.fund_review_view_2'),
+    
 
     url(r'^add_trade/$', 'mfinvest.views.add_my_trade'),
 

@@ -1,0 +1,68 @@
+{% extends "mf_base.html" %}
+
+{% block head %}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>{{ page_title }}</title>
+
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/static/js/flot/excanvas.min.js"></script><![endif]-->
+	<script language="javascript" type="text/javascript" src="/static/js/flot/jquery.js"></script>
+	<script language="javascript" type="text/javascript" src="/static/js/flot/jquery.flot.js"></script>
+	<script language="javascript" type="text/javascript" src="/static/js/flot/jquery.flot.time.js"></script>
+	<script language="javascript" type="text/javascript" src="/static/js/flot/jquery.flot.crosshair.js"></script>
+	<script type="text/javascript">
+
+	function percentFormatter(v, axis) {
+		return v.toFixed(axis.tickDecimals) + "%";
+	}
+	
+	$(function() {
+
+		var plot = $.plot("#placeholder", [
+			{{ data | safe }}
+		], {
+			xaxes: [ 
+					{ mode: "time",} 
+					],
+			yaxes: [
+					{
+						position: "left", },
+					{
+						position: "right", 
+						tickFormatter: percentFormatter,},
+					],
+			legend: { position: "sw" },
+		});
+
+	});
+
+	</script>
+{% endblock %}
+
+{% block content %}
+	<div id="header">
+		<h2>{{ page_title }}</h2>
+	</div>
+
+	<div id="content">
+
+		<div class="demo-container">
+			<div id="placeholder" class="demo-placeholder"></div>
+		</div>
+
+		<form action="{{ action_url }}" method="post">{% csrf_token %}
+			<select name="fund_code">
+				{% for fund_info in fund_info_list %}
+				<option value="{{fund_info.code}}"
+				{% if fund_code == fund_info.code %} selected="selected"{% endif %}>
+				{{fund_info.name}}</option>
+				{% endfor %}
+			</select><br/>
+			
+			<input type="submit" value="Select" /><br/>
+		
+		</form>
+		<br/>
+
+	</div>
+
+{% endblock %}

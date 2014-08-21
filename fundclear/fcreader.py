@@ -11,6 +11,27 @@ from models import FundCodeModel
 
 FUND_CODE_FILE = 'fundclear/fund_code.xml'
 
+def get_name_with_fundcode_list(p_code,p_fundcode_list=None):
+    t_fundcode_list = p_fundcode_list
+    if t_fundcode_list is None:
+        t_fundcode_list = get_fundcode_list()
+    t_code_list = [row[1] for row in t_fundcode_list]
+    if p_code in t_code_list:
+        return t_fundcode_list[t_code_list.index(p_code)][2]
+    else:
+        return ''
+    
+def get_fundcode_dictlist():
+    t_fundcode_list = get_fundcode_list()
+    t_fundcode_dictlist = []
+    for t_fundcode in t_fundcode_list:
+        t_fundcode_dictlist.append({
+                                    'index': t_fundcode[0],
+                                    'code': t_fundcode[1],
+                                    'name': t_fundcode[2],
+                                    })
+    return t_fundcode_dictlist
+
 def get_fundcode_list():
     t_keyname = FUND_CODE_FILE
     t_model = FundCodeModel.get_or_insert(t_keyname)
