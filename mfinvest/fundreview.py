@@ -51,7 +51,7 @@ class FundReview():
             #logging.debug(__name__ + ', date ' + str(t_check_date_1) + ' nav ' + str(nav1))
             #logging.debug(__name__ + ', date ' + str(t_check_date_2) + ' nav ' + str(nav2))
             if nav1 is not None and nav2 is not None:
-                yoy = (nav1-nav2)/nav2
+                yoy = 100 * (nav1-nav2)/nav2
             else:
                 logging.warning(__name__ + ', __init__: Can not compute YoY for NAV ' + str(nav1) + ',' + str(nav2))
                 yoy = 0
