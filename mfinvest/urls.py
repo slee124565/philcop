@@ -7,7 +7,8 @@ urlpatterns = patterns('',
     url(r'^fund_jpy/$', 'mfinvest.views.mf_japan_view'),
 
     #url(r'^fund_review/(?P<fund_id>\w+)/(?P<years>\d+)/$', 'mfinvest.views.fund_review_view'),
-    url(r'^fund_review/$', 'mfinvest.views.fund_review_view_2'),
+    #url(r'^fund_review/$', 'mfinvest.views.fund_review_view_2'),
+    url(r'^fund_review/$', 'mfinvest.views.fund_review_view_3'),
     
 
     url(r'^add_trade/$', 'mfinvest.views.add_my_trade'),

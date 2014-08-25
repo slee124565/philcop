@@ -11,6 +11,7 @@ import calendar
 
 from mfinvest.models import MutualFundInvestModel
 from fundclear.models import FundClearModel
+from fundclear.fundreview.models import FundReviewModel
 from bankoftaiwan.models import BotExchangeModel
 import bankoftaiwan.exchange
 from mfinvest.mfreport import MFReport, get_sample_date_list
@@ -29,6 +30,50 @@ def get_funds_dict(p_fund_id_list, p_fund_data_months):
             logging.warning('Fund Object Error,_fund_id: ' + t_fund_id)
     
     return t_fund_dict
+
+def fund_review_view_3(request):
+    t_fund_info_list = get_fundcode_dictlist()
+    if request.POST:
+        f_fund_id = request.POST['fund_code']
+        
+        fund_review = FundReviewModel.flush_fund_review(f_fund_id)
+        
+        t_nav_list = fund_review.nav_list()
+        for t_entry in t_nav_list:
+            t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000 
+        
+        t_yoy_1_list = fund_review.yoy_list(1)
+        for t_entry in t_yoy_1_list:
+            t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000 
+        
+        t_yoy_2_list = fund_review.yoy_list(2)
+        for t_entry in t_yoy_2_list:
+            t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000 
+
+        t_data_str = ''
+        t_data_str += '{data: ' + str(t_nav_list).replace('L', '') + ', label:"NAV", yaxis: 1},'
+        t_data_str += '{data: ' + str(t_yoy_1_list).replace('L', '') + ', label:"YoY_1", yaxis: 2},'
+        t_data_str += '{data: ' + str(t_yoy_2_list).replace('L', '') + ', label:"YoY_2", yaxis: 2},'
+    
+        t_tpl_args = {
+                        'data' : t_data_str,
+                        'page_title' : 'Fund Review - ' + FundClearModel.get_by_key_name(f_fund_id).fund_name, #get_name_with_fundcode_list(f_fund_id),
+                        'action_url': request.get_full_path(),
+                        'fund_info_list': t_fund_info_list,
+                        'fund_code': f_fund_id,
+                      }
+        t_tpl_args.update(csrf(request))
+        return render_to_response('mf_fund_review.html', t_tpl_args)
+    else:
+        args = {
+                'page_title': 'Fund Review',
+                'action_url': request.get_full_path(),
+                'fund_info_list': t_fund_info_list,
+                'fund_code': '',
+                }
+        args.update(csrf(request))
+        return render_to_response('mf_fund_review_page.html', args)
+    
 
 def fund_review_view_2(request):
     t_fund_info_list = get_fundcode_dictlist()
