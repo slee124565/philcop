@@ -6,6 +6,7 @@ from dateutil.relativedelta import relativedelta
 import logging
 
 from models import FundClearModel
+from fundclear.fundreview.models import FundReviewModel
 from fcreader import get_fund_code_name, get_fund_info_list, save_fundcode_config, get_fundcode_list
 import phicops.utils
 import calendar
@@ -19,6 +20,16 @@ def review_fundcode_list(request):
         t_str += str(t_fundcode[0]) + ',' + t_fundcode[1] + ', ' + t_fundcode[2] + '<br/>' 
     return HttpResponse(t_str)
 
+def _test_fundreview_model(request):
+    #-> test from FundClearModel
+    t_fundreview = FundClearModel.get_fund('LU0069970746').fundreview[0]
+    return HttpResponse(str(t_fundreview.nav_list()) + '<br/>' + str(t_fundreview.yoy_list(1)) + '<br/>' + str(t_fundreview.yoy_list(2)))
+    
+    #-> test from FundReviewModel point of view
+    FundReviewModel.flush_fund_review('LU0069970746')
+    t_fundreview = FundReviewModel.get_by_key_name('LU0069970746')
+    return HttpResponse(str(t_fundreview.nav_list()) + '<br/>' + str(t_fundreview.yoy_list(1)) + '<br/>' + str(t_fundreview.yoy_list(2)))
+    
 def _test_get_fundcode_list(request):
     t_fundcode_list = get_fundcode_list()
     t_str = ''

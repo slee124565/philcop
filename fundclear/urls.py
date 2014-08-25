@@ -16,8 +16,10 @@ urlpatterns = patterns('',
     #url(r'^func/test/$', 'fundclear.views._test_get_sample_value_list'),
     #url(r'^func/test/$', 'fundclear.views._test_get_fund_code_name'),
     #url(r'^func/test/$', 'fundclear.views._test_get_fund_info_list'),
-    url(r'^func/test/$', 'fundclear.views._test_save_fundcode_config'),
+    #url(r'^func/test/$', 'fundclear.views._test_save_fundcode_config'),
     #url(r'^func/test/$', 'fundclear.views._test_get_fundcode_list'),
+    url(r'^func/test/$', 'fundclear.views._test_fundreview_model'),
+    
     
     
     

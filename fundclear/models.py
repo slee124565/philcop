@@ -20,12 +20,12 @@ VALUE_INDEX = 1
 
 class FundCodeModel(db.Model):
     content = db.BlobProperty()
-    
+
 class FundClearModel(WebContentModel):
     fund_name = db.StringProperty()
     
     @classmethod
-    def get_fund(cls, p_fund_id, p_months=25):
+    def get_fund(cls, p_fund_id, p_months=37):
         if (p_fund_id == ''):
             logging.warn('Invalid Parameter Value p_fund_id ' + p_fund_id)
             return None
@@ -43,7 +43,7 @@ class FundClearModel(WebContentModel):
             logging.warning('FundClearModel get_fund fail')
             
         return fund_model
-    
+            
     def get_sample_value_list(self, p_date_list):
         '''
         return a list of [date, nav] according to date list p_date_list

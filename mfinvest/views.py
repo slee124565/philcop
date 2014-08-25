@@ -14,7 +14,7 @@ from fundclear.models import FundClearModel
 from bankoftaiwan.models import BotExchangeModel
 import bankoftaiwan.exchange
 from mfinvest.mfreport import MFReport, get_sample_date_list
-from mfinvest.fundreview import FundReview
+from mfinvest import fundreview
 from fundclear.fcreader import get_fundcode_list, get_fundcode_dictlist, get_name_with_fundcode_list
 
 TARGET_FUND_ID_LIST = ['AJSCY3','AJSCA3','LU0069970746','LU0107058785','AJSPY3', 'AJNHA3']
@@ -36,7 +36,7 @@ def fund_review_view_2(request):
         f_fund_id = request.POST['fund_code']
         
         t_years = 2
-        fund_review = FundReview(f_fund_id,t_years)
+        fund_review = fundreview.FundReview(f_fund_id,t_years)
     
         for t_entry in fund_review.nav_list:
             t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000 
@@ -72,7 +72,7 @@ def fund_review_view(request, fund_id='LU0069970746', years=1):
     '''
     review NAV + YoY
     '''
-    fund_review = FundReview(fund_id,years)
+    fund_review = fundreview.FundReview(fund_id,years)
 
     for t_entry in fund_review.nav_list:
         t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000 
