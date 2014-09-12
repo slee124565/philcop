@@ -1,6 +1,8 @@
+/*
 body {
 	text-align: center;
 }
+*/
 
 #page {
 	width: 960px;
@@ -17,7 +19,7 @@ body {
 
 #content {
 	float: left;
-	width: 600px;
+	/*width: 600px;*/
 	/*border: 1px solid #f00;*/
 	padding: 10px;
 }
@@ -49,6 +51,7 @@ body {
 	line-height: 1.2em;
 }
 
+/*
 label, input {
 	float: left;
 }
@@ -85,3 +88,4 @@ li {
 	background-color: #880000;
 	border-color: #550000;
 }
+*/

@@ -222,8 +222,46 @@ def japan_nav_compare_view(request):
     #return render_to_response('fund_japans.html', t_tpl_args)
     return render_to_response('mf_japan_tops.html', t_tpl_args)
 
-def mf_japan_view(request):
+def mf_japan_view_2(request):
+    t_fund_id = 'LU0069970746'
+    t_currency_type = bankoftaiwan.exchange.CURRENCY_JPY
+    mf_report = MFReport.get_mfreport_by_id(t_fund_id, t_currency_type)
+    if mf_report is None:
+        return HttpResponse('MFReport Fail')
+    
+    exchange_report = mf_report.report_exchange
+    for t_entry in exchange_report:
+        t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
+    
+    profit_report = mf_report.report_profit
+    for t_entry in profit_report:
+        t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
+    
+    nav_report = mf_report.report_nav
+    for t_entry in nav_report:
+        t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
 
+    cost_report = mf_report.report_cost
+    for t_entry in cost_report:
+        t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
+    
+    plot = {
+            'data': '{data: ' + str(cost_report).replace('L', '') + ', label: "Cost", lines: {show: true, steps: true}},' + \
+                    '{data: ' + str(nav_report).replace('L', '') + ', label: "NAV", lines: {show: true}, yaxis: 2},' + \
+                    '{data: ' + str(profit_report).replace('L', '') + ', label: "Profit (%)", lines: {show: true}, yaxis: 3},' + \
+                    '{data: ' + str(exchange_report).replace('L', '') + ', label: "JPY/TWN", lines: {show: true}, yaxis: 4},'
+            }
+
+    args = {
+            'tpl_img_header' : u'法巴百利達日本小型股票基金 C',
+            'tpl_section_title' : u'基金淨值 (日幣)',
+            'plot' : plot,
+            }
+    
+    return render_to_response('mf_my_japan.tpl.html',args)
+    
+    
+def mf_japan_view(request):
     t_fund_id = 'LU0069970746'
     t_currency_type = bankoftaiwan.exchange.CURRENCY_JPY
     mf_report = MFReport.get_mfreport_by_id(t_fund_id, t_currency_type)
