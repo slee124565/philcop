@@ -21,10 +21,10 @@
 
   <body>
 
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#philcops-navbar-menu">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -32,22 +32,44 @@
           </button>
           <a class="navbar-brand" href="#">{{ tpl_project_name|default:"Philcops" }}</a>
         </div>
-        <div class="navbar-collapse collapse">
+        <div class="navbar-collapse collapse" id="philcops-navbar-menu">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">{% trans MENU_MY_JPY_FUND|default:"MENU_MY_JPY_FUND" %}</a></li>
-            <li><a href="#">{% trans MENU_JPY_NAV|default:"MENU_JPY_NAV" %}</a></li>
-            <li><a href="#">{% trans MENU_JPY_YOY|default:"MENU_JPY_YOY" %}</a></li>
-            <li><a href="#">{% trans MENU_FUND_REVIEW|default:"MENU_FUND_REVIEW" %}</a></li>
-            <li><a href="#">{% trans MENU_INVEST_RECORD_ADD|default:"MENU_INVEST_RECORD_ADD" %}</a></li>
-            <li><a href="#">{% trans MENU_FUNDCODE_REVIEW|default:"MENU_FUNDCODE_REVIEW" %}</a></li>
-            <li><a href="#">{% trans MENU_MY_GOLD|default:"MENU_MY_GOLD" %}</a></li>
+          	<li class="dropdown">
+          		<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          			{% trans MENU_JPY_FUND|default:"MENU_JPY_FUND" %}
+          		</a>
+          		<ul class="dropdown-menu" role="menu">
+            		<li><a href="#">{% trans MENU_MY_JPY_FUND|default:"MENU_MY_JPY_FUND" %}</a></li>
+		            <li><a href="#">{% trans MENU_INVEST_RECORD_ADD|default:"MENU_INVEST_RECORD_ADD" %}</a></li>
+		            <li><a href="#">{% trans MENU_JPY_NAV|default:"MENU_JPY_NAV" %}</a></li>
+		            <li><a href="#">{% trans MENU_JPY_YOY|default:"MENU_JPY_YOY" %}</a></li>
+          		</ul>
+          	</li>
+          	<li class="dropdown">
+          		<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          			{% trans MENU_FUNDCLEAR|default:"MENU_FUNDCLEAR" %}
+          		</a>
+          		<ul class="dropdown-menu" role="menu">
+		            <li><a href="#">{% trans MENU_FUND_REVIEW|default:"MENU_FUND_REVIEW" %}</a></li>
+		            <li><a href="#">{% trans MENU_FUNDCODE_REVIEW|default:"MENU_FUNDCODE_REVIEW" %}</a></li>
+          		</ul>
+          	</li>
+          	<li class="dropdown">
+          		<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          			{% trans MENU_GOLD|default:"MENU_GOLD" %}
+          		</a>
+          		<ul class="dropdown-menu" role="menu">
+		            <li><a href="#">{% trans MENU_MY_GOLD|default:"MENU_MY_GOLD" %}</a></li>
+          		</ul>
+          	</li>
+
           </ul>
           <form class="navbar-form navbar-right">
             <input type="text" class="form-control" placeholder="Search...">
           </form>
-        </div>
-      </div>
-    </div>
+        </div> <!-- /.navbar-collapse -->
+      </div> <!-- /.container-fluid -->
+    </nav>
 
     <div class="container-fluid">
         <div class="main">
