@@ -1,4 +1,4 @@
-{% load static %}
+{% load static i18n %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -34,13 +34,13 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">MY JPY FUND</a></li>
-            <li><a href="#">JPY n NAV</a></li>
-            <li><a href="#">JPY n YoY</a></li>
-            <li><a href="#">Fund Review</a></li>
-            <li><a href="#">Invest Add</a></li>
-            <li><a href="#">FundCode Review</a></li>
-            <li><a href="#">My Gold</a></li>
+            <li><a href="#">{% trans MENU_MY_JPY_FUND|default:"MENU_MY_JPY_FUND" %}</a></li>
+            <li><a href="#">{% trans MENU_JPY_NAV|default:"MENU_JPY_NAV" %}</a></li>
+            <li><a href="#">{% trans MENU_JPY_YOY|default:"MENU_JPY_YOY" %}</a></li>
+            <li><a href="#">{% trans MENU_FUND_REVIEW|default:"MENU_FUND_REVIEW" %}</a></li>
+            <li><a href="#">{% trans MENU_INVEST_RECORD_ADD|default:"MENU_INVEST_RECORD_ADD" %}</a></li>
+            <li><a href="#">{% trans MENU_FUNDCODE_REVIEW|default:"MENU_FUNDCODE_REVIEW" %}</a></li>
+            <li><a href="#">{% trans MENU_MY_GOLD|default:"MENU_MY_GOLD" %}</a></li>
           </ul>
           <form class="navbar-form navbar-right">
             <input type="text" class="form-control" placeholder="Search...">
