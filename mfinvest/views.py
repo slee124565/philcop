@@ -7,8 +7,8 @@ from django.utils.translation import ugettext_noop as _
 
 from dateutil.relativedelta import relativedelta
 from datetime import date
-import logging
-import calendar
+
+import logging, calendar, collections
 
 from mfinvest.models import MutualFundInvestModel
 from fundclear.models import FundClearModel
@@ -230,33 +230,58 @@ def mf_japan_view_2(request):
     if mf_report is None:
         return HttpResponse('MFReport Fail')
     
+    t_content_heads = []
+    t_content_rows = {}
+    
     exchange_report = mf_report.report_exchange
     for t_entry in exchange_report:
+        t_content_rows[t_entry[0].strftime("%Y%m%d")] = (t_entry[0].strftime("%Y/%m/%d"), t_entry[1],)
         t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
+    t_content_heads.append('Date')
+    t_content_heads.append('JPY/TW')
     
     profit_report = mf_report.report_profit
     for t_entry in profit_report:
+        t_content_rows[t_entry[0].strftime("%Y%m%d")] += ('{:.2}%'.format(t_entry[1]),)
         t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
+    t_content_heads.append('Profit')
     
     nav_report = mf_report.report_nav
     for t_entry in nav_report:
+        t_content_rows[t_entry[0].strftime("%Y%m%d")] += (t_entry[1],)
         t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
+    t_content_heads.append('NAV')
 
     cost_report = mf_report.report_cost
     for t_entry in cost_report:
         t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
     
+    cost_report_2 = mf_report.report_cost2
+    for t_entry in cost_report_2:
+        t_content_rows[t_entry[0].strftime("%Y%m%d")] += (t_entry[1],)
+    t_content_heads.append('Cost')
+    
+    t_content_rows = collections.OrderedDict(sorted(t_content_rows.items()))
+    
+    #return HttpResponse(str(t_content_heads) + '<br/>' + str(t_content_rows.values()))
+
     plot = {
             'data': '{data: ' + str(cost_report).replace('L', '') + ', label: "Cost", lines: {show: true, steps: true}},' + \
                     '{data: ' + str(nav_report).replace('L', '') + ', label: "NAV", lines: {show: true}, yaxis: 2},' + \
                     '{data: ' + str(profit_report).replace('L', '') + ', label: "Profit (%)", lines: {show: true}, yaxis: 3},' + \
                     '{data: ' + str(exchange_report).replace('L', '') + ', label: "JPY/TWN", lines: {show: true}, yaxis: 4},'
             }
+    
+    tbl_content = {
+                   'heads': t_content_heads,
+                   'rows': t_content_rows.values(),
+                   }
 
     args = {
             'tpl_img_header' : _("FUND_NAM_LU0069970746") , #u'法巴百利達日本小型股票基金 C',
             'tpl_section_title' : _("NAV(CURRENCY_JPY)"), #u'基金淨值 (日幣)',
             'plot' : plot,
+            'tbl_content' : tbl_content,
             }
     
     return render_to_response('mf_my_japan.tpl.html',args)

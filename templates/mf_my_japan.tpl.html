@@ -9,6 +9,22 @@
 
 
 {% block tpl_section_table_content %}
+    <thead>
+      <tr>
+	  {% for column_name in tbl_content.heads %}
+        <th>{{ column_name }}</th>
+	  {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+    {% for content_row in tbl_content.rows %}
+      <tr>
+      {% for content_col in content_row %}
+        <td>{{ content_col }}</td>
+      {% endfor %}
+      </tr>
+    {% endfor %}
+    </tbody>
 {% endblock %}
 
 

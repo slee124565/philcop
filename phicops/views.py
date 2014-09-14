@@ -8,8 +8,8 @@ from fundclear.models import FundClearModel
 from bankoftaiwan.models import BotExchangeModel, exchange
 
 def home(request):
-    #return HttpResponseRedirect('/mf/fund_jpy/')
-    return render_to_response('dashboard.tpl.html')
+    return HttpResponseRedirect('/mf/fund_jpy/')
+    #return render_to_response('dashboard.tpl.html')
 
 
 def default_view(request):
