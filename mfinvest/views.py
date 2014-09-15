@@ -19,7 +19,7 @@ from mfinvest.mfreport import MFReport, get_sample_date_list
 from mfinvest import fundreview
 from fundclear.fcreader import get_fundcode_list, get_fundcode_dictlist, get_name_with_fundcode_list
 
-TARGET_FUND_ID_LIST = ['AJSCY3','AJSCA3','LU0069970746','LU0107058785','AJSPY3', 'AJNHA3']
+TARGET_FUND_ID_LIST = ['AJSCY3','AJSCA3','LU0069970746','LU0107058785'] #,'AJSPY3', 'AJNHA3']
 
 def get_funds_dict(p_fund_id_list, p_fund_data_months):
     t_fund_dict = {}
@@ -194,6 +194,54 @@ def japan_yoy_compare_view(request):
     #return render_to_response('fund_japans.html', t_tpl_args)
     return render_to_response('mf_japan_tops.html', t_tpl_args)
     
+    
+def japan_nav_compare_view_2(request):
+    fund_data_months = 25
+    fund_id_list = TARGET_FUND_ID_LIST
+    #fund_id_list = ['AJSCY3','AJSCA3']
+    
+    #-> download fund data from FundClear
+    t_fund_list = get_funds_dict(fund_id_list,fund_data_months)
+    
+    #-> sampling fund data & formating date column for FLOT
+    t_sample_date_list = get_sample_date_list(25)
+    
+    t_content_heads = []
+    t_content_rows = {}
+    for t_date in t_sample_date_list:
+        t_content_rows[t_date.strftime('%Y%m%d')] = (t_date.strftime('%Y/%m/%d'),)
+    t_content_heads.append('Date')
+    
+    t_fund_data_list = {}
+    for t_fund_id in t_fund_list:
+        t_fund_data_list[t_fund_id] = t_fund_list[t_fund_id].get_sample_value_list(t_sample_date_list)
+        t_content_heads.append(t_fund_id)
+        for t_entry in t_fund_data_list[t_fund_id]:
+            t_content_rows[t_entry[0].strftime('%Y%m%d')] += (t_entry[1],)
+            t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000 
+
+    t_data_str = ''
+    for t_fund_id in t_fund_data_list:
+        t_data_str += '{data: ' + str(t_fund_data_list[t_fund_id]).replace('L', '') + ', label:" ' + t_fund_id + '", yaxis: 2},'
+
+    plot = {
+            'data' : t_data_str,
+            }
+    
+    t_content_rows = collections.OrderedDict(sorted(t_content_rows.items()))
+    tbl_content = {
+                   'heads': t_content_heads,
+                   'rows': t_content_rows.values(),
+                   }
+
+    args = {
+            'tpl_img_header' : _("HEADER_JPY_TOP_FUND") , 
+            'tpl_section_title' : _("NAV(CURRENCY_JPY)"), 
+            'plot' : plot,
+            'tbl_content' : tbl_content,
+            }
+    
+    return render_to_response('mf_my_japan.tpl.html',args)
     
     
 def japan_nav_compare_view(request):
