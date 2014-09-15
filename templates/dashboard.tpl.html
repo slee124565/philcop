@@ -47,6 +47,17 @@
           	</li>
           	<li class="dropdown">
           		<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          			{% trans MENU_CURRENCY|default:"MENU_CURRENCY" %}
+          		</a>
+          		<ul class="dropdown-menu" role="menu">
+		            <li><a href="#">{% trans MENU_BIS_EER|default:"MENU_BIS_EER" %}</a></li>
+		            <li><a href="#">{% trans MENU_EXCHANGE_CN_TW|default:"MENU_EXCHANGE_CN_TW" %}</a></li>
+		            <li><a href="#">{% trans MENU_EXCHANGE_USD_TWN|default:"MENU_EXCHANGE_USD_TWN" %}</a></li>
+		            <li><a href="#">{% trans MENU_EXCHANGE_JPY_TWN|default:"MENU_EXCHANGE_JPY_TWN" %}</a></li>
+          		</ul>
+          	</li>
+          	<li class="dropdown">
+          		<a href="#" class="dropdown-toggle" data-toggle="dropdown">
           			{% trans MENU_FUNDCLEAR|default:"MENU_FUNDCLEAR" %}
           		</a>
           		<ul class="dropdown-menu" role="menu">
