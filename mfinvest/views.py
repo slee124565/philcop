@@ -32,6 +32,76 @@ def get_funds_dict(p_fund_id_list, p_fund_data_months):
     
     return t_fund_dict
 
+def fund_review_view_4(request):
+    t_fund_info_list = get_fundcode_dictlist()
+    if request.POST:
+        f_fund_id = request.POST['fund_code']
+        
+        fund_review = FundReviewModel.flush_fund_review(f_fund_id)
+        
+        t_content_heads = []
+        t_content_rows = {}
+        
+        t_nav_list = fund_review.nav_list()
+        for t_entry in t_nav_list:
+            t_content_rows[t_entry[0].strftime('%Y%m%d')] = (t_entry[0].strftime('%Y/%m/%d'),)
+            t_content_rows[t_entry[0].strftime('%Y%m%d')] += (t_entry[1],)
+            t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000 
+        t_content_heads.append('Date')
+        t_content_heads.append('NAV')
+        
+        t_yoy_1_list = fund_review.yoy_list(1)
+        for t_entry in t_yoy_1_list:
+            t_content_rows[t_entry[0].strftime('%Y%m%d')] += ('{:.2f}%'.format(t_entry[1]),)
+            t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000 
+        t_content_heads.append('YoY_1')
+        
+        t_yoy_2_list = fund_review.yoy_list(2)
+        for t_entry in t_yoy_2_list:
+            t_content_rows[t_entry[0].strftime('%Y%m%d')] += ('{:.2f}%'.format(t_entry[1]),)
+            t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000 
+        t_content_heads.append('YoY_2')
+        
+        t_data_str = ''
+        t_data_str += '{data: ' + str(t_nav_list).replace('L', '') + ', label:"NAV", yaxis: 4},'
+        t_data_str += '{data: ' + str(t_yoy_1_list).replace('L', '') + ', label:"YoY_1", yaxis: 5},'
+        t_data_str += '{data: ' + str(t_yoy_2_list).replace('L', '') + ', label:"YoY_2", yaxis: 5},'
+    
+        plot = {
+                'data' : t_data_str,
+                }
+        
+        t_content_rows = collections.OrderedDict(sorted(t_content_rows.items()))
+        tbl_content = {
+                       'heads': t_content_heads,
+                       'rows': t_content_rows.values(),
+                       }
+    
+        args = {
+                'tpl_img_header' : _("HEAD_FUND_REVIEW") , 
+                'tpl_section_title' : FundClearModel.get_by_key_name(f_fund_id).fund_name, #_("TITLE_NAV_REVIEW_DETAIL"), 
+                'plot' : plot,
+                'tbl_content' : tbl_content,
+                'action_url': request.get_full_path(),
+                'fund_info_list': t_fund_info_list,
+                'fund_code': f_fund_id,
+                }
+        args.update(csrf(request))
+
+        return render_to_response('mf_my_japan.tpl.html', args)
+    
+    else:
+        args = {
+                'tpl_img_header': _('HEAD_FUND_REVIEW'),
+                'tpl_section_title' : ' ',
+                'action_url': request.get_full_path(),
+                'fund_info_list': t_fund_info_list,
+                'fund_code': '',
+                }
+        args.update(csrf(request))
+        return render_to_response('mf_fund_review_page.tpl.html', args)
+    
+    
 def fund_review_view_3(request):
     t_fund_info_list = get_fundcode_dictlist()
     if request.POST:
@@ -74,7 +144,6 @@ def fund_review_view_3(request):
                 }
         args.update(csrf(request))
         return render_to_response('mf_fund_review_page.html', args)
-    
 
 def fund_review_view_2(request):
     t_fund_info_list = get_fundcode_dictlist()
@@ -113,7 +182,6 @@ def fund_review_view_2(request):
         args.update(csrf(request))
         return render_to_response('mf_fund_review_page.html', args)
         
-        
 def fund_review_view(request, fund_id='LU0069970746', years=1):
     '''
     review NAV + YoY
@@ -135,7 +203,84 @@ def fund_review_view(request, fund_id='LU0069970746', years=1):
                   'page_title' : fund_review.fund_name,
                   }
     return render_to_response('fund_review.html', t_tpl_args)
+
+def japan_yoy_compare_view_2(request):
+    years = 2
+    fund_id_list = TARGET_FUND_ID_LIST
+
+    #-> calculate total sample months needed
+    TOTAL_SAMPLE_MONTHS_COUNT = 12 * int(years)
+    fund_data_months = TOTAL_SAMPLE_MONTHS_COUNT*2+1
+     
+    #-> download fund data from FundClear
+    t_fund_list = get_funds_dict(fund_id_list,fund_data_months)
+
+    #-> sampling fund data 
+    t_sample_date_list = get_sample_date_list(fund_data_months,False)
+    t_fund_data_list = {}
+    t_fund_yoy_dict = {}
     
+    t_content_heads = []
+    t_content_rows = {}
+
+    for t_fund_id in t_fund_list:
+        t_fund_data_list[t_fund_id] = t_fund_list[t_fund_id].get_sample_value_list(t_sample_date_list)
+        t_fund_yoy_dict[t_fund_id] = []
+        
+        #-> compute YoY value for last 12 months
+        t_check_date_1 = date.today()
+        for i in range(TOTAL_SAMPLE_MONTHS_COUNT):
+            t_check_date_1 = date(t_check_date_1.year, t_check_date_1.month, 1) - relativedelta(days=+1)
+            t_check_date_2 = date(t_check_date_1.year-1,t_check_date_1.month,1) + relativedelta(months=+1) - relativedelta(days=+1)
+            t_col_1_list = [row[0] for row in t_fund_data_list[t_fund_id]]
+            nav1 = t_fund_data_list[t_fund_id][t_col_1_list.index(t_check_date_1)][1]
+            nav2 = t_fund_data_list[t_fund_id][t_col_1_list.index(t_check_date_2)][1]
+            #logging.debug('date ' + str(t_check_date_1) + ' nav ' + str(nav1))
+            #logging.debug('date ' + str(t_check_date_2) + ' nav ' + str(nav2))
+            yoy = 100 * (nav1-nav2)/nav2
+            t_fund_yoy_dict[t_fund_id].append([t_check_date_1,yoy])
+        t_fund_yoy_dict[t_fund_id].sort(key=lambda x: x[0])
+    
+    for t_entry in t_fund_yoy_dict.itervalues().next():
+        t_content_rows[t_entry[0].strftime('%Y%m%d')] = (t_entry[0].strftime('%Y/%m/%d'),)
+    t_content_heads.append('Date')
+
+    #-> formating date column for FLOT
+    for t_fund_id in t_fund_yoy_dict:
+        logging.debug(__name__ + ': japan_yoy_compare_view ' + t_fund_id + ':\n' + str(t_fund_yoy_dict[t_fund_id]))
+        for t_entry in t_fund_yoy_dict[t_fund_id]:
+            t_content_rows[t_entry[0].strftime('%Y%m%d')] += ('{:.3}%'.format(t_entry[1]),)
+            t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000 
+
+    t_fundcode_list = get_fundcode_list()
+    t_code_list = [row[1] for row in t_fundcode_list]
+    t_data_str = ''
+    t_fund_name = ''
+    for t_fund_id in t_fund_yoy_dict:
+        if t_fund_id in t_code_list:
+            t_fund_name = t_fundcode_list[t_code_list.index(t_fund_id)][2]
+        t_data_str += '{data: ' + str(t_fund_yoy_dict[t_fund_id]).replace('L', '') + ', label:"' + t_fund_id + ', ' + t_fund_name + '", yaxis: 5},'
+        t_content_heads.append(t_fund_name)
+    
+    plot = {
+            'data' : t_data_str,
+            }
+    
+    t_content_rows = collections.OrderedDict(sorted(t_content_rows.items()))
+    tbl_content = {
+                   'heads': t_content_heads,
+                   'rows': t_content_rows.values(),
+                   }
+
+    args = {
+            'tpl_img_header' : _("HEADER_JPY_TOP_FUND_YOY") , 
+            'tpl_section_title' : _("YOY"), 
+            'plot' : plot,
+            'tbl_content' : tbl_content,
+            }
+    
+    return render_to_response('mf_my_japan.tpl.html',args)
+        
 def japan_yoy_compare_view(request):
     years = 2
     fund_id_list = TARGET_FUND_ID_LIST
@@ -235,7 +380,7 @@ def japan_nav_compare_view_2(request):
                    }
 
     args = {
-            'tpl_img_header' : _("HEADER_JPY_TOP_FUND") , 
+            'tpl_img_header' : _("HEADER_JPY_TOP_FUND_NAV") , 
             'tpl_section_title' : _("NAV(CURRENCY_JPY)"), 
             'plot' : plot,
             'tbl_content' : tbl_content,

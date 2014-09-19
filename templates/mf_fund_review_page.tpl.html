@@ -1,0 +1,32 @@
+{% extends "dashboard.tpl.html" %}
+
+{% block tpl_img_holder %}
+<div class="container">
+	<div class="row">
+		<div class="col-sm-12 col-md-8">
+			<form role="form-horizontal" action="{{ action_url }}" method="post">{% csrf_token %}
+				<div class="col-sm-10 col-md-7">
+					<div class="form-group">
+						<select class="form-control" name="fund_code">
+						{% for fund_info in fund_info_list %}
+							<option value="{{fund_info.code}}"
+							{% if fund_code == fund_info.code %} selected="selected"{% endif %}>
+							{{fund_info.name}}</option>
+						{% endfor %}
+						</select>
+					</div>
+				</div>
+				<div class="col-sm-2 col-md-1">
+					<div class="form-group text-right">
+						<button class="btn btn-primary" type="submit">Select</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block tpl_section_table_content %}
+{% endblock %}
+
