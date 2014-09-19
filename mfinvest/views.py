@@ -1,9 +1,9 @@
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.core.context_processors import csrf
-from django.utils.translation import ugettext_noop as _
+from django.utils.translation import ugettext as _
 
 from dateutil.relativedelta import relativedelta
 from datetime import date
