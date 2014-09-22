@@ -98,5 +98,6 @@ TEMPLATE_DIRS = (
 
 LOCALE_PATHS = (
                 os.path.join(BASE_DIR,'conf','locale'),
+                'D:\lee_shiueh\myGAEWork\trusty-catbird-645\default\conf',
                 )
 
