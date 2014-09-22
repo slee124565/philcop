@@ -103,12 +103,12 @@ msgstr ""
 
 #: templates/dashboard.tpl.html:73
 msgid "MENU_GOLD"
-msgstr ""
+msgstr "黃金"
 
 #: templates/dashboard.tpl.html:82
 msgid "MENU_FUND_CHINA"
-msgstr ""
+msgstr "中國基金"
 
 #: templates/dashboard.tpl.html:85
 msgid "MENU_MY_CHINA_FUND"
-msgstr ""
+msgstr "我的中國基金"
