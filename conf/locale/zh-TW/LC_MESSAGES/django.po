@@ -1,4 +1,4 @@
-﻿# SOME DESCRIPTIVE TITLE.
+# SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
@@ -103,11 +103,11 @@ msgstr ""
 
 #: templates/dashboard.tpl.html:73
 msgid "MENU_GOLD"
-msgstr "黃金"
+msgstr "黃金投資"
 
 #: templates/dashboard.tpl.html:82
 msgid "MENU_FUND_CHINA"
-msgstr "中國基金"
+msgstr "中國基金投資"
 
 #: templates/dashboard.tpl.html:85
 msgid "MENU_MY_CHINA_FUND"
