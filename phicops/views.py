@@ -12,6 +12,9 @@ def home(request):
     return HttpResponseRedirect('/mf/fund_jpy/')
     #return render_to_response('dashboard.tpl.html')
 
+def test_l10n(request):
+    return render_to_response('dashboard.tpl.html')
+    
 def print_config(request):
     t_result = ''
     for name in dir(settings):

@@ -75,8 +75,8 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
-#LANGUAGE_CODE = 'en-us'
-LANGUAGE_CODE = 'zh-tw'
+LANGUAGE_CODE = 'en-us'
+#LANGUAGE_CODE = 'zh-tw'
 
 TIME_ZONE = 'UTC'
 
@@ -97,6 +97,6 @@ TEMPLATE_DIRS = (
                  )
 
 LOCALE_PATHS = (
-                os.path.join(BASE_DIR,'conf','locale'),
+                os.path.join(BASE_DIR,'phicops', 'conf','locale'),
                 )
 
