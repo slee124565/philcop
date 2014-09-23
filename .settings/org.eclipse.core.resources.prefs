@@ -1,5 +1,6 @@
 eclipse.preferences.version=1
 encoding//conf/locale/zh-TW/LC_MESSAGES/django.po=UTF-8
+encoding//conf/locale/zh/LC_MESSAGES/django.po=UTF-8
 encoding//fundclear/fund_code.xml=UTF-8
 encoding//mfinvest/templates/fund_japans.html=UTF-8
 encoding//mfinvest/templates/mf_my_japan.html=UTF-8
