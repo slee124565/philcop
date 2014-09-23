@@ -107,7 +107,7 @@ msgstr ""
 
 #: templates/dashboard.tpl.html:82
 msgid "MENU FUND CHINA"
-msgstr ""
+msgstr "Fund China"
 
 #: templates/dashboard.tpl.html:85
 msgid "MENU_MY_CHINA_FUND"
