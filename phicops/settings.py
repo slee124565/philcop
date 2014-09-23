@@ -97,6 +97,6 @@ TEMPLATE_DIRS = (
                  )
 
 LOCALE_PATHS = (
-                os.path.join(BASE_DIR,'phicops', 'conf','locale'),
+                os.path.join(BASE_DIR,'conf','locale'),
                 )
 
