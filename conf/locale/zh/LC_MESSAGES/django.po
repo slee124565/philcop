@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-23 18:25+0800\n"
+"POT-Creation-Date: 2014-09-24 12:56+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -106,7 +106,8 @@ msgid "MENU_GOLD"
 msgstr "黃金投資"
 
 #: templates/dashboard.tpl.html:82
-msgid "MENU FUND CHINA"
+#, fuzzy
+msgid "MENU_FUND_CHINA"
 msgstr "中國基金投資"
 
 #: templates/dashboard.tpl.html:85
