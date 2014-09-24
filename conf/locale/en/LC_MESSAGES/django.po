@@ -19,91 +19,91 @@ msgstr ""
 
 #: mfinvest/views.py:81 mfinvest/views.py:95
 msgid "HEAD_FUND_REVIEW"
-msgstr ""
+msgstr "Fund Review"
 
 #: mfinvest/views.py:276
 msgid "HEADER_JPY_TOP_FUND_YOY"
-msgstr ""
+msgstr "Japan Top Fund YoY"
 
 #: mfinvest/views.py:277
 msgid "YOY"
-msgstr ""
+msgstr "YoY"
 
 #: mfinvest/views.py:383
 msgid "HEADER_JPY_TOP_FUND_NAV"
-msgstr ""
+msgstr "Japan Top Fund NAV"
 
 #: mfinvest/views.py:384 mfinvest/views.py:475
 msgid "NAV(CURRENCY_JPY)"
-msgstr ""
+msgstr "NAV(JPY)"
 
 #: mfinvest/views.py:474
 msgid "FUND_NAME_LU0069970746"
-msgstr ""
+msgstr "Parvest Equity Japan Small Cap C"
 
 #: templates/dashboard.tpl.html:39
 msgid "MENU_MY_INVEST"
-msgstr ""
+msgstr "My Invest"
 
 #: templates/dashboard.tpl.html:42
 msgid "MENU_MY_JPY_FUND"
-msgstr ""
+msgstr "My Japan Fund"
 
 #: templates/dashboard.tpl.html:43
 msgid "MENU_MY_JPY_TRADE_ADD"
-msgstr ""
+msgstr "My Japan Fund Trade Add"
 
 #: templates/dashboard.tpl.html:44 templates/dashboard.tpl.html.py:76
 msgid "MENU_MY_GOLD"
-msgstr ""
+msgstr "My Gold"
 
 #: templates/dashboard.tpl.html:45
 msgid "MENU_MY_GOLD_TRADE_ADD"
-msgstr ""
+msgstr "My Gold Trade Add"
 
 #: templates/dashboard.tpl.html:50
 msgid "MENU_CURRENCY"
-msgstr ""
+msgstr "Currency"
 
 #: templates/dashboard.tpl.html:53
 msgid "MENU_BIS_EER"
-msgstr ""
+msgstr "BIS EER"
 
 #: templates/dashboard.tpl.html:54
 msgid "MENU_EXCHANGE_CN_TW"
-msgstr ""
+msgstr "Exchange CNY/TWD"
 
 #: templates/dashboard.tpl.html:55
 msgid "MENU_EXCHANGE_USD_TWN"
-msgstr ""
+msgstr "Exchange USD/TWD"
 
 #: templates/dashboard.tpl.html:56
 msgid "MENU_EXCHANGE_JPY_TWN"
-msgstr ""
+msgstr "Exchange JPY/TWD"
 
 #: templates/dashboard.tpl.html:61
 msgid "MENU_FUNDCLEAR"
-msgstr ""
+msgstr "FundClear"
 
 #: templates/dashboard.tpl.html:64
 msgid "MENU_JPY_NAV"
-msgstr ""
+msgstr "Janapn Fund NAV"
 
 #: templates/dashboard.tpl.html:65
 msgid "MENU_JPY_YOY"
-msgstr ""
+msgstr "Japan Fund YoY"
 
 #: templates/dashboard.tpl.html:66
 msgid "MENU_FUND_REVIEW"
-msgstr ""
+msgstr "Fund Review"
 
 #: templates/dashboard.tpl.html:67
 msgid "MENU_FUNDCODE_REVIEW"
-msgstr ""
+msgstr "Fund Code Review"
 
 #: templates/dashboard.tpl.html:73
 msgid "MENU_GOLD"
-msgstr ""
+msgstr "Gold"
 
 #: templates/dashboard.tpl.html:82
 msgid "MENU FUND CHINA"
@@ -111,4 +111,4 @@ msgstr "Fund China"
 
 #: templates/dashboard.tpl.html:85
 msgid "MENU_MY_CHINA_FUND"
-msgstr ""
+msgstr "My China Fund"
