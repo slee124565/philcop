@@ -3,6 +3,7 @@ import logging
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
+from django.conf import settings
 
 from fundclear.models import FundClearModel
 from bankoftaiwan.models import BotExchangeModel, exchange
@@ -11,7 +12,15 @@ def home(request):
     return HttpResponseRedirect('/mf/fund_jpy/')
     #return render_to_response('dashboard.tpl.html')
 
-
+def test_l10n(request):
+    return render_to_response('dashboard.tpl.html')
+    
+def print_config(request):
+    t_result = ''
+    for name in dir(settings):
+        t_result += name + ':' + str(getattr(settings, name)) + '<br/>'
+    return HttpResponse(t_result)
+    
 def default_view(request):
     bot_exchange = BotExchangeModel.get_bot_exchange(exchange.CURRENCY_JPY)
     exchange_data = []

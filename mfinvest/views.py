@@ -1,9 +1,9 @@
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.core.context_processors import csrf
-from django.utils.translation import ugettext_noop as _
+from django.utils.translation import ugettext as _
 
 from dateutil.relativedelta import relativedelta
 from datetime import date
@@ -471,7 +471,7 @@ def mf_japan_view_2(request):
                    }
 
     args = {
-            'tpl_img_header' : _("FUND_NAM_LU0069970746") , #u'法巴百利達日本小型股票基金 C',
+            'tpl_img_header' : _("FUND_NAME_LU0069970746") , #u'法巴百利達日本小型股票基金 C',
             'tpl_section_title' : _("NAV(CURRENCY_JPY)"), #u'基金淨值 (日幣)',
             'plot' : plot,
             'tbl_content' : tbl_content,
