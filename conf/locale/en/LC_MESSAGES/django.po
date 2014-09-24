@@ -106,7 +106,6 @@ msgid "MENU_GOLD"
 msgstr "Gold"
 
 #: templates/dashboard.tpl.html:82
-#, fuzzy
 msgid "MENU_FUND_CHINA"
 msgstr "Fund China"
 

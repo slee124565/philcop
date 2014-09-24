@@ -19,7 +19,7 @@ msgstr ""
 
 #: mfinvest/views.py:81 mfinvest/views.py:95
 msgid "HEAD_FUND_REVIEW"
-msgstr ""
+msgstr "基金檢視"
 
 #: mfinvest/views.py:276
 msgid "HEADER_JPY_TOP_FUND_YOY"
@@ -106,7 +106,6 @@ msgid "MENU_GOLD"
 msgstr "黃金投資"
 
 #: templates/dashboard.tpl.html:82
-#, fuzzy
 msgid "MENU_FUND_CHINA"
 msgstr "中國基金投資"
 
