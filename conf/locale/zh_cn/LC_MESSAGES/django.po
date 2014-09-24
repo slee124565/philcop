@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-24 13:28+0800\n"
+"POT-Creation-Date: 2014-09-24 13:01+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,96 +19,97 @@ msgstr ""
 
 #: mfinvest/views.py:81 mfinvest/views.py:95
 msgid "HEAD_FUND_REVIEW"
-msgstr ""
+msgstr "基金检视"
 
 #: mfinvest/views.py:276
 msgid "HEADER_JPY_TOP_FUND_YOY"
-msgstr ""
+msgstr "日本高绩效基金YoY"
 
 #: mfinvest/views.py:277
 msgid "YOY"
-msgstr ""
+msgstr "年报酬率"
 
 #: mfinvest/views.py:383
 msgid "HEADER_JPY_TOP_FUND_NAV"
-msgstr ""
+msgstr "日本高绩效基金净值"
 
 #: mfinvest/views.py:384 mfinvest/views.py:475
 msgid "NAV(CURRENCY_JPY)"
-msgstr ""
+msgstr "基金净值(日圆)"
 
 #: mfinvest/views.py:474
 msgid "FUND_NAME_LU0069970746"
-msgstr ""
+msgstr "百利达日本小型股票基金C股"
 
 #: templates/dashboard.tpl.html:39
 msgid "MENU_MY_INVEST"
-msgstr ""
+msgstr "我的投资"
 
 #: templates/dashboard.tpl.html:42
 msgid "MENU_MY_JPY_FUND"
-msgstr ""
+msgstr "我的日本基金投资"
 
 #: templates/dashboard.tpl.html:43
 msgid "MENU_MY_JPY_TRADE_ADD"
-msgstr ""
+msgstr "新增日本基金投资纪录"
 
 #: templates/dashboard.tpl.html:44 templates/dashboard.tpl.html.py:76
 msgid "MENU_MY_GOLD"
-msgstr ""
+msgstr "我的黄金投资"
 
 #: templates/dashboard.tpl.html:45
 msgid "MENU_MY_GOLD_TRADE_ADD"
-msgstr ""
+msgstr "新增黄金投资纪录"
 
 #: templates/dashboard.tpl.html:50
 msgid "MENU_CURRENCY"
-msgstr ""
+msgstr "货币投资"
 
 #: templates/dashboard.tpl.html:53
 msgid "MENU_BIS_EER"
-msgstr ""
+msgstr "国际清算中心实质货币指数"
 
 #: templates/dashboard.tpl.html:54
 msgid "MENU_EXCHANGE_CN_TW"
-msgstr ""
+msgstr "人民币兑台币汇率"
 
 #: templates/dashboard.tpl.html:55
 msgid "MENU_EXCHANGE_USD_TWN"
-msgstr ""
+msgstr "美元兑台币汇率"
 
 #: templates/dashboard.tpl.html:56
 msgid "MENU_EXCHANGE_JPY_TWN"
-msgstr ""
+msgstr "日圆兑台币汇率"
 
 #: templates/dashboard.tpl.html:61
 msgid "MENU_FUNDCLEAR"
-msgstr ""
+msgstr "基金信息观测站"
 
 #: templates/dashboard.tpl.html:64
 msgid "MENU_JPY_NAV"
-msgstr ""
+msgstr "日本基金净值"
 
 #: templates/dashboard.tpl.html:65
 msgid "MENU_JPY_YOY"
-msgstr ""
+msgstr "日本基金年报酬率"
 
 #: templates/dashboard.tpl.html:66
 msgid "MENU_FUND_REVIEW"
-msgstr ""
+msgstr "基金检视"
 
 #: templates/dashboard.tpl.html:67
 msgid "MENU_FUNDCODE_REVIEW"
-msgstr ""
+msgstr "基金代码检视"
 
 #: templates/dashboard.tpl.html:73
 msgid "MENU_GOLD"
-msgstr ""
+msgstr "黄金投资"
 
 #: templates/dashboard.tpl.html:82
 msgid "MENU_FUND_CHINA"
-msgstr ""
+msgstr "中国基金投资"
 
 #: templates/dashboard.tpl.html:85
 msgid "MENU_MY_CHINA_FUND"
-msgstr ""
+msgstr "我的中国基金"
+
