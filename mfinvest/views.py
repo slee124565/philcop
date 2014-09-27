@@ -553,6 +553,18 @@ def add_my_trade_2(request):
                       )
     return HttpResponse('add_my_trade done')
     
+def add_my_trade_3(request):
+    _add_trade_record(date_invest = date(2014,9,24), \
+                      fund_id = 'LU0069970746', \
+                      amount_trade = 100000.0, \
+                      trade_fee = 1950.0, \
+                      currency_type = bankoftaiwan.exchange.CURRENCY_JPY, \
+                      share = 48.866, \
+                      fund_nav = 7319.0, \
+                      exchange_rate = 0.2796, \
+                      )
+    return HttpResponse('add_my_trade done')
+
 def _add_trade_record(date_invest, fund_id, amount_trade, trade_fee, currency_type, share, fund_nav, exchange_rate):
 
     key_name = fund_id + '@' + date_invest.strftime("%m/%d/%Y")

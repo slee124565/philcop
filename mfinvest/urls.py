@@ -14,6 +14,7 @@ urlpatterns = patterns('',
 
     #url(r'^add_trade/$', 'mfinvest.views.add_my_trade'),
     #url(r'^add_trade_2/$', 'mfinvest.views.add_my_trade_2'),
+    url(r'^add_trade_3/$', 'mfinvest.views.add_my_trade_3'),
 
     #url(r'^add_sample/$', 'mfinvest.views.add_sample'),
     #url(r'^$', 'mfinvest.views.default_view'),
