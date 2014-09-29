@@ -5,9 +5,14 @@ from bankoftaiwan.models import BotExchangeModel, exchange
 
 from datetime import date
 from dateutil.relativedelta import relativedelta
+from utils import util_date
+
 import logging
 
+#-> (this function will be deprecated)
 def get_sample_date_list(p_count=12,p_inc_last_day=True):
+    logging.warning(__name__ + ',get_sample_date_list: this function will be deprecated')
+
     t_sample_date_list = []
     
     #-> date_begin: the end day of the month which 12 months ago
@@ -30,7 +35,9 @@ def get_sample_date_list(p_count=12,p_inc_last_day=True):
     
     return t_sample_date_list
 
+#-> (this function will be deprecated)
 def get_sample_date_list_2(p_date_begin, p_date_end):
+    logging.warning(__name__ + ',get_sample_date_list_2: this function will be deprecated')
     '''
     return a list of [date] for each month between p_date_begin and p_date_end
     '''
@@ -106,12 +113,7 @@ class MFReport():
         #self.date_end = date(date.today().year,date.today().month,1) - relativedelta(days=+1)
         
         #-> _sample_date_list
-        self._sample_date_list = []
-        t_check_date = self.date_begin
-        while (t_check_date <= self.date_end):
-            self._sample_date_list.append(t_check_date)
-            t_check_date = date(t_check_date.year,t_check_date.month,1) + relativedelta(months=+2) - relativedelta(days=+1)
-        self._sample_date_list.append(date.today() - relativedelta(days=+1))
+        self._sample_date_list = util_date.get_sample_date_list_2(self.date_begin, self.date_end, True)
         
         self.report_cost = []
         self.report_cost2 = []

@@ -15,9 +15,10 @@ from fundclear.models import FundClearModel
 from fundclear.fundreview.models import FundReviewModel
 from bankoftaiwan.models import BotExchangeModel
 import bankoftaiwan.exchange
-from mfinvest.mfreport import MFReport, get_sample_date_list
+from mfinvest.mfreport import MFReport
 from mfinvest import fundreview
 from fundclear.fcreader import get_fundcode_list, get_fundcode_dictlist, get_name_with_fundcode_list
+from utils import util_date
 
 TARGET_FUND_ID_LIST = ['AJSCY3','AJSCA3','LU0069970746','LU0107058785'] #,'AJSPY3', 'AJNHA3']
 
@@ -100,8 +101,7 @@ def fund_review_view_4(request):
                 }
         args.update(csrf(request))
         return render_to_response('mf_fund_review_page.tpl.html', args)
-    
-    
+       
 def fund_review_view_3(request):
     t_fund_info_list = get_fundcode_dictlist()
     if request.POST:
@@ -216,7 +216,7 @@ def japan_yoy_compare_view_2(request):
     t_fund_list = get_funds_dict(fund_id_list,fund_data_months)
 
     #-> sampling fund data 
-    t_sample_date_list = get_sample_date_list(fund_data_months,False)
+    t_sample_date_list = util_date.get_sample_date_list(fund_data_months,False)
     t_fund_data_list = {}
     t_fund_yoy_dict = {}
     
@@ -294,7 +294,7 @@ def japan_yoy_compare_view(request):
     t_fund_list = get_funds_dict(fund_id_list,fund_data_months)
 
     #-> sampling fund data 
-    t_sample_date_list = get_sample_date_list(fund_data_months,False)
+    t_sample_date_list = util_date.get_sample_date_list(fund_data_months,False)
     t_fund_data_list = {}
     t_fund_yoy_dict = {}
 
@@ -338,8 +338,7 @@ def japan_yoy_compare_view(request):
                   }
     #return render_to_response('fund_japans.html', t_tpl_args)
     return render_to_response('mf_japan_tops.html', t_tpl_args)
-    
-    
+       
 def japan_nav_compare_view_2(request):
     fund_data_months = 25
     fund_id_list = TARGET_FUND_ID_LIST
@@ -349,7 +348,7 @@ def japan_nav_compare_view_2(request):
     t_fund_list = get_funds_dict(fund_id_list,fund_data_months)
     
     #-> sampling fund data & formating date column for FLOT
-    t_sample_date_list = get_sample_date_list(25)
+    t_sample_date_list = util_date.get_sample_date_list(25)
     
     t_content_heads = []
     t_content_rows = {}
@@ -387,8 +386,7 @@ def japan_nav_compare_view_2(request):
             }
     
     return render_to_response('mf_my_japan.tpl.html',args)
-    
-    
+        
 def japan_nav_compare_view(request):
     fund_data_months = 25
     fund_id_list = TARGET_FUND_ID_LIST
@@ -398,7 +396,7 @@ def japan_nav_compare_view(request):
     t_fund_list = get_funds_dict(fund_id_list,fund_data_months)
     
     #-> sampling fund data & formating date column for FLOT
-    t_sample_date_list = get_sample_date_list(25)
+    t_sample_date_list = util_date.get_sample_date_list(25)
     t_fund_data_list = {}
     for t_fund_id in t_fund_list:
         t_fund_data_list[t_fund_id] = t_fund_list[t_fund_id].get_sample_value_list(t_sample_date_list)
@@ -478,8 +476,7 @@ def mf_japan_view_2(request):
             }
     
     return render_to_response('mf_my_japan.tpl.html',args)
-    
-    
+        
 def mf_japan_view(request):
     t_fund_id = 'LU0069970746'
     t_currency_type = bankoftaiwan.exchange.CURRENCY_JPY
