@@ -10,6 +10,16 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: GoldInvestModel
+  properties:
+  - name: currency_type
+  - name: date_invest
+
+- kind: GoldInvestModel
+  properties:
+  - name: id
+  - name: date_invest
+
 - kind: MutualFundInvestModel
   properties:
   - name: id

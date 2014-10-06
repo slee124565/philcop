@@ -1,5 +1,4 @@
 from google.appengine.ext import db
-import logging
 
 #from fundclear.models import FundClearModel
 #from bankoftaiwan.models import BotExchangeModel
@@ -20,3 +19,5 @@ class MutualFundInvestModel(db.Model):
         
     def __unicode__(self):
         return self.key().id_or_name()
+    
+

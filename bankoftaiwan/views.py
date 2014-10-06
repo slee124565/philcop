@@ -1,13 +1,27 @@
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 
-from models import BotExchangeModel
+from models import BotExchangeModel, BotGoldModel
 
 import logging
 import calendar
 from bankoftaiwan import exchange
 
 #'http://rate.bot.com.tw/Pages/UIP004/Download0042.ashx?lang=zh-TW&fileType=1&afterOrNot=1&whom=JPY&date1=20090722&date2=20140722'
+
+def gold_tw_view(request):
+    t_currency_type = exchange.CURRENCY_TWD
+    
+    webCsv = BotGoldModel.get_bot_gold(t_currency_type)
+
+    if webCsv == None:
+        return HttpResponse('Fail to fetch Web CSV content!!!')
+    
+    gold_list = webCsv.get_price_list()
+    t_str = ''
+    for t_entry in gold_list:
+        t_str += str(t_entry) + '<br/>'
+    return HttpResponse(t_str)
 
 def exchange_jpy_view(request):
     

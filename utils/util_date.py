@@ -53,5 +53,5 @@ def get_sample_date_list_2(p_date_begin, p_date_end, p_inc_everyday_of_last_mont
             t_sample_date_list.append(t_check_date)
             t_check_date = t_check_date + relativedelta(days=+1)
         
-    logging.debug(__name__ + ', get_sample_date_list_2 result:\n' + str(t_sample_date_list))
+    #logging.debug(__name__ + ', get_sample_date_list_2 result:\n' + str(t_sample_date_list))
     return t_sample_date_list
