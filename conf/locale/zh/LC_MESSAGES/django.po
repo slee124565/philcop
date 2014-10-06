@@ -23,7 +23,7 @@ msgstr "我的黃金投資"
 
 #: goldinvest/views.py:60
 msgid "TITLE_MY_GOLD_DETAIL"
-msgstr "新增黃金投資紀錄"
+msgstr "我的黃金投資紀錄明細"
 
 #: mfinvest/views.py:82 mfinvest/views.py:96
 msgid "HEAD_FUND_REVIEW"
