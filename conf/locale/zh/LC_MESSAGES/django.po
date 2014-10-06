@@ -18,12 +18,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: goldinvest/views.py:59
-#, fuzzy
 msgid "HEADER_MY_GOLD"
 msgstr "我的黃金投資"
 
 #: goldinvest/views.py:60
-#, fuzzy
 msgid "TITLE_MY_GOLD_DETAIL"
 msgstr "新增黃金投資紀錄"
 
