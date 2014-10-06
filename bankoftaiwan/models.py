@@ -7,10 +7,15 @@ from dateutil import parser
 from dateutil.relativedelta import relativedelta
 
 from urlsrc.models import WebContentModel
-from bankoftaiwan import exchange
+from bankoftaiwan import exchange, const_inc
 import phicops.utils
 
 URL_EXCHANGE_TEMPLATE = 'http://rate.bot.com.tw/Pages/UIP004/Download0042.ashx?lang=zh-TW&fileType=1&afterOrNot=1&whom={currency_type}&date1={date1}&date2={date2}'
+
+#-> ex: 'http://rate.bot.com.tw/Pages/UIP005/Download.ashx?lang=zh-TW&fileType=1&whom=GB0030001000&date1=20140101&date2=20140925&afterOrNot=1&curcd=TWD'
+#-> trigger csv file download
+URL_GOLD_TW_TEMPLATE = 'http://rate.bot.com.tw/Pages/UIP005/Download.ashx?lang=zh-TW&fileType=1&whom=GB0030001000&date1={date1}&date2={date2}&afterOrNot=1&curcd={currency_type}'
+
 DATE_INDEX = 0
 VALUE_INDEX = 1
 
@@ -136,3 +141,70 @@ class BotExchangeModel(WebContentModel):
         
         #logging.debug(__name__ + ': get_exchange_list (' + str(len(data_list)) + '):\n' + str(data_list))
         return data_list
+
+class BotGoldModel(WebContentModel):
+    
+    @classmethod
+    def get_bot_gold(cls, p_currency_type=exchange.CURRENCY_TWD, p_months=12, p_flush=False):
+        
+        end_date = date.today() - relativedelta(days=+1)
+        begin_date = end_date - relativedelta(months=p_months)
+        t_url = URL_GOLD_TW_TEMPLATE.format(currency_type=p_currency_type,
+                                           date1=begin_date.strftime("%Y%m%d"),
+                                           date2=end_date.strftime("%Y%m%d"))
+        if p_flush:
+            t_expired_date = None
+        else:
+            t_expired_date = date.today()
+        t_model = BotGoldModel.get_or_insert_webcontent(p_currency_type,t_url,t_expired_date,p_months)
+        if t_model == None:
+            logging.warning(__name__ + ': BotGoldModel get_bot_gold fail')
+        
+            if t_model.currency_name == None:
+                t_model.currency_name = p_currency_type
+                t_model.put()
+            
+        return t_model
+    
+    def get_sample_value_list(self, p_date_list, p_gold_field=const_inc.FIELD_GOLD_SELL):
+        '''
+        return a list of [date, exchange_rate] according to date list p_date_list
+        '''
+        gold_price_list = self.get_price_list(p_gold_field)
+        return self.sample_value_list(p_date_list, gold_price_list)
+
+    def get_price_list(self, p_gold_field=const_inc.FIELD_GOLD_SELL):
+        '''
+        p_gold_file: const_inc.FIELD_GOLD_BUY or const_inc.FIELD_GOLD_SELL
+        '''
+        data_list = []
+        t_csv_list = str(self.content).decode('big5').splitlines()
+        logging.debug(__name__ + ': csv_list lenght ' + str(len(t_csv_list)))
+        #-> skip first field name row data  
+        for t_list in t_csv_list[1:]:
+            t_entry_list = t_list.split(',')
+            t_date = _parsing_bot_date_str(t_entry_list[const_inc.FIELD_GOLD_DATE])
+            t_value = float(t_entry_list[p_gold_field])
+            data_list.append([t_date,t_value])
+        
+        data_list.sort(key=lambda x: x[0])
+        
+        #-> add holiday entry with previous day's value
+        t_end_date = date.today() - relativedelta(days=+1)
+
+        t_date_check = data_list[0][DATE_INDEX] + relativedelta(days=+1)
+        index = 1
+        while t_date_check <= t_end_date:
+            if data_list[index][DATE_INDEX] == t_date_check:
+                #-> date_check entry exist; skip to check next entry
+                index += 1
+            else:
+                #-> date_checck entry not exist; add with previous entry's value
+                data_list.append([(t_date_check),data_list[index-1][VALUE_INDEX]])
+                #logging.debug(__name__ + ': append entry ' + str([(t_date_check),data_list[index-1][VALUE_INDEX]]))
+            t_date_check = t_date_check + relativedelta(days=+1)
+        data_list.sort(key=lambda x: x[0])
+        
+        logging.debug(__name__ + ': get_price_list (' + str(len(data_list)) + '):\n' + str(data_list))
+        return data_list
+        

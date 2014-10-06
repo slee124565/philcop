@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-24 13:01+0800\n"
+"POT-Creation-Date: 2014-10-06 14:41+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: mfinvest/views.py:81 mfinvest/views.py:95
+#: goldinvest/views.py:59
+msgid "HEADER_MY_GOLD"
+msgstr "我的黃金投資"
+
+#: goldinvest/views.py:60
+msgid "TITLE_MY_GOLD_DETAIL"
+msgstr "我的黃金投資紀錄明細"
+
+#: mfinvest/views.py:82 mfinvest/views.py:96
 msgid "HEAD_FUND_REVIEW"
 msgstr "基金檢視"
 
@@ -29,15 +37,15 @@ msgstr "日本高績效基金YoY"
 msgid "YOY"
 msgstr "年報酬率"
 
-#: mfinvest/views.py:383
+#: mfinvest/views.py:382
 msgid "HEADER_JPY_TOP_FUND_NAV"
 msgstr "日本高績效基金淨值"
 
-#: mfinvest/views.py:384 mfinvest/views.py:475
+#: mfinvest/views.py:383 mfinvest/views.py:473
 msgid "NAV(CURRENCY_JPY)"
 msgstr "基金淨值(日圓)"
 
-#: mfinvest/views.py:474
+#: mfinvest/views.py:472
 msgid "FUND_NAME_LU0069970746"
 msgstr "百利達日本小型股票基金C股"
 
