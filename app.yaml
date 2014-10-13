@@ -22,6 +22,9 @@ libraries:
 - name: lxml
   version: "latest"  
 
+- name: numpy
+  version: "latest"  
+
 - name: django
   version: "1.5"
   

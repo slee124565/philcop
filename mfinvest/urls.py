@@ -19,4 +19,5 @@ urlpatterns = patterns('',
     #url(r'^add_sample/$', 'mfinvest.views.add_sample'),
     #url(r'^$', 'mfinvest.views.default_view'),
 
+    url(r'^bb/(?P<p_fund_id>\w+)/$', 'mfinvest.tests.bollinger_band_view'),
 )
