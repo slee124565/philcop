@@ -7,6 +7,7 @@ urlpatterns = patterns('',
     url(r'^bot/', include('bankoftaiwan.urls')),
     url(r'^mf/', include('mfinvest.urls')),
     url(r'^gi/', include('goldinvest.urls')),
+    url(r'^bis/', include('bis_org.urls')),
     
     # Examples:
     # url(r'^$', 'phicops.views.home', name='home'),

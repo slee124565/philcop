@@ -6,8 +6,39 @@ from dateutil.relativedelta import relativedelta
 from fundclear.models import FundClearModel
 from utils import util_bollingerbands
 
+from bis_org.models import BisEersModel
+
 import calendar, logging
 
+def bis_org_view(request):
+    area_list = ['Chinese Taipei','China','Japan','United States','Korea','Euro area', 'United Kingdom',]
+    bis_eers = BisEersModel.get_broad_indices()
+    area_eers = bis_eers.get_area_real_bis_eers(area_list)
+    
+    t_view_date_since = date.today() + relativedelta(years=-2)
+    t_ndx = 0
+
+    t_data = ''
+    for t_area in area_list:
+        for ndx, t_entry in enumerate(area_eers[t_area]):
+            if t_entry[0] < t_view_date_since:
+                t_ndx = ndx
+            else:
+                t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000
+        area_eers[t_area]
+        del area_eers[t_area][:(t_ndx+1)]
+        t_data += '{data: ' + str(area_eers[t_area]).replace('L', '') + \
+                            ', label: "'+t_area+'", lines: {show: true},},'
+    plot = {
+            'data': t_data 
+            }
+
+    args = {
+            'flot_title' : 'BIS Real EERs',
+            'plot' : plot,
+            }
+    
+    return render_to_response('bis_org.html',args)
 
 def bollinger_band_view(request, p_fund_id):
     
