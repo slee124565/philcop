@@ -3,3 +3,9 @@ cron:
   url: /fc/task/update_all/
   schedule: 5 of month 07:10
   timezone: Asia/Taipei
+
+- description: update BIS EERs on 09:00 every saturday
+  url: /bis/task/eers_update/
+  schedule: every saturday 09:00
+  timezone: Asia/Taipei  
+  

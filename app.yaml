@@ -12,6 +12,10 @@ handlers:
   script: phicops.wsgi.application
   login: admin
   
+- url: /bis/task/eers_update/
+  script: phicops.wsgi.application
+  login: admin
+
 - url: /.*
   script: phicops.wsgi.application
 
