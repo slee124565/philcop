@@ -20,4 +20,10 @@ def update_bis_eers_taskhandler(request):
         t_response.status_code = bis_org.HTTP_STATUS_CODE_SERVER_ERROR
 
     return t_response
+
+def default_view(request):
+    t_info = ''
+    bis_eers = BisEersModel.get_broad_indices()
+    t_info += 'Area List:<br/>' + str(bis_eers.area_list)
     
+    return HttpResponse(t_info)    

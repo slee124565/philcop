@@ -20,5 +20,6 @@ urlpatterns = patterns('',
     #url(r'^$', 'mfinvest.views.default_view'),
 
     url(r'^bb/(?P<p_fund_id>\w+)/$', 'mfinvest.tests.bollinger_band_view'),
+    url(r'^bis_bb/(?P<p_code>\w+)/$', 'mfinvest.tests.bis_bb_view'),
     url(r'^bis/$', 'mfinvest.tests.bis_org_view'),
 )

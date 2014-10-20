@@ -66,8 +66,8 @@ class BisEersModel(db.Model):
         
     @classmethod
     def update_from_web(cls):
-        cls._update_from_web(EERS_DS_KEY_BROAD)
-        cls._update_from_web(EERS_DS_KEY_NARROW)
+        return cls._update_from_web(EERS_DS_KEY_BROAD) and \
+                    cls._update_from_web(EERS_DS_KEY_NARROW)
     
     @classmethod
     def _update_from_web(cls,p_key_name=EERS_DS_KEY_BROAD):
@@ -156,9 +156,15 @@ class BisEersModel(db.Model):
                             
     def get_reference_area_list(self):
         return [area[EERS_AREA_NAME_INDEX] for area in self.area_list]
-        
+    
+    def get_reference_code_list(self):
+        return [area[EERS_AREA_CODE_INDEX] for area in self.area_list]
+    
     def _get_area_code(self, p_area):
         return self.area_list[self.get_reference_area_list().index(p_area, )][EERS_AREA_CODE_INDEX]
+    
+    def _get_area_name(self, p_code):
+        return self.area_list[self.get_reference_code_list().index(p_code, )][EERS_AREA_NAME_INDEX]        
     
     def _get_area_eers_dict_key(self, p_area, p_type=EERS_TYPE_REAL):
         if self.key_name == EERS_DS_KEY_BROAD:
@@ -195,7 +201,7 @@ class BisEersModel(db.Model):
         self._parse_area_eers()
         for row in self.area_eers:
             t_date = parser.parse(row[date_dict_key]+'-01').date() + relativedelta(months=+1, days=-1)
-            t_list.append([t_date, row[area_dict_key]])
+            t_list.append([t_date, float(row[area_dict_key])])
         return t_list
     
     def get_area_nominal_bis_eers(self, p_areas):

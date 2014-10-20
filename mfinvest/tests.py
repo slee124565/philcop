@@ -10,6 +10,43 @@ from bis_org.models import BisEersModel
 
 import calendar, logging
 
+def bis_bb_view(request, p_code):
+    bis_eers = BisEersModel.get_broad_indices()
+    p_area = bis_eers._get_area_name(p_code)
+    area_eers = bis_eers.get_area_real_bis_eers(p_area)
+
+    t_value_list = area_eers[p_area]
+    #return HttpResponse(str(t_value_list))
+    sma,tb1,tb2,bb1,bb2 = util_bollingerbands.get_bollingerbands(t_value_list)
+
+    for ndx2, t_list in enumerate([t_value_list,sma,tb1,tb2,bb1,bb2]):
+        for ndx,t_entry in enumerate(t_list):
+            t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000
+
+    plot = {
+            'data': '{data: ' + str(sma).replace('L', '') + \
+                            ', label: "SMA", color: "black", lines: {show: true}, yaxis: 4},' + \
+                    '{data: ' + str(t_value_list).replace('L', '') + \
+                            ', label: "NAV", color: "blue", lines: {show: true}, yaxis: 4},' + \
+                    '{data: ' + str(tb1).replace('L', '') + \
+                            ', label: "TB1", color: "red", lines: {show: true}, yaxis: 4},' + \
+                    '{data: ' + str(tb2).replace('L', '') + \
+                            ', label: "TB2", color: "purple", lines: {show: true}, yaxis: 4},' + \
+                    '{data: ' + str(bb1).replace('L', '') + \
+                            ', label: "BB1", color: "red", lines: {show: true}, yaxis: 4},' + \
+                    '{data: ' + str(bb2).replace('L', '') + \
+                            ', label: "BB2", color: "purple", lines: {show: true}, yaxis: 4},' 
+            }
+    
+    args = {
+            'page_title' : 'BIS EERs Indices Bollinger Band Review',
+            'fund_title' : p_area + ' BIS EERs Indices Bollinger Band Review',
+            'plot' : plot,
+            }
+    
+    return render_to_response('bollinger_band.html',args)
+
+    
 def bis_org_view(request):
     area_list = ['Chinese Taipei','China','Japan','United States','Korea','Euro area', 'United Kingdom',]
     bis_eers = BisEersModel.get_broad_indices()
