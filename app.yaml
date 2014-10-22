@@ -8,13 +8,21 @@ handlers:
 - url: /static
   static_dir: assets
 
-- url: /fc/task/update_all/
+- url: /(fc/bis/tg)/task/
   script: phicops.wsgi.application
   login: admin
+
+#- url: /fc/task/update_all/
+#  script: phicops.wsgi.application
+#  login: admin
   
-- url: /bis/task/eers_update/
-  script: phicops.wsgi.application
-  login: admin
+#- url: /bis/task/eers_update/
+#  script: phicops.wsgi.application
+#  login: admin
+
+#- url: /tg/task/update/
+#  script: phicops.wsgi.application
+#  login: admin
 
 - url: /.*
   script: phicops.wsgi.application

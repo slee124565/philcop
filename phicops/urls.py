@@ -8,7 +8,7 @@ urlpatterns = patterns('',
     url(r'^mf/', include('mfinvest.urls')),
     url(r'^gi/', include('goldinvest.urls')),
     url(r'^bis/', include('bis_org.urls')),
-    url(r'^to/', include('treasury_gov.urls')),
+    url(r'^tg/', include('treasury_gov.urls')),
     
     # Examples:
     # url(r'^$', 'phicops.views.home', name='home'),
