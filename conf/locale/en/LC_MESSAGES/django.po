@@ -78,7 +78,7 @@ msgstr "Currency"
 #: templates/dashboard.tpl.html:53
 #, fuzzy
 msgid "MENU_US_TREASURY"
-msgstr "BIS EER"
+msgstr "US Treasury"
 
 #: templates/dashboard.tpl.html:54
 msgid "MENU_BIS_EER"

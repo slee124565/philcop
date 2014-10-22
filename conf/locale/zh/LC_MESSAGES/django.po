@@ -74,9 +74,8 @@ msgid "MENU_CURRENCY"
 msgstr "貨幣投資"
 
 #: templates/dashboard.tpl.html:53
-#, fuzzy
 msgid "MENU_US_TREASURY"
-msgstr "國際清算中心實質貨幣指數"
+msgstr "美債利率"
 
 #: templates/dashboard.tpl.html:54
 msgid "MENU_BIS_EER"

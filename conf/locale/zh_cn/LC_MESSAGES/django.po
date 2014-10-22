@@ -78,7 +78,7 @@ msgstr "货币投资"
 #: templates/dashboard.tpl.html:53
 #, fuzzy
 msgid "MENU_US_TREASURY"
-msgstr "国际清算中心实质货币指数"
+msgstr "美债利率"
 
 #: templates/dashboard.tpl.html:54
 msgid "MENU_BIS_EER"
