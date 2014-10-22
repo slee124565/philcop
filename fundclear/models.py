@@ -140,7 +140,7 @@ class FundClearModel(WebContentModel):
         while (t_count < len(dataset)):
             #logging.info('t_count ' + str(t_count))
             (t_date,t_value) = dataset[t_count]
-            if (t_value == '--') or (t_value == 'N/A'):
+            if (t_value == '--') or (t_value == 'N/A') or (t_value == 'None'):
                 if (t_count ==0):
                     #logging.debug(__name__ + ', get_value_list: removeing dataset element ' + str(dataset[t_count]))
                     del dataset[t_count]
