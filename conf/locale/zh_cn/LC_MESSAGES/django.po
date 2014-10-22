@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-06 14:41+0800\n"
+"POT-Creation-Date: 2014-10-22 12:02+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,11 +43,11 @@ msgstr "年报酬率"
 msgid "HEADER_JPY_TOP_FUND_NAV"
 msgstr "日本高绩效基金净值"
 
-#: mfinvest/views.py:383 mfinvest/views.py:473
+#: mfinvest/views.py:383 mfinvest/views.py:472
 msgid "NAV(CURRENCY_JPY)"
 msgstr "基金净值(日圆)"
 
-#: mfinvest/views.py:472
+#: mfinvest/views.py:471
 msgid "FUND_NAME_LU0069970746"
 msgstr "百利达日本小型股票基金C股"
 
@@ -63,7 +63,7 @@ msgstr "我的日本基金投资"
 msgid "MENU_MY_JPY_TRADE_ADD"
 msgstr "新增日本基金投资纪录"
 
-#: templates/dashboard.tpl.html:44 templates/dashboard.tpl.html.py:76
+#: templates/dashboard.tpl.html:44 templates/dashboard.tpl.html.py:77
 msgid "MENU_MY_GOLD"
 msgstr "我的黄金投资"
 
@@ -76,49 +76,54 @@ msgid "MENU_CURRENCY"
 msgstr "货币投资"
 
 #: templates/dashboard.tpl.html:53
-msgid "MENU_BIS_EER"
+#, fuzzy
+msgid "MENU_US_TREASURY"
 msgstr "国际清算中心实质货币指数"
 
 #: templates/dashboard.tpl.html:54
+msgid "MENU_BIS_EER"
+msgstr "国际清算中心实质货币指数"
+
+#: templates/dashboard.tpl.html:55
 msgid "MENU_EXCHANGE_CN_TW"
 msgstr "人民币兑台币汇率"
 
-#: templates/dashboard.tpl.html:55
+#: templates/dashboard.tpl.html:56
 msgid "MENU_EXCHANGE_USD_TWN"
 msgstr "美元兑台币汇率"
 
-#: templates/dashboard.tpl.html:56
+#: templates/dashboard.tpl.html:57
 msgid "MENU_EXCHANGE_JPY_TWN"
 msgstr "日圆兑台币汇率"
 
-#: templates/dashboard.tpl.html:61
+#: templates/dashboard.tpl.html:62
 msgid "MENU_FUNDCLEAR"
 msgstr "基金信息观测站"
 
-#: templates/dashboard.tpl.html:64
+#: templates/dashboard.tpl.html:65
 msgid "MENU_JPY_NAV"
 msgstr "日本基金净值"
 
-#: templates/dashboard.tpl.html:65
+#: templates/dashboard.tpl.html:66
 msgid "MENU_JPY_YOY"
 msgstr "日本基金年报酬率"
 
-#: templates/dashboard.tpl.html:66
+#: templates/dashboard.tpl.html:67
 msgid "MENU_FUND_REVIEW"
 msgstr "基金检视"
 
-#: templates/dashboard.tpl.html:67
+#: templates/dashboard.tpl.html:68
 msgid "MENU_FUNDCODE_REVIEW"
 msgstr "基金代码检视"
 
-#: templates/dashboard.tpl.html:73
+#: templates/dashboard.tpl.html:74
 msgid "MENU_GOLD"
 msgstr "黄金投资"
 
-#: templates/dashboard.tpl.html:82
+#: templates/dashboard.tpl.html:83
 msgid "MENU_FUND_CHINA"
 msgstr "中国基金投资"
 
-#: templates/dashboard.tpl.html:85
+#: templates/dashboard.tpl.html:86
 msgid "MENU_MY_CHINA_FUND"
 msgstr "我的中国基金"
