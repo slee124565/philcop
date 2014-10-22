@@ -83,5 +83,5 @@ class WebContentModel(db.Model):
                 logging.warning(__name__ + ': do_urlfetch failed!!! fetch result code is ' + result.status_code + '!!!\nurl:' + self.url)
                 return None
         except DownloadError:
-            logging.warning(__name__ + ': Internet Download Error, code: ' + str(result.status_code))
+            logging.warning(__name__ + ': Internet Download Error! ' + DownloadError.message )
             return None
