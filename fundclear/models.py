@@ -14,6 +14,7 @@ from urlsrc.models import WebContentModel
 
 import phicops.utils
 
+
 URL_TEMPLATE = 'http://announce.fundclear.com.tw/MOPSFundWeb/D02_02P.jsp?fundId={fund_id}&beginDate={begin_date}&endDate={end_date}'
 DATE_INDEX = 0
 VALUE_INDEX = 1
@@ -128,7 +129,7 @@ class FundClearModel(WebContentModel):
                         if (t_date_list[i].strip() != ''):
                             #logging.info([t_date_list[i],t_value_list[i]])
                             #dataset.append([calendar.timegm((parser.parse(t_date_list[i])).timetuple()) * 1000,t_value_list[i]])
-                            dataset.append([t_date_list[i],t_value_list[i]])
+                            dataset.append([t_date_list[i],str(t_value_list[i]).strip()])
                         #else:
                         #    logging.debug('remove element ('+ str(t_count) + '#' + str(i) + '): ' + str([t_date_list[i],t_value_list[i]]))
             else:
@@ -140,7 +141,7 @@ class FundClearModel(WebContentModel):
         while (t_count < len(dataset)):
             #logging.info('t_count ' + str(t_count))
             (t_date,t_value) = dataset[t_count]
-            if (t_value == '--') or (t_value == 'N/A') or (t_value == 'None'):
+            if (t_value == '--') or (t_value == 'N/A'):
                 if (t_count ==0):
                     #logging.debug(__name__ + ', get_value_list: removeing dataset element ' + str(dataset[t_count]))
                     del dataset[t_count]

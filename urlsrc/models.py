@@ -51,7 +51,7 @@ class WebContentModel(db.Model):
                 t_index = t_row1_list.index(t_key)
                 t_sample_list.append(p_matrix[t_index])
             else:
-                t_sample_list.append([t_key, None])
+                t_sample_list.append([t_key, 0.0])
         
         logging.debug(__name__ + ': sample_value_list for p_sample_key_list\n' + str(p_sample_key_list) + '\n' + str(t_sample_list))
         return t_sample_list

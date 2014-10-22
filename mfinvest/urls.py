@@ -20,6 +20,9 @@ urlpatterns = patterns('',
     url(r'^treasury/$', 'mfinvest.views_tg.treasury_view'),
     url(r'^treasury/(?P<year_since>\w+)/$', 'mfinvest.views_tg.treasury_view'),
 
+    url(r'^bis/(?P<p_code>\w+)/$', 'mfinvest.views_bis.eers_view'),
+    url(r'^bis/$', 'mfinvest.views_bis.eers_view'),
+
     #url(r'^add_sample/$', 'mfinvest.views.add_sample'),
     #url(r'^$', 'mfinvest.views.default_view'),
 
