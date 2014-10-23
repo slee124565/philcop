@@ -23,6 +23,8 @@ urlpatterns = patterns('',
     url(r'^bis/(?P<p_code>\w+)/$', 'mfinvest.views_bis.eers_view'),
     url(r'^bis/$', 'mfinvest.views_bis.eers_view'),
 
+    url(r'^bot/$', 'mfinvest.views_currency.tw_exchange_changing_view'),
+
     #url(r'^add_sample/$', 'mfinvest.views.add_sample'),
     #url(r'^$', 'mfinvest.views.default_view'),
 

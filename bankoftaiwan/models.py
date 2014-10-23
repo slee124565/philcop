@@ -46,9 +46,9 @@ class BotExchangeModel(WebContentModel):
         if bot_model == None:
             logging.warning(__name__ + ': BotExchangeMode get_bot_exchange fail')
         
-            if bot_model.currency_name == None:
-                bot_model.currency_name = p_currency_type
-                bot_model.put()
+        if bot_model.currency_name == None:
+            bot_model.currency_name = p_currency_type
+            bot_model.put()
             
         return bot_model
     
@@ -101,7 +101,7 @@ class BotExchangeModel(WebContentModel):
         
         data_list = []
         t_csv_list = str(self.content).decode('big5').splitlines()
-        logging.debug(__name__ + ': csv_list lenght ' + str(len(t_csv_list)))
+        #logging.debug(__name__ + ': csv_list lenght ' + str(len(t_csv_list)))
         for t_list in t_csv_list:
             t_entry_list = t_list.split(',')
             if t_entry_list[exchange.FIELD_CURRENCY_NAME].strip() == self.currency_name:
@@ -118,6 +118,7 @@ class BotExchangeModel(WebContentModel):
                 logging.debug(__name__ + ': skip csv list content: ' + t_list)
         
         data_list.sort(key=lambda x: x[0])
+        #logging.debug('currency name: ' + str(self.currency_name) + '\n' + str(data_list))
         
         #-> add holiday entry with previous day's value
         t_end_date = date.today() - relativedelta(days=+1)

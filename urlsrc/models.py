@@ -53,7 +53,7 @@ class WebContentModel(db.Model):
             else:
                 t_sample_list.append([t_key, 0.0])
         
-        logging.debug(__name__ + ': sample_value_list for p_sample_key_list\n' + str(p_sample_key_list) + '\n' + str(t_sample_list))
+        #logging.debug(__name__ + ': sample_value_list for p_sample_key_list\n' + str(p_sample_key_list) + '\n' + str(t_sample_list))
         return t_sample_list
         
     def do_urlfetch(self):
