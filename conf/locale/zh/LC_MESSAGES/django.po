@@ -51,11 +51,11 @@ msgstr "百利達日本小型股票基金C股"
 
 #: mfinvest/views_currency.py:64
 msgid "HEADER_EX_RATE_CHANGE_WITH_TWD"
-msgstr ""
+msgstr "外幣匯兌台幣變動率"
 
 #: mfinvest/views_currency.py:66
 msgid "TITLE_BOT_CURRENCY_CASH_SELL"
-msgstr ""
+msgstr "台銀外幣現金賣出價格"
 
 #: templates/dashboard.tpl.html:39
 msgid "MENU_MY_INVEST"
@@ -90,9 +90,8 @@ msgid "MENU_BIS_EER"
 msgstr "國際清算中心實質貨幣指數"
 
 #: templates/dashboard.tpl.html:55
-#, fuzzy
 msgid "MENU_EXCHANGE_TO_TWD"
-msgstr "人民幣兌台幣匯率"
+msgstr "外幣兌台幣匯率"
 
 #: templates/dashboard.tpl.html:56
 msgid "MENU_EXCHANGE_CN_TW"
