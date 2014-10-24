@@ -14,13 +14,16 @@ def tw_exchange_changing_view(request):
     target_currency = [bot.CURRENCY_CNY, bot.CURRENCY_USD, bot.CURRENCY_JPY]
     #target_currency = [bot.CURRENCY_CNY]
     
-    #date_list = util_date.get_sample_date_list_2(p_date_begin=(date.today()+relativedelta(years=-1)), \
-    #                                             p_date_end=date.today(), \
-    #                                             p_inc_everyday_of_last_month=True)
     content_head_list = ['Date'] + target_currency
     content_rows = {}
 
-    date_list = util_date.get_sample_date_list()
+    t_show_daily = True
+    if t_show_daily:
+        date_list = util_date.get_sample_date_list_2(p_date_begin=(date.today()+relativedelta(years=-1)), \
+                                                     p_date_end=date.today(), \
+                                                     p_inc_everyday_of_last_month=True)
+    else:
+        date_list = util_date.get_sample_date_list()
     for t_date in date_list:
         content_rows[t_date.strftime('%Y%m%d')] = (t_date.strftime('%Y/%m/%d'),)
     
