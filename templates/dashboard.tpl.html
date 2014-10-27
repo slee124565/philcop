@@ -62,8 +62,7 @@
           		<ul class="dropdown-menu" role="menu">
 		            <li><a href="/mf/jpy_compare/">{% trans "MENU_JPY_NAV" %}</a></li>
 		            <li><a href="/mf/jpy_yoy_compare/">{% trans "MENU_JPY_YOY" %}</a></li>
-		            <li><a href="/mf/fund_review/">{% trans "MENU_FUND_REVIEW" %}</a></li>
-		            <li><a href="#">{% trans "MENU_FUNDCODE_REVIEW" %}</a></li>
+		            <li><a href="/mf/fc/">{% trans "MENU_FUND_REVIEW" %}</a></li>
           		</ul>
           	</li>
           	<!--  
@@ -97,6 +96,7 @@
 
     <div class="container-fluid">
         <div class="main">
+        {% block tpl_dashboard_main %}
           <h1 class="page-header">{{ tpl_img_header|default:"tpl_img_header" }}</h1>
           <div class="row placeholders">
             <div class="placeholder">
@@ -104,7 +104,7 @@
               <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
               <h4>Label</h4>
               <span class="text-muted">Something else</span>
-            {% endblock %}
+            {% endblock tpl_img_holder %}
             </div>
           </div>
 
@@ -158,9 +158,10 @@
                   <td>nisi</td>
                 </tr>
               </tbody>
-            {% endblock %}
+            {% endblock tpl_section_table_content %}
             </table>
           </div>
+          {% endblock tpl_dashboard_main %}
         </div>
     </div>
 
@@ -170,6 +171,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
     {% block tpl_script %}
-    {% endblock %}
+    {% endblock tpl_script %}
   </body>
 </html>

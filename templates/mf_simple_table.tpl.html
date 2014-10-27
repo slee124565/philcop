@@ -1,0 +1,30 @@
+{% extends "dashboard.tpl.html" %}
+{% load static %}
+
+{% block tpl_dashboard_main %}
+  <h2 class="sub-header">{{ tpl_section_title|default:"tpl_section_title" }}</h2>
+  <div class="table-responsive">
+    <table class="table table-striped">
+    <thead>
+      <tr>
+	  {% for column_name in tbl_content.heads %}
+        <th>{{ column_name }}</th>
+	  {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+    {% for content_row in tbl_content.rows %}
+      <tr>
+      {% for content_col in content_row %}
+        <td>{{ content_col|safe }}</td>
+      {% endfor %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  	</table>
+  </div>
+{% endblock %}
+
+{% block tpl_script %}
+{% endblock %}
+	
