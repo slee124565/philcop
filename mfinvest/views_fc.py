@@ -45,8 +45,11 @@ def nav_view(request,p_fund_id):
     
     f_fund_id = p_fund_id
     
-    t_fund_info_list = get_fundcode_dictlist()
     fund_review = FundReviewModel.flush_fund_review(f_fund_id)
+    if fund_review is None:
+        args = {'tpl_img_header' : 'ERROR',
+                }
+        return render_to_response('mf_my_japan.tpl.html', args)
     
     t_content_heads = []
     t_content_rows = {}
@@ -91,9 +94,6 @@ def nav_view(request,p_fund_id):
             'tpl_section_title' : _("HEAD_FUND_REVIEW"), #_("TITLE_NAV_REVIEW_DETAIL"), 
             'plot' : plot,
             'tbl_content' : tbl_content,
-            'action_url': request.get_full_path(),
-            'fund_info_list': t_fund_info_list,
-            'fund_code': f_fund_id,
             }
 
     return render_to_response('mf_my_japan.tpl.html', args)
@@ -102,7 +102,10 @@ def nav_view(request,p_fund_id):
 def bb_view(request,p_fund_id):
     t_fund = FundClearModel.get_fund(p_fund_id)
     if t_fund is None:
-        pass
+        args = {
+                'tpl_img_header' : 'ERROR',
+                }
+        return render_to_response('mf_simple_flot.tpl.html',args)
     else:
         t_value_list = t_fund.get_value_list()
         sma,tb1,tb2,bb1,bb2 = get_bollingerbands(t_value_list)
