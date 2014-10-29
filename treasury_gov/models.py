@@ -163,7 +163,7 @@ class USTreasuryModel(db.Model):
             
     def get_yield_by_date(self, p_date=date.today(), p_tenor=TREASURY_TENOR_10Y):
         p_year = p_date.strftime('%Y')
-        if self.treasury_year != p_year:
+        if str(self.treasury_year) != p_year:
             logging.warning('get_yield_by_date: param error; obj year : {obj_year}, param year: {param_year}'.format(obj_year=self.treasury_year, param_year=p_year))
             return False
         date_keys = self.treasury_dict.keys()

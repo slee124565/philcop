@@ -46,7 +46,7 @@ class FundReviewModel(db.Model):
         t_fundreview = FundReviewModel.get_or_insert(fund_id)
         
         #-> get sample date list
-        t_date_list = get_sample_date_list(CONFIG_REVIEW_MONTH_COUNT, False)
+        t_date_list = get_sample_date_list(CONFIG_REVIEW_MONTH_COUNT, True)
         
         #-> get nav list
         t_fundreview._date_nav_list = t_fund.get_sample_value_list(t_date_list)

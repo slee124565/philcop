@@ -47,7 +47,8 @@ def nav_view(request,p_fund_id):
     
     fund_review = FundReviewModel.flush_fund_review(f_fund_id)
     if fund_review is None:
-        args = {'tpl_img_header' : 'ERROR',
+        args = {
+                'tpl_img_header' : FundClearModel.get_by_key_name(f_fund_id).fund_name, 
                 }
         return render_to_response('mf_my_japan.tpl.html', args)
     
@@ -103,7 +104,7 @@ def bb_view(request,p_fund_id):
     t_fund = FundClearModel.get_fund(p_fund_id)
     if t_fund is None:
         args = {
-                'tpl_img_header' : 'ERROR',
+                'tpl_img_header' : FundClearModel.get_by_key_name(p_fund_id).fund_name,
                 }
         return render_to_response('mf_simple_flot.tpl.html',args)
     else:
@@ -139,7 +140,7 @@ def bb_view(request,p_fund_id):
         
         args = {
                 'tpl_img_header' : FundClearModel.get_by_key_name(p_fund_id).fund_name,
-                'tpl_section_title' : 'Fund Profit Analysis',
+                'tpl_section_title' : '',
                 'plot' : plot,
                 }
         
