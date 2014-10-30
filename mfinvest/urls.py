@@ -27,13 +27,13 @@ urlpatterns = patterns('',
 
     url(r'^fc/$', 'mfinvest.views_fc.list_all_fund_view'),
     #url(r'^fc/bb/(?P<p_fund_id>\w+)/$', 'mfinvest.views_fc.bb_view'),
-    url(r'^fc/bb/(?P<p_fund_id>\w+(-\w+)+)/$', 'mfinvest.views_fc.bb_view'),
-    url(r'^fc/nav/(?P<p_fund_id>\w+(-\w+)+)/$', 'mfinvest.views_fc.nav_view'),
+    url(r'^fc/bb/(?P<p_fund_id>\w+(-\w+)?)/$', 'mfinvest.views_fc.bb_view'),
+    url(r'^fc/nav/(?P<p_fund_id>\w+(-\w+)?)/$', 'mfinvest.views_fc.nav_view'),
 
     #url(r'^add_sample/$', 'mfinvest.views.add_sample'),
     url(r'^$', 'mfinvest.views.mf_japan_view_2'),
 
-    url(r'^bb/(?P<p_fund_id>\w+(-\w+)+)/$', 'mfinvest.tests.bollinger_band_view'),
+    url(r'^bb/(?P<p_fund_id>\w+(-\w+)?)/$', 'mfinvest.tests.bollinger_band_view'),
     url(r'^bis_bb/(?P<p_code>\w+)/$', 'mfinvest.tests.bis_bb_view'),
     url(r'^bis/$', 'mfinvest.tests.bis_org_view'),
 )

@@ -46,7 +46,7 @@ class FundReviewModel(db.Model):
         t_fundreview = FundReviewModel.get_or_insert(fund_id)
         
         #-> get sample date list
-        t_date_list = get_sample_date_list(CONFIG_REVIEW_MONTH_COUNT, True)
+        t_date_list = get_sample_date_list(CONFIG_REVIEW_MONTH_COUNT, False)
         
         #-> get nav list
         t_fundreview._date_nav_list = t_fund.get_sample_value_list(t_date_list)
@@ -59,7 +59,7 @@ class FundReviewModel(db.Model):
         
         t_fundreview._nav_list_dump = pickle.dumps(t_fundreview._date_nav_list)    
         t_fundreview.put()
-        logging.debug(__name__ + ', FundReview flushed for fund id ' + fund_id)
+        #logging.debug(__name__ + ', FundReview flushed for fund id ' + fund_id)
 
         return t_fundreview
         
@@ -85,6 +85,6 @@ class FundReviewModel(db.Model):
         
         #logging.debug(__name__ + ', yoy_list befor sorting:\n' + str(t_yoy_list))
         t_yoy_list.sort(key=lambda x: x[0])
-        logging.debug(__name__ + ', _get_12_yoy_list with year ' + str(p_year) + ':\n' + str(t_yoy_list))
+        #logging.debug(__name__ + ', _get_12_yoy_list with year ' + str(p_year) + ':\n' + str(t_yoy_list))
         return t_yoy_list
         

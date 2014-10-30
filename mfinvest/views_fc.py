@@ -17,13 +17,14 @@ BB_VIEW_MONTHS = 12
 def list_all_fund_view(request):
     t_fundcode_list = get_fundcode_list()
     
-    content_head_list = ['Name', 'BB View', 'NAV View']
+    content_head_list = ['Code', 'Name', 'BB View', 'NAV View']
     content_rows = []
     
     for t_entry in t_fundcode_list:
         #t_entry[2] = '<a href="/mf/bb/'+t_entry[1]+'/">' + t_entry[2] + "</a>"
         #t_entry[2] = '<a href="/fc/flot/'+t_entry[1]+'/">' + t_entry[2] + "</a>"
         content_rows.append([
+                             t_entry[1],
                              t_entry[2],
                              '<a href="/mf/fc/bb/'+t_entry[1]+'/">BB View</a>',
                              '<a href="/mf/fc/nav/'+t_entry[1]+'/">NAV View</a>',
@@ -140,7 +141,7 @@ def bb_view(request,p_fund_id):
         
         args = {
                 'tpl_img_header' : FundClearModel.get_by_key_name(p_fund_id).fund_name,
-                'tpl_section_title' : '',
+                'tpl_section_title' : ' ',
                 'plot' : plot,
                 }
         
