@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from goldreport import GoldReport
 from models import GoldInvestModel
@@ -79,6 +79,7 @@ def add_my_trade(request):
         ['2014/7/1', 80000.0, 25.0, exchange.CURRENCY_TWD, 62.96, 1270.65, 1.0],
         ['2014/8/1', 80000.0, 25.0, exchange.CURRENCY_TWD, 63.72, 1255.49, 1.0],
         ['2014/9/1', 80000.0, 25.0, exchange.CURRENCY_TWD, 66.29, 1206.82, 1.0],
+        ['2014/10/1', 80000.0, 25.0, exchange.CURRENCY_TWD, 66.47, 1203.55, 1.0],
                      ]
     
     for t_trade in my_trade_logs:
@@ -91,6 +92,7 @@ def add_my_trade(request):
                           t_trade[5],
                           t_trade[6],
                           )
+    return HttpResponseRedirect('/gi/')
     return HttpResponse(__name__ + ': add_my_trade')
 
 def _add_trade_record(date_invest, amount_trade, trade_fee, currency_type, weight_purchse, bid_price, exchange_rate):
