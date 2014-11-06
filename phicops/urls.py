@@ -4,6 +4,7 @@ urlpatterns = patterns('',
 
     #url(r'^admin/', include(admin.site.urls)),
     url(r'^fc/', include('fundclear.urls')),
+    url(r'^fc2/', include('fundclear2.urls')),
     url(r'^bot/', include('bankoftaiwan.urls')),
     url(r'^mf/', include('mfinvest.urls')),
     url(r'^gi/', include('goldinvest.urls')),

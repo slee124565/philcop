@@ -83,10 +83,8 @@ class MFReport():
             logging.warning(__name__ + ', get_mfreport_by_id: fund or exchange data download fail!!!')
             return None
 
-        #report.report_nav = report.m_fund.get_discrete_value_list()
         report.report_nav = report.m_fund.get_sample_value_list(report._sample_date_list)
         
-        #report.report_exchange = report.m_exchange.get_discrete_exchange_list()
         report.report_exchange = report.m_exchange.get_sample_value_list(report._sample_date_list)
 
         report._get_history_cost_n_share_report()

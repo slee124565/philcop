@@ -9,6 +9,7 @@ from fundclear.fcreader import get_fundcode_list, get_fundcode_dictlist
 from fundclear.models import FundClearModel
 from fundclear.fundreview.models import FundReviewModel
 from utils.util_bollingerbands import get_bollingerbands
+from utils.util_date import get_sample_date_list_2
 
 import logging, calendar, collections
 
