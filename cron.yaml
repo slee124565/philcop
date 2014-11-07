@@ -8,4 +8,9 @@ cron:
   url: /bis/task/eers_update/
   schedule: every saturday 09:00
   timezone: Asia/Taipei  
+
+- description: update Mutual Fund code from FundClear every month
+  url: /fr/task/dcode/
+  schedule: 8 of month 07:10
+  timezone: Asia/Taipei
   

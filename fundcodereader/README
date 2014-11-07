@@ -1,0 +1,14 @@
+== fundcodereader ==
+This app is designed to schedule monthly to download FundClear fund code csv data 
+and save into datastore by function fundcoderader.tasks.download_fundcode.
+
+App's model FundCodeModel is designed to parsing csv data and provide the following class methods:
+
+function:	get_codename_list
+			return a list of [[<code>,<name>],[<code>,<name>],...]
+			
+function:	get_codename_dict
+			return a dictionary of { <code>:<name>, <code>:<name>, <code>:<name>, ... }
+			
+function:	get_fundname(code)
+			return fund name according to the code parameter
