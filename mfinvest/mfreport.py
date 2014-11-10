@@ -149,7 +149,7 @@ class MFReport():
         if self.date_end > history[history.count()-1].date_invest:
             self.report_cost.append([self.date_end, cost])
             
-        logging.debug(__name__ + ': invest cost report \n' + str(self.report_cost))
+        #logging.debug(__name__ + ': invest cost report \n' + str(self.report_cost))
         
         #-> create invest cost2 & share reports
         t_last_share = 0.0
@@ -164,8 +164,8 @@ class MFReport():
             else:
                 self.report_share.append([t_date, t_last_share])
                 self.report_cost2.append([t_date, t_last_cost])
-        logging.debug(__name__ + ': invest share report \n' + str(self.report_share))
-        logging.debug(__name__ + ': invest 2nd cost report \n' + str(self.report_cost2))
+        #logging.debug(__name__ + ': invest share report \n' + str(self.report_share))
+        #logging.debug(__name__ + ': invest 2nd cost report \n' + str(self.report_cost2))
 
     def _get_history_market_value_report(self):
         '''
@@ -185,8 +185,8 @@ class MFReport():
             else:
                 t_profit = 0.0
             self.report_profit.append([t_date,t_profit])
-        logging.debug(__name__ + ': nav \n' + str(self.report_nav))
-        logging.debug(__name__ + ': exchange \n' + str(self.report_exchange))
-        logging.debug(__name__ + ': invest market value report \n' + str(self.report_market_value))
-        logging.debug(__name__ + ': invest profit report \n' + str(self.report_profit))
+        #logging.debug(__name__ + ': nav \n' + str(self.report_nav))
+        #logging.debug(__name__ + ': exchange \n' + str(self.report_exchange))
+        #logging.debug(__name__ + ': invest market value report \n' + str(self.report_market_value))
+        #logging.debug(__name__ + ': invest profit report \n' + str(self.report_profit))
             

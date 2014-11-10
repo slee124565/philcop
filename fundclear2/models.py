@@ -43,7 +43,15 @@ class FundClearInfoModel(db.Model):
                 fundinfo = FundClearInfoModel.get_by_key_name(key_name)
             else:
                 return None
+
         fundinfo._load_year_nav(p_year)
+
+        #-> check if today's nav exist
+        if not date.today().strftime('%Y/%m/%d') in fundinfo.nav_year_dict[p_year].keys():
+            logging.info('get_fund: update fund latest NAV from internet web.')
+            FundClearDataModel._update_from_web(p_fund_id, p_year)
+            fundinfo._load_year_nav(p_year)
+            
         return fundinfo
     
     def get_sample_value_list(self, p_date_list):
@@ -76,7 +84,7 @@ class FundClearInfoModel(db.Model):
         t_year = str(p_year)
         if not t_year in self.nav_year_dict.keys():
             self._load_year_nav(t_year)
-            logging.info('get_year_nav_dict for year {p_year}'.format(p_year=p_year))
+            #logging.debug('get_year_nav_dict for year {p_year}'.format(p_year=p_year))
         return self.nav_year_dict[t_year]
         
     def get_value_list_for_year(self, p_year):
