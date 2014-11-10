@@ -8,7 +8,7 @@ handlers:
 - url: /static
   static_dir: assets
 
-- url: /(fc/bis/tg)/task/
+- url: /(fc/fc2/bis/tg/fr)/task/
   script: phicops.wsgi.application
   login: admin
 

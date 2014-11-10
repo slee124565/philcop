@@ -13,4 +13,9 @@ cron:
   url: /fr/task/dcode/
   schedule: 8 of month 07:10
   timezone: Asia/Taipei
+
+- description: update FundClearDataModel from FundClear every month
+  url: /fc2/task/update/
+  schedule: 11 of month 08:10
+  timezone: Asia/Taipei
   

@@ -1,0 +1,16 @@
+<fundclear2 app>
+
+# schedule design #
+	> DB init: manual activate fundclear2.tasks.funddata_init_taskhandler 
+	> every month activate chain_update_taskhandler to fresh all FundClearDataModel
+
+# task design #
+	> fundclear2.tasks.funddata_init_taskhandler:
+	  initial datastore for all FundClearInfoModel and FundClearDataModel
+	
+	> fundclear2.tasks.update_funddata_taskhandler
+	  update single FundClearDataModel for this year(default) or all history
+	  
+	> fundclear2.tasks.chain_update_taskhandler
+	  create chain task to update all FundClearDataModel for this year(default) or all history;
+	  

@@ -105,6 +105,8 @@ class FundClearInfoModel(db.Model):
         t_date = p_date        
         t_year = str(t_date.year)
         year_value_list = self.get_value_list_for_year(t_year)
+        if len(year_value_list) == 0:
+            return 0
         if t_date < year_value_list[0][NAV_INDEX_DATE]:
             t_date = date(t_date.year-1,12,31)
             logging.info('get_nav_by_date: get NAV for date {t_date} instead of {p_date}'.format(t_date=str(t_date),
@@ -208,19 +210,15 @@ class FundClearDataModel(db.Model):
                             dataset[t_count][1] = dataset[t_count-1][1]
                     #if (t_count > 192):
                     #    logging.info('DEBUG:' + str([t_date,t_value]))
-                    csv_content += dataset[t_count][0] + ',' + str(dataset[t_count][1]) + '\n'
+                    csv_content += dataset[t_count][0] + ',' + str(float(dataset[t_count][1])) + '\n'
                     t_added += 1
                     #dataset[t_count][0] = calendar.timegm((parser.parse(t_date)).timetuple()) * 1000
                     #dataset[t_count][1] = float(dataset[t_count][1])
                     t_count += 1
                 #return csv_content
-                if t_added > 0:
-                    fund.year = str(p_year)
-                    fund.content_csv = csv_content
-                    fund.put()
-                else:
-                    fund.content_csv = csv_content
-                    fund.put()
+                fund.year = str(p_year)
+                fund.content_csv = csv_content
+                fund.put()
                 logging.info('Fund {id} with year {year} with item {item} saved.'.format(
                                                                         id=str(p_fund_id),
                                                                         year=str(p_year),

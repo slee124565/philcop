@@ -50,6 +50,7 @@ class FundCodeModel(db.Model):
             t_item = [t_code, t_name]
             #logging.debug(t_item)
             codename_list.append(t_item)
+        codename_list.sort(key=lambda x: x[0])
         return codename_list
     
     @classmethod
