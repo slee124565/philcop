@@ -1,6 +1,7 @@
 
 from mfinvest.models import MutualFundInvestModel
-from fundclear.models import FundClearModel
+#from fundclear.models import FundClearModel
+from fundclear2.models import FundClearInfoModel
 from bankoftaiwan.models import BotExchangeModel, exchange
 
 from datetime import date
@@ -62,7 +63,7 @@ class MFReport():
     currency_type = None
     date_begin = None
     date_end = None
-    m_fund = None               #-> FundClearModel
+    m_fund = None               #-> FundClearInfoModel #FundClearModel
     m_exchange = None           #-> BotExchangeModel
     _sample_date_list = []
     report_cost = []            #-> only contain date that change
@@ -76,7 +77,7 @@ class MFReport():
     @classmethod
     def get_mfreport_by_id(cls, p_fund_id, p_currency_type):
         report = MFReport(fund_id=p_fund_id, currency_type=p_currency_type)
-        report.m_fund = FundClearModel.get_fund(report.fund_id)
+        report.m_fund = FundClearInfoModel.get_fund(p_fund_id) # FundClearModel.get_fund(report.fund_id)
         report.m_exchange = BotExchangeModel.get_bot_exchange(exchange.CURRENCY_JPY)
         
         if report.m_fund is None or report.m_exchange is None:

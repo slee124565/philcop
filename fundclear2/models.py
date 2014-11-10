@@ -106,7 +106,7 @@ class FundClearInfoModel(db.Model):
         t_year = str(t_date.year)
         year_value_list = self.get_value_list_for_year(t_year)
         if len(year_value_list) == 0:
-            return 0
+            return 0.0
         if t_date < year_value_list[0][NAV_INDEX_DATE]:
             t_date = date(t_date.year-1,12,31)
             logging.info('get_nav_by_date: get NAV for date {t_date} instead of {p_date}'.format(t_date=str(t_date),
@@ -115,14 +115,14 @@ class FundClearInfoModel(db.Model):
         if t_date > year_value_list[-1][NAV_INDEX_DATE]: 
             logging.info('get_nav_by_date: date {p_date} exceed year nav max date {max_date}'.format(p_date=str(p_date),
                                                                                     max_date=str(year_value_list[-1][NAV_INDEX_DATE])))
-            return 0      
+            return 0.0      
         t_key = t_date.strftime('%Y/%m/%d')
         while not t_key in self.nav_year_dict[t_year].keys():
             t_date = t_date + relativedelta(days=-1)
             t_key = t_date.strftime('%Y/%m/%d')
             if t_date.day == 1 and t_date.month == 1:
                 logging.warning('get_nav_by_date fail: get NAV for {p_date}'.format(str(p_date)))
-                return 0
+                return 0.0
         return self.nav_year_dict[t_year][t_key][NAV_INDEX_VALUE]
         
 class FundClearDataModel(db.Model):
@@ -236,7 +236,7 @@ class FundClearDataModel(db.Model):
         nav_dict = {}
         for row in csv_reader:
             nav_dict[row[CSV_ITEM_KEY_DATE]] = [parser.parse(row[CSV_ITEM_KEY_DATE]).date(),
-                                                row[CSV_ITEM_KEY_NAV]]
+                                                float(row[CSV_ITEM_KEY_NAV])]
         
         return nav_dict
         
