@@ -52,8 +52,6 @@ def chain_update_taskhandler(request):
         p_type = str(request.REQUEST['PARAM2'])
 
     codename_list = FundCodeModel.get_codename_list()
-    #-> TODO: update all codename_list after test verified
-    codename_list = codename_list[:20]
     response = HttpResponse('update_funddata_taskhandler with code_index {code_index}'.format(code_index=p_code_index))
     if p_code_index < len(codename_list):
         #-> add update_funddata_task for p_code_index
@@ -72,7 +70,7 @@ def chain_update_taskhandler(request):
         if p_next_index < len(codename_list):
             taskqueue.add(method = 'GET', 
                           url = os.path.dirname(request.get_full_path()) + '/',
-                          countdown = 35,
+                          countdown = 50,
                           params = {
                                     'PARAM1': p_next_index,
                                     'PARAM2': p_type,
