@@ -7,16 +7,21 @@ from dateutil.relativedelta import relativedelta
 
 from fundclear.fcreader import get_fundcode_list, get_fundcode_dictlist
 from fundclear.models import FundClearModel
-from fundclear.fundreview.models import FundReviewModel
+#from fundclear.fundreview.models import FundReviewModel
+#from fundreview2.models import FundReviewModel
 from utils.util_bollingerbands import get_bollingerbands
 from utils.util_date import get_sample_date_list_2
+
+from fundclear2.models import FundClearInfoModel
+from fundcodereader.models import FundCodeModel
+from indexreview.models import IndexReviewModel
 
 import logging, calendar, collections
 
 BB_VIEW_MONTHS = 12
 
 def list_all_fund_view(request):
-    t_fundcode_list = get_fundcode_list()
+    t_fundcode_list = FundCodeModel.get_codename_list()
     
     content_head_list = ['Code', 'Name', 'BB View', 'NAV View']
     content_rows = []
@@ -25,10 +30,10 @@ def list_all_fund_view(request):
         #t_entry[2] = '<a href="/mf/bb/'+t_entry[1]+'/">' + t_entry[2] + "</a>"
         #t_entry[2] = '<a href="/fc/flot/'+t_entry[1]+'/">' + t_entry[2] + "</a>"
         content_rows.append([
+                             t_entry[0],
                              t_entry[1],
-                             t_entry[2],
-                             '<a href="/mf/fc/bb/'+t_entry[1]+'/">BB View</a>',
-                             '<a href="/mf/fc/nav/'+t_entry[1]+'/">NAV View</a>',
+                             '<a href="/mf/fc/bb/'+t_entry[0]+'/">BB View</a>',
+                             '<a href="/mf/fc/nav/'+t_entry[0]+'/">NAV View</a>',
                              ])
     
     tbl_content = {
@@ -47,17 +52,19 @@ def nav_view(request,p_fund_id):
     
     f_fund_id = p_fund_id
     
-    fund_review = FundReviewModel.flush_fund_review(f_fund_id)
-    if fund_review is None:
+    t_fund = FundClearInfoModel.get_fund(f_fund_id)
+    t_review = t_fund.get_review()
+    
+    if t_review is None:
         args = {
-                'tpl_img_header' : FundClearModel.get_by_key_name(f_fund_id).fund_name, 
+                'tpl_img_header' : FundCodeModel.get_fundname(f_fund_id),
                 }
         return render_to_response('mf_my_japan.tpl.html', args)
     
     t_content_heads = []
     t_content_rows = {}
     
-    t_nav_list = fund_review.nav_list()
+    t_nav_list = t_review.index_list()
     for t_entry in t_nav_list:
         t_content_rows[t_entry[0].strftime('%Y%m%d')] = (t_entry[0].strftime('%Y/%m/%d'),)
         t_content_rows[t_entry[0].strftime('%Y%m%d')] += (t_entry[1],)
@@ -65,13 +72,13 @@ def nav_view(request,p_fund_id):
     t_content_heads.append('Date')
     t_content_heads.append('NAV')
     
-    t_yoy_1_list = fund_review.yoy_list(1)
+    t_yoy_1_list = t_review.yoy_list(1)
     for t_entry in t_yoy_1_list:
         t_content_rows[t_entry[0].strftime('%Y%m%d')] += ('{:.2f}%'.format(t_entry[1]),)
         t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000 
     t_content_heads.append('YoY_1')
     
-    t_yoy_2_list = fund_review.yoy_list(2)
+    t_yoy_2_list = t_review.yoy_list(2)
     for t_entry in t_yoy_2_list:
         t_content_rows[t_entry[0].strftime('%Y%m%d')] += ('{:.2f}%'.format(t_entry[1]),)
         t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000 
@@ -93,7 +100,7 @@ def nav_view(request,p_fund_id):
                    }
 
     args = {
-            'tpl_img_header' : FundClearModel.get_by_key_name(f_fund_id).fund_name, 
+            'tpl_img_header' : FundCodeModel.get_fundname(f_fund_id),
             'tpl_section_title' : _("HEAD_FUND_REVIEW"), #_("TITLE_NAV_REVIEW_DETAIL"), 
             'plot' : plot,
             'tbl_content' : tbl_content,
@@ -103,14 +110,15 @@ def nav_view(request,p_fund_id):
     
     
 def bb_view(request,p_fund_id):
-    t_fund = FundClearModel.get_fund(p_fund_id)
+    t_fund = FundClearInfoModel.get_fund(p_fund_id)
     if t_fund is None:
         args = {
-                'tpl_img_header' : FundClearModel.get_by_key_name(p_fund_id).fund_name,
+                'tpl_img_header' : FundCodeModel.get_fundname(p_fund_id),
                 }
         return render_to_response('mf_simple_flot.tpl.html',args)
     else:
-        t_value_list = t_fund.get_value_list()
+        year_since = date.today().year - 5
+        t_value_list = t_fund.get_value_list(year_since)
         sma,tb1,tb2,bb1,bb2 = get_bollingerbands(t_value_list)
         
         t_view_date_since = date.today() + relativedelta(months=-BB_VIEW_MONTHS)
@@ -141,7 +149,7 @@ def bb_view(request,p_fund_id):
                 }
         
         args = {
-                'tpl_img_header' : FundClearModel.get_by_key_name(p_fund_id).fund_name,
+                'tpl_img_header' : t_fund.title,
                 'tpl_section_title' : ' ',
                 'plot' : plot,
                 }

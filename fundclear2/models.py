@@ -8,6 +8,7 @@ from lxml import etree
 from datetime import date
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
+from indexreview.models import IndexReviewModel
 
 import csv,StringIO
 import logging,calendar
@@ -53,6 +54,19 @@ class FundClearInfoModel(db.Model):
             fundinfo._load_year_nav(p_year)
             
         return fundinfo
+    
+    def get_review(self):
+        t_review_mkey = 'FundClearInfoModel_' + self.key().name()
+        t_review = IndexReviewModel.get_by_key_name(t_review_mkey, self)
+        
+        if t_review is None:
+            t_year_since = date.today().year - 3
+            t_nav_list = self.get_value_list(t_year_since)
+            t_review = IndexReviewModel.save_index_review(t_nav_list, t_review_mkey, self)
+            logging.info('get_review: initial IndexReviewModel saved.')
+
+        return t_review
+    
     
     def get_sample_value_list(self, p_date_list):
         '''
