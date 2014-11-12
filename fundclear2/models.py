@@ -55,19 +55,6 @@ class FundClearInfoModel(db.Model):
             
         return fundinfo
     
-    def get_review(self):
-        t_review_mkey = 'FundClearInfoModel_' + self.key().name()
-        t_review = IndexReviewModel.get_by_key_name(t_review_mkey, self)
-        
-        if t_review is None:
-            t_year_since = date.today().year - 3
-            t_nav_list = self.get_value_list(t_year_since)
-            t_review = IndexReviewModel.save_index_review(t_nav_list, t_review_mkey, self)
-            logging.info('get_review: initial IndexReviewModel saved.')
-
-        return t_review
-    
-    
     def get_sample_value_list(self, p_date_list):
         '''
         return a list of [date, nav] according to date list p_date_list
@@ -107,7 +94,17 @@ class FundClearInfoModel(db.Model):
         value_list.sort(key=lambda x: x[0])
         #logging.debug('get_value_list_for_year {year}\n{value_list}'.format(year=p_year,value_list=str(value_list)))
         return value_list
-        
+    
+    def get_index_list(self):
+        '''
+        return current exists [date,nav] list 
+        '''
+        value_list = []
+        for t_key in self.nav_year_dict.keys():
+            value_list += self.nav_year_dict[t_key].values()
+        value_list.sort(key=lambda x: x[0])
+        return value_list
+            
     def get_value_list(self, p_year_since=date.today().year):
         t_year = p_year_since
         this_year = date.today().year

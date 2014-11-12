@@ -33,6 +33,19 @@ class IndexReviewModel(db.Model):
             return []
 
     @classmethod
+    def get_index_review(cls,p_index_src_model):
+        t_keyname = p_index_src_model.__class__.__name__ + '_' + p_index_src_model.key().name()
+        #logging.debug('t_keyname: ' + t_keyname)
+        t_review = cls.get_by_key_name(t_keyname, p_index_src_model)
+        
+        if t_review is None:
+            t_index_list = p_index_src_model.get_index_list()
+            t_review = IndexReviewModel.save_index_review(t_index_list, t_keyname, p_index_src_model)
+            logging.info('get_index_review: initial IndexReviewModel saved with key {key}'.format(key=t_keyname))
+
+        return t_review
+        
+    @classmethod
     def save_index_review(cls,p_index_list,p_keyname,p_db_parent):
         #-> get model object
         t_indexreview = IndexReviewModel.get_or_insert(p_keyname,parent=p_db_parent)
@@ -46,11 +59,13 @@ class IndexReviewModel(db.Model):
         t_indexreview._yoy_1_list_dump = pickle.dumps(cls.get_12_yoy_list(t_sample_index_list, 1))
         t_indexreview._yoy_2_list_dump = pickle.dumps(cls.get_12_yoy_list(t_sample_index_list, 2))
         t_indexreview.put()
+        '''
         logging.debug('save_index_review:\nnav_list:{nav_list}\nyoy_1:\n{yoy_1}\nyoy_2:\n{yoy_2}'.format(
                                                         nav_list=str(t_indexreview.index_list()),
                                                         yoy_1=str(t_indexreview.yoy_list(1)),
                                                         yoy_2=str(t_indexreview.yoy_list(2))))
 
+        '''
         return t_indexreview
         
     @classmethod

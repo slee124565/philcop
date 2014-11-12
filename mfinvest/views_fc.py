@@ -53,7 +53,9 @@ def nav_view(request,p_fund_id):
     f_fund_id = p_fund_id
     
     t_fund = FundClearInfoModel.get_fund(f_fund_id)
-    t_review = t_fund.get_review()
+    year_since = date.today().year - 3
+    t_fund.get_value_list(year_since)
+    t_review = IndexReviewModel.get_index_review(t_fund)
     
     if t_review is None:
         args = {
