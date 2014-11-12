@@ -53,6 +53,7 @@ def chain_update_taskhandler(request):
         p_type = str(request.REQUEST['PARAM2'])
 
     codename_list = FundCodeModel.get_codename_list()
+    #codename_list = codename_list[:5]
     response = HttpResponse('update_funddata_taskhandler with code_index {code_index}'.format(code_index=p_code_index))
     if p_code_index < len(codename_list):
         #-> add update_funddata_task for p_code_index
@@ -79,11 +80,6 @@ def chain_update_taskhandler(request):
             logging.info('chain_update_taskhandler: add chain_update task for index {index}'.format(index=p_next_index))        
         else:
             logging.info('chain_update_taskhandler: end chain_update task with index {index}'.format(index=p_next_index))        
-            taskqueue.add(method = 'GET', 
-                          url = reviewtask.get_fc_update_taskhandler_url(),
-                          params = {
-                                    'PARAM1': p_code,
-                                    })
     else:
         logging.warning('chain_update_taskhandler: code index {code_index} param error'.format(code_index=p_code_index))
     pass
@@ -121,9 +117,15 @@ def update_funddata_taskhandler(request):
     if p_type == 'all':
         funddata = FundClearDataModel._get_funddata(p_fund_id, p_year)
         nav_item_count = len(funddata._get_nav_dict())
-        logging.debug('update_funddata_taskhandler: nav item count {count}'.format(count=nav_item_count))
+        logging.info('update_funddata_taskhandler: nav item count {count}'.format(count=nav_item_count))
         if nav_item_count == 0:
             logging.info('update_funddata_taskhandler: year {year} nav_dict len 0, end update task.'.format(year=p_year))
+            taskqueue.add(method = 'GET', 
+                          url = reviewtask.get_fc_update_taskhandler_url(),
+                          params = {
+                                    'PARAM1': p_fund_id,
+                                    })
+            logging.info('chain_update_taskhandler: add review update task for {fund_code}'.format(fund_code=p_fund_id))
         else:
             logging.info('update_funddata_taskhandler: continue update with year {year} by adding new update task'.format(year=str(int(p_year)-1)))
             taskqueue.add(method = 'GET', 
