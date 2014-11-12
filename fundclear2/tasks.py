@@ -53,7 +53,7 @@ def chain_update_taskhandler(request):
         p_type = str(request.REQUEST['PARAM2'])
 
     codename_list = FundCodeModel.get_codename_list()
-    #codename_list = codename_list[:5]
+    codename_list = codename_list[:5]
     response = HttpResponse('update_funddata_taskhandler with code_index {code_index}'.format(code_index=p_code_index))
     if p_code_index < len(codename_list):
         #-> add update_funddata_task for p_code_index
