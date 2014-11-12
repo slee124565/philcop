@@ -44,6 +44,15 @@ class IndexReviewModel(db.Model):
             logging.info('get_index_review: initial IndexReviewModel saved with key {key}'.format(key=t_keyname))
 
         return t_review
+    
+    @classmethod
+    def _update_review(cls,p_index_src_model):
+        t_keyname = p_index_src_model.__class__.__name__ + '_' + p_index_src_model.key().name()
+        t_index_list = p_index_src_model.get_index_list()
+        IndexReviewModel.save_index_review(t_index_list, t_keyname, p_index_src_model)
+        logging.info('_update_review: IndexReviewModel saved with key {key}'.format(key=t_keyname))
+        
+        return True
         
     @classmethod
     def save_index_review(cls,p_index_list,p_keyname,p_db_parent):

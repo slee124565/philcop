@@ -5,9 +5,16 @@ from datetime import date
 
 import logging
 
+def test_load_all_nav(request):
+    fund_id = 'LU0069970746'
+    t_fund = FundClearInfoModel.get_fund(fund_id)
+    t_fund.load_all_nav()
+    return HttpResponse('test_load_all_nav: check log')
+    
+    
 def test_get_nav_by_date(request):
     fund_id = '618344' #'CIFGHIOT'
-    fund = FundClearInfoModel._get_fund(fund_id)
+    fund = FundClearInfoModel.get_fund(fund_id)
     
     t_date = date(2014,1,1)
     t_date = date(2014,11,4)
@@ -27,7 +34,7 @@ def test_get_nav_by_date(request):
     
 def test_get_value_list(request):
     fund_id = '618344' #'CIFGHIOT'
-    fund = FundClearInfoModel._get_fund(fund_id)
+    fund = FundClearInfoModel.get_fund(fund_id)
     value_list = fund.get_value_list(2013)
     t_content = ''
     for t_entry in value_list:
@@ -40,7 +47,7 @@ def test_get_value_list(request):
     
 def test_load_year_nav(reqeust):
     fund_id = '618344' #'CIFGHIOT'
-    fund = FundClearInfoModel._get_fund(fund_id)
+    fund = FundClearInfoModel.get_fund(fund_id)
     t_content = ''
     t_year = 2013
     if fund._load_year_nav(t_year):

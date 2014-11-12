@@ -7,6 +7,7 @@ from fundclear2.models import FundClearDataModel, FundClearInfoModel
 import fundclear2.models as fc2
 
 from fundcodereader.models import FundCodeModel
+import indexreview.tasks as reviewtask
 
 import logging, os
 
@@ -78,6 +79,11 @@ def chain_update_taskhandler(request):
             logging.info('chain_update_taskhandler: add chain_update task for index {index}'.format(index=p_next_index))        
         else:
             logging.info('chain_update_taskhandler: end chain_update task with index {index}'.format(index=p_next_index))        
+            taskqueue.add(method = 'GET', 
+                          url = reviewtask.get_fc_update_taskhandler_url(),
+                          params = {
+                                    'PARAM1': p_code,
+                                    })
     else:
         logging.warning('chain_update_taskhandler: code index {code_index} param error'.format(code_index=p_code_index))
     pass

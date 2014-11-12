@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     url(r'^gi/', include('goldinvest.urls')),
     url(r'^bis/', include('bis_org.urls')),
     url(r'^tg/', include('treasury_gov.urls')),
+    url(r'^ir/', include('indexreview.urls')),
     
     # Examples:
     # url(r'^$', 'phicops.views.home', name='home'),

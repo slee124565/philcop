@@ -65,6 +65,14 @@ class FundClearInfoModel(db.Model):
             t_list.append([t_date,t_nav])
         return t_list
 
+    def load_all_nav(self):
+        for t_funddata in FundClearDataModel.all().ancestor(self):
+            nav_dict = t_funddata._get_nav_dict()
+            t_keyname_split = t_funddata.key().name().split('_')
+            t_year = t_keyname_split[-1]
+            #logging.debug('load_all_nav for year ' + t_year)
+            self.nav_year_dict[t_year] = nav_dict
+    
     def _load_year_nav(self, p_year):
         t_year = str(p_year)
         fund_id = self.key().name()
