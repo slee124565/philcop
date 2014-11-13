@@ -19,7 +19,7 @@ URL_TEMPLATE = 'http://announce.fundclear.com.tw/MOPSFundWeb/D02_02P.jsp?fundId=
 DATE_INDEX = 0
 VALUE_INDEX = 1
 
-class FundCodeModel(db.Model):
+class dFundCodeModel(db.Model):
     content = db.BlobProperty()
 
 class FundClearModel(WebContentModel):

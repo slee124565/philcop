@@ -7,7 +7,7 @@ Get FundClear Fund code and Fund name
 from lxml import etree
 import logging, pickle
 
-from models import FundCodeModel
+from fundclear.models import dFundCodeModel
 
 FUND_CODE_FILE = 'fundclear/fund_code.xml'
 
@@ -34,13 +34,13 @@ def get_fundcode_dictlist():
 
 def get_fundcode_list():
     t_keyname = FUND_CODE_FILE
-    t_model = FundCodeModel.get_or_insert(t_keyname)
+    t_model = dFundCodeModel.get_or_insert(t_keyname)
     return pickle.loads(t_model.content)
     
 def save_fundcode_config():
     t_fundinfo_list = get_fund_info_list()
     t_keyname = FUND_CODE_FILE
-    t_fundcode = FundCodeModel.get_or_insert(t_keyname)
+    t_fundcode = dFundCodeModel.get_or_insert(t_keyname)
     t_fundcode.content = pickle.dumps(t_fundinfo_list)
     t_fundcode.put()
     return 'save_fundcode_config done'
