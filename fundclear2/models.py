@@ -169,9 +169,14 @@ class FundClearDataModel(db.Model):
 
     @classmethod
     def _update_from_web(cls,p_fund_id,p_year=date.today().year):
-        model_parent = FundClearInfoModel.get_or_insert(FundClearInfoModel.compose_key_name(p_fund_id))
-        fund = FundClearDataModel.get_or_insert(FundClearDataModel.compose_key_name(p_fund_id, p_year),
-                                                parent=model_parent)
+        try:
+            model_parent = FundClearInfoModel.get_or_insert(FundClearInfoModel.compose_key_name(p_fund_id))
+            fund = FundClearDataModel.get_or_insert(FundClearDataModel.compose_key_name(p_fund_id, p_year),
+                                                    parent=model_parent)
+        except:
+            logging.warning('_update_from_web: Model.get_or_insert fail!')
+            return False
+        
         begin_date = date(int(p_year),1,1).strftime("%Y/%m/%d")
         if int(p_year) == date.today().year:
             end_date = date.today().strftime("%Y/%m/%d")
