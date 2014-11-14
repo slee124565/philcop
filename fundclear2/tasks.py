@@ -110,33 +110,35 @@ def update_funddata_taskhandler(request):
     if FundClearDataModel._update_from_web(p_fund_id,p_year):
         response.status_code = fc2.HTTP_STATUS_CODE_OK
         logging.info('update_funddata_taskhandler success')
+    
+        if p_type == 'all':
+            funddata = FundClearDataModel._get_funddata(p_fund_id, p_year)
+            nav_item_count = len(funddata._get_nav_dict())
+            logging.info('update_funddata_taskhandler: nav item count {count}'.format(count=nav_item_count))
+            
+            if nav_item_count == 0:
+                logging.info('update_funddata_taskhandler: year {year} nav_dict len 0, end update task.'.format(year=p_year))
+                taskqueue.add(method = 'GET', 
+                              url = reviewtask.get_fc_update_taskhandler_url(),
+                              params = {
+                                        'PARAM1': p_fund_id,
+                                        })
+                logging.info('chain_update_taskhandler: add review update task for {fund_code}'.format(fund_code=p_fund_id))
+            else:
+                logging.info('update_funddata_taskhandler: continue update with year {year} by adding new update task'.format(year=str(int(p_year)-1)))
+                taskqueue.add(method = 'GET', 
+                              url = os.path.dirname(request.get_full_path()) + '/',
+                              countdown = 5,
+                              params = {
+                                        'PARAM1': p_fund_id,
+                                        'PARAM2': int(p_year)-1,
+                                        'PARAM3': p_type,
+                                        })
+    
     else:
         response.status_code = fc2.HTTP_STATUS_CODE_SERVER_ERROR
         logging.warning('update_funddata_taskhandler fail!')
-    
-    if p_type == 'all':
-        funddata = FundClearDataModel._get_funddata(p_fund_id, p_year)
-        nav_item_count = len(funddata._get_nav_dict())
-        logging.info('update_funddata_taskhandler: nav item count {count}'.format(count=nav_item_count))
-        if nav_item_count == 0:
-            logging.info('update_funddata_taskhandler: year {year} nav_dict len 0, end update task.'.format(year=p_year))
-            taskqueue.add(method = 'GET', 
-                          url = reviewtask.get_fc_update_taskhandler_url(),
-                          params = {
-                                    'PARAM1': p_fund_id,
-                                    })
-            logging.info('chain_update_taskhandler: add review update task for {fund_code}'.format(fund_code=p_fund_id))
-        else:
-            logging.info('update_funddata_taskhandler: continue update with year {year} by adding new update task'.format(year=str(int(p_year)-1)))
-            taskqueue.add(method = 'GET', 
-                          url = os.path.dirname(request.get_full_path()) + '/',
-                          countdown = 5,
-                          params = {
-                                    'PARAM1': p_fund_id,
-                                    'PARAM2': int(p_year)-1,
-                                    'PARAM3': p_type,
-                                    })
-    
+
     return response
 
 
