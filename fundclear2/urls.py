@@ -7,6 +7,7 @@ urlpatterns = patterns('',
      url(r'^task/dupdate/$', 'fundclear2.tasks.update_funddata_taskhandler'),
      url(r'^task/cupdate/$', 'fundclear2.tasks.chain_update_taskhandler'),
 
+     url(r'^statistic/$', 'fundclear2.views.datamodel_statistic_report_view'),
      url(r'^func/test/$', 'fundclear2.tests.test_load_all_nav'),
      #url(r'^func/test/$', 'fundclear2.tests.test_get_nav_by_date'),
      #url(r'^func/test/$', 'fundclear2.tests.test_get_value_list'),

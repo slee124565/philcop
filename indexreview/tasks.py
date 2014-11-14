@@ -18,4 +18,3 @@ def indexreview_fc_update_taskhandler(request):
     response.status_code = fc2.HTTP_STATUS_CODE_OK
     return response
     
-    
