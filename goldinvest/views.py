@@ -25,7 +25,7 @@ def default_view(request):
 
     profit_report = t_report.report_profit
     for t_entry in profit_report:
-        t_content_rows[t_entry[0].strftime("%Y%m%d")] += ('{:.2}%'.format(t_entry[1]),)
+        t_content_rows[t_entry[0].strftime("%Y%m%d")] += ('{:.2f}%'.format(t_entry[1]),)
         t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
     t_content_heads.append('Profit')
 
