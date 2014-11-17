@@ -1,9 +1,10 @@
 from django.shortcuts import render_to_response
 #from django.http import HttpResponse
 from bis_org.models import BisEersModel
+from indexreview.models import IndexReviewModel
 from utils import util_bollingerbands
 from django.utils.translation import ugettext as _
-import calendar
+import calendar, collections
 
 def eers_area_list_view(request):
     bis_eers = BisEersModel.get_broad_indices()
@@ -41,13 +42,18 @@ def eers_view(request, p_code='TW'):
     #return HttpResponse(str(t_value_list[-24:]))
     
     #-> indices table content
-    content_head_list = ['Date', 'Indices']
-    content_rows = []
+    content_head_list = ['Date', 'Indices', 'YoY']
+    content_rows = {}
+    yoy_list = IndexReviewModel.get_12_yoy_list(t_value_list,p_total_sample_count=25)
     for t_entry in t_value_list[-24:]:
-        content_rows.append([t_entry[0].strftime('%Y/%m/%d'), t_entry[1]])
+        content_rows[t_entry[0].strftime('%Y%m%d')] = [t_entry[0].strftime('%Y/%m/%d'), t_entry[1],'N/A']
+    for t_entry in yoy_list:
+        content_rows[t_entry[0].strftime('%Y%m%d')][2] = '{:.2f}%'.format(t_entry[1])
+
+    t_content_rows = collections.OrderedDict(sorted(content_rows.items()))
     tbl_content = {
                    'heads': content_head_list,
-                   'rows': content_rows,
+                   'rows': t_content_rows.values(),
                    }
 
     #-> indices BB content

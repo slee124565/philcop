@@ -92,13 +92,13 @@ class IndexReviewModel(db.Model):
 
     
     @classmethod
-    def get_12_yoy_list(cls,p_index_list,p_ycount=1):
+    def get_12_yoy_list(cls,p_index_list,p_ycount=1,p_total_sample_count=12):
         '''
         p_index_list = [[date,index],[date,index],...]
         p_ycount = 1 means 1 year to year calculation
         return [[date,yoy_1],[date,yoy_2],...]
         '''
-        TOTAL_SAMPLE_COUNT = 12
+        TOTAL_SAMPLE_COUNT = p_total_sample_count
         t_yoy_list = []
         t_check_date_1 = date.today()
         for i in range(TOTAL_SAMPLE_COUNT):
@@ -117,8 +117,6 @@ class IndexReviewModel(db.Model):
                                                                             date2=str(t_check_date_2)))
                     nav1 = 0
                     nav2 = 0
-                #logging.debug(__name__ + ', date ' + str(t_check_date_1) + ' nav ' + str(nav1))
-                #logging.debug(__name__ + ', date ' + str(t_check_date_2) + ' nav ' + str(nav2))
                 if (nav1 is not None) and (nav2 is not None) and (nav2 != 0):
                     yoy = 100 * (nav1-nav2)/nav2
                 else:
@@ -126,6 +124,14 @@ class IndexReviewModel(db.Model):
                                                             date1=str(t_check_date_1),
                                                             date2=str(t_check_date_2)))
                     yoy = 0
+                '''
+                logging.debug('get_12_yoy_list: for {date1} {nav1} and {date2} {nav2} get yoy {yoy}%'.format(
+                                                                                              date1=str(t_check_date_1),
+                                                                                              date2=str(t_check_date_2),
+                                                                                              nav1=nav1,
+                                                                                              nav2=nav2,
+                                                                                              yoy=yoy))
+                '''
                 t_yoy_list.append([t_check_date_1,yoy])
         
         #logging.debug(__name__ + ', yoy_list befor sorting:\n' + str(t_yoy_list))
