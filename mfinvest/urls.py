@@ -21,7 +21,7 @@ urlpatterns = patterns('',
     url(r'^treasury/(?P<year_since>\w+)/$', 'mfinvest.views_tg.treasury_view'),
 
     url(r'^bis/(?P<p_code>\w+)/$', 'mfinvest.views_bis.eers_view'),
-    url(r'^bis/$', 'mfinvest.views_bis.eers_view'),
+    url(r'^bis/$', 'mfinvest.views_bis.eers_area_list_view'),
 
     url(r'^bot/$', 'mfinvest.views_currency.tw_exchange_changing_view'),
 

@@ -5,6 +5,33 @@ from utils import util_bollingerbands
 from django.utils.translation import ugettext as _
 import calendar
 
+def eers_area_list_view(request):
+    bis_eers = BisEersModel.get_broad_indices()
+    
+    content_head_list = ['Code', 'Name', 'BB View']
+    content_rows = []
+    
+    for t_entry in bis_eers.area_list:
+        #t_entry[2] = '<a href="/mf/bb/'+t_entry[1]+'/">' + t_entry[2] + "</a>"
+        #t_entry[2] = '<a href="/fc/flot/'+t_entry[1]+'/">' + t_entry[2] + "</a>"
+        content_rows.append([
+                             t_entry[0],
+                             t_entry[1],
+                             '<a href="/mf/bis/'+t_entry[0]+'/">BB View</a>',
+                             ])
+    
+    tbl_content = {
+                   'heads': content_head_list,
+                   'rows': content_rows,
+                   }
+
+    args = {
+            'tpl_section_title': _("HEAD_BIS_EERS_REVIEW"),
+            'tbl_content' : tbl_content,
+            }
+    return render_to_response('mf_simple_table.tpl.html', args)
+    
+    
 def eers_view(request, p_code='TW'):
     bis_eers = BisEersModel.get_broad_indices()
     p_area = bis_eers._get_area_name(p_code)
