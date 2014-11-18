@@ -80,6 +80,11 @@ def chain_update_taskhandler(request):
             logging.info('chain_update_taskhandler: add chain_update task for index {index}'.format(index=p_next_index))        
         else:
             logging.info('chain_update_taskhandler: end chain_update task with index {index}'.format(index=p_next_index))        
+            taskqueue.add(method = 'GET', 
+                          url = reviewtask.get_fc_init_url(),
+                          countdown = 10,
+                          )
+            logging.info('chain_update_taskhandler: review chain update task added.')
     else:
         logging.warning('chain_update_taskhandler: code index {code_index} param error'.format(code_index=p_code_index))
     pass
@@ -118,12 +123,6 @@ def update_funddata_taskhandler(request):
             
             if nav_item_count == 0:
                 logging.info('update_funddata_taskhandler: year {year} nav_dict len 0, end update task.'.format(year=p_year))
-                taskqueue.add(method = 'GET', 
-                              url = reviewtask.get_fc_update_taskhandler_url(),
-                              params = {
-                                        'PARAM1': p_fund_id,
-                                        })
-                logging.info('chain_update_taskhandler: add review update task for {fund_code}'.format(fund_code=p_fund_id))
             else:
                 logging.info('update_funddata_taskhandler: continue update with year {year} by adding new update task'.format(year=str(int(p_year)-1)))
                 taskqueue.add(method = 'GET', 
