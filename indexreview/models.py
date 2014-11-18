@@ -1,6 +1,6 @@
 from google.appengine.ext import db
 
-from datetime import date
+from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 
 from utils.util_date import get_sample_date_list
@@ -13,6 +13,7 @@ class IndexReviewModel(db.Model):
     _index_list_dump = db.BlobProperty()
     _yoy_1_list_dump = db.BlobProperty()
     _yoy_2_list_dump = db.BlobProperty()
+    update_time = db.DateTimeProperty()
 
     #-> attribute method
     def index_list(self):
@@ -67,6 +68,7 @@ class IndexReviewModel(db.Model):
         t_indexreview._index_list_dump = pickle.dumps(t_sample_index_list)
         t_indexreview._yoy_1_list_dump = pickle.dumps(cls.get_12_yoy_list(t_sample_index_list, 1))
         t_indexreview._yoy_2_list_dump = pickle.dumps(cls.get_12_yoy_list(t_sample_index_list, 2))
+        t_indexreview.update_time = datetime.now()
         t_indexreview.put()
         '''
         logging.debug('save_index_review:\nnav_list:{nav_list}\nyoy_1:\n{yoy_1}\nyoy_2:\n{yoy_2}'.format(
