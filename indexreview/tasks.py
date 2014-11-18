@@ -37,8 +37,8 @@ def fc2_review_cupdate_taskhandler(request):
     try:
         fundcode_list = FundCodeModel.get_codename_list()
         
-        logging.debug('fc2_review_cupdate_taskhandler: debug mode!!!')
-        fundcode_list = fundcode_list[:10]
+        #logging.debug('fc2_review_cupdate_taskhandler: debug mode!!!')
+        #fundcode_list = fundcode_list[:]
 
         fund_index = int(request.REQUEST['PARAM1'])
         logging.info('fc2_review_cupdate_taskhandler: start with index {ind}'.format(ind=fund_index))
