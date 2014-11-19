@@ -9,6 +9,10 @@ urlpatterns = patterns('',
 
      url(r'^statistic/$', 'fundclear2.views.datamodel_statistic_report_view'),
      
+     url(r'^view/zero_nav/$', 'fundclear2.views.zero_nav_fund_list_view'),
+     url(r'^view/disc/$', 'fundclear2.views.year_discontinuous_fund_list_view'),
+     
+     url(r'^func/test7/$', 'fundclear2.tests.test_get_fund_with_err_id'),
      url(r'^func/test6/$', 'fundclear2.tests.test_load_all_nav'),
      url(r'^func/test5/$', 'fundclear2.tests.test_get_nav_by_date'),
      url(r'^func/test4/$', 'fundclear2.tests.test_get_value_list'),

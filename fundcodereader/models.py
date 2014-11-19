@@ -36,6 +36,10 @@ class FundCodeModel(db.Model):
             logging.warning('_update_from_web : Internet Download Error')
             return False
 
+    @classmethod
+    def get_code_list(cls):
+        codename_list = cls.get_codename_list()
+        return [row[0] for row in codename_list]
     
     @classmethod
     def get_codename_list(cls):

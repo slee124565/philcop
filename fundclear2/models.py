@@ -9,6 +9,7 @@ from datetime import date
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
 from indexreview.models import IndexReviewModel
+from fundcodereader.models import FundCodeModel
 
 import csv,StringIO
 import logging,calendar
@@ -35,6 +36,10 @@ class FundClearInfoModel(db.Model):
     
     @classmethod
     def get_fund(cls,p_fund_id):
+        fund_id_list = FundCodeModel.get_code_list()
+        if not p_fund_id in fund_id_list:
+            logging.warning('get_fund: id {fund_id} not in fund id list!'.format(fund_id=p_fund_id))
+            return None
         p_year = str(date.today().year)
         key_name = FundClearInfoModel.compose_key_name(p_fund_id)
         fundinfo = FundClearInfoModel.get_by_key_name(key_name)

@@ -33,3 +33,42 @@ def datamodel_statistic_report_view(request):
     content += '</table>'
     response.content = content
     return response
+
+def zero_nav_fund_list_view():
+    response = HttpResponse(context_type='text/plain')
+    fund_list = _get_zero_nav_fund_list()
+    response.content = str(fund_list)
+    return response
+
+def _get_zero_nav_fund_list():
+    #TODO: return a list of fund which has no any nav for this year
+    fund_list = []
+    
+    return fund_list
+
+def year_discontinuous_fund_list_view(request):
+    response = HttpResponse(context_type='text/plain')
+    fund_list = _get_year_discontinuous_fund_list()
+    response.content = str(fund_list)
+    return response
+    
+def _get_year_discontinuous_fund_list():
+    #TODO: return a list of fund which has discontinuous year data
+    fund_list = []
+    
+    return fund_list
+
+def fund_id_not_in_list_view(request):
+    response = HttpResponse(context_type='text/plain')
+    fund_list = _get_fund_id_not_in_list()
+    response.content = str(fund_list)
+    return response
+    
+    
+def _get_fund_id_not_in_list():
+    #TODO: return a list of fund id which is in datastore but not in fundcodereader list
+    code_list = []
+    
+    return code_list
+
+

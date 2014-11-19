@@ -3,11 +3,11 @@ from google.appengine.api import taskqueue
 
 from datetime import date
 
-from fundclear2.models import FundClearDataModel, FundClearInfoModel
+from fundclear2.models import FundClearDataModel #, FundClearInfoModel
 import fundclear2.models as fc2
 
 from fundcodereader.models import FundCodeModel
-import indexreview.tasks as reviewtask
+#import indexreview.tasks as reviewtask
 
 import logging, os
 
@@ -38,7 +38,6 @@ def funddata_init(request):
     response.status_code = fc2.HTTP_STATUS_CODE_OK
     logging.info('funddata_init: add chain update task')
     return response
-
 
 def chain_update_taskhandler(request):
     '''
@@ -141,7 +140,5 @@ def update_funddata_taskhandler(request):
         logging.warning('update_funddata_taskhandler fail!')
 
     return response
-
-
 
 

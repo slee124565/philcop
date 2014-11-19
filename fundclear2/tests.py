@@ -5,6 +5,16 @@ from datetime import date
 
 import logging
 
+def test_get_fund_with_err_id(request):
+    fund_id = '0'
+    fund = FundClearInfoModel.get_fund(fund_id)
+    response = HttpResponse(content_type='text/plain')
+    if fund is None:
+        response.content = 'no fund for id {fund_id}'.format(fund_id=fund_id)
+    else:
+        response.content = 'get fund:\n' + str(fund.nav_year_dict.items())
+    return response
+    
 def test_load_all_nav(request):
     fund_id = 'LU0069970746'
     t_fund = FundClearInfoModel.get_fund(fund_id)
