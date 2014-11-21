@@ -45,7 +45,7 @@ def fund_analysis_view(request, p_key=None):
     t_thead = ''
     t_tbody = ''
     t_keys = []
-    for (t_code,t_name) in codename_all[:20]:
+    for (t_code,t_name) in codename_all[:]:
         t_reviews = fundtask.get_analysis(t_code)
         if t_thead == '':
             t_thead = '<tr><td>No</td><td>ID</td><td>Name</td>\n'
