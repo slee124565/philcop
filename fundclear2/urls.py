@@ -11,9 +11,6 @@ urlpatterns = patterns('',
      
      url(r'^view/analysis/$', 'fundclear2.views.fund_analysis_view'),
      url(r'^view/analysis/(?P<p_key>\w+)/$', 'fundclear2.views.fund_analysis_view'),
-     url(r'^view/year_nav/$', 'fundclear2.views.year_nav_fund_list_view'),
-     url(r'^view/zero_nav/$', 'fundclear2.views.zero_nav_fund_list_view'),
-     url(r'^view/disc/$', 'fundclear2.views.year_discontinuous_fund_list_view'),
      
      url(r'^func/test7/$', 'fundclear2.tests.test_get_fund_with_err_id'),
      url(r'^func/test6/$', 'fundclear2.tests.test_load_all_nav'),
