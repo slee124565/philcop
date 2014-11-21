@@ -190,7 +190,7 @@ def get_analysis(p_fund_code):
             if t_dict['year_nav_count'] == 0:
                 t_dict['zero_year_nav'] = True
             
-        t_year_list += t_data.year + ', '
+        t_year_list += '{}, '.format(t_data.year)
         if str(check_year) != t_data.year:
             t_dict['has_discontinuous_year'] = True
         else:
