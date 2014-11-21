@@ -9,6 +9,9 @@ urlpatterns = patterns('',
 
      url(r'^statistic/$', 'fundclear2.views.datamodel_statistic_report_view'),
      
+     url(r'^view/analysis/$', 'fundclear2.views.fund_analysis_view'),
+     url(r'^view/analysis/(?P<p_key>\w+)/$', 'fundclear2.views.fund_analysis_view'),
+     url(r'^view/year_nav/$', 'fundclear2.views.year_nav_fund_list_view'),
      url(r'^view/zero_nav/$', 'fundclear2.views.zero_nav_fund_list_view'),
      url(r'^view/disc/$', 'fundclear2.views.year_discontinuous_fund_list_view'),
      

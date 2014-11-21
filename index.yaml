@@ -15,6 +15,12 @@ indexes:
   properties:
   - name: year
 
+- kind: FundClearDataModel
+  ancestor: yes
+  properties:
+  - name: year
+    direction: desc
+
 - kind: GoldInvestModel
   properties:
   - name: currency_type

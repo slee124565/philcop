@@ -3,13 +3,14 @@ from google.appengine.api import taskqueue
 
 from datetime import date
 
-from fundclear2.models import FundClearDataModel #, FundClearInfoModel
+from fundclear2.models import FundClearDataModel, FundClearInfoModel
 import fundclear2.models as fc2
 
 from fundcodereader.models import FundCodeModel
 #import indexreview.tasks as reviewtask
 
 import logging, os
+from fundclear.fcreader import FundInfo
 
 def funddata_update(request):
     response = HttpResponse('funddata_update')
@@ -141,4 +142,104 @@ def update_funddata_taskhandler(request):
 
     return response
 
+def get_db_err_fund_id_list():
+    fund_id_list = []
+    fundclear_id_list = FundCodeModel.get_code_list()
+    fund_query = FundClearInfoModel.all()
+    for t_fund in fund_query:
+        t_id = t_fund.key().name()
+        if not t_id in fundclear_id_list:
+            fund_id_list.append(t_id)
+    return fund_id_list
+    
+def get_analysis(p_fund_code):
+    #TODO: return {key:value} dict
+    '''
+    not_in_fundclear_list
+    year_nav_count
+    has_discontinuous_year
+    '''
+    t_dict = {
+              'not_in_fundclear_list': False,
+              'year_nav_count': 0,
+              'zero_year_nav': False,
+              'has_discontinuous_year': False,
+              'not_update_yet': False,
+              'year_list': 'N/A'
+              }
+    #-> not_in_fundclear_list
+    fundclear_code_list = FundCodeModel.get_code_list()
+    if not p_fund_code in fundclear_code_list:
+        t_dict['not_in_fundclear_list'] = True
+        return t_dict
 
+    #->year_nav_count & has_discontinuous_year & year_list
+    t_fund = FundClearInfoModel.get_by_key_name(FundClearInfoModel.compose_key_name(p_fund_code))
+    if t_fund is None:
+        t_dict['not_update_yet'] = True
+        return t_dict
+    
+    data_query = FundClearDataModel.all().ancestor(t_fund).order('-year')
+    check_year = date.today().year
+    this_year = str(check_year)
+    t_year_list = ''
+    for t_data in data_query:
+        if t_data.year == this_year:
+            nav_dict = t_data._get_nav_dict()
+            t_dict['year_nav_count'] = len(nav_dict)
+            if t_dict['year_nav_count'] == 0:
+                t_dict['zero_year_nav'] = True
+            
+        t_year_list += t_data.year + ', '
+        if str(check_year) != t_data.year:
+            t_dict['has_discontinuous_year'] = True
+        else:
+            check_year -= 1 
+        
+    t_dict['year_list'] = t_year_list
+    return t_dict
+    
+    
+def get_year_nav_fund_list():
+    #TODO: return a list of fund nav number for this year
+
+    codename_all = FundCodeModel.get_codename_list()
+    this_year = date.today().year
+    
+    fund_list = []
+    for t_entry in codename_all[:10]:
+        t_fund_id = t_entry[0]
+        t_fundinfo = FundClearInfoModel.get_by_key_name(FundClearInfoModel.compose_key_name(t_fund_id))
+        if t_fundinfo is None:
+            fund_list.append(t_entry+[0]) 
+        else:
+            t_funddata = FundClearDataModel.all().ancestor(t_fundinfo).filter('year', str(this_year)).get()
+            if t_funddata is None:
+                fund_list.append(t_entry+[0])
+            else:
+                t_nav_dict = t_funddata._get_nav_dict()
+                fund_list.append(t_entry+[len(t_nav_dict)])
+    return fund_list
+    
+    
+def get_zero_nav_fund_list():
+    #TODO: return a list of fund which has no any nav for this year
+    codename_all = FundCodeModel.get_codename_list()
+    this_year = date.today().year
+    
+    zero_fund_list = []
+    for t_entry in codename_all[:20]:
+        t_fund_id = t_entry[0]
+        t_fundinfo = FundClearInfoModel.get_by_key_name(FundClearInfoModel.compose_key_name(t_fund_id))
+        if t_fundinfo is None:
+            zero_fund_list.append(t_entry)
+        else:
+            t_funddata = FundClearDataModel.all().ancestor(t_fundinfo).filter('year', str(this_year)).get()
+            if t_funddata is None:
+                zero_fund_list.append(t_entry)
+            else:
+                t_nav_dict = t_funddata._get_nav_dict()
+                if len(t_nav_dict) == 0:
+                    zero_fund_list.append(t_entry)
+            
+    return zero_fund_list
