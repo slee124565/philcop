@@ -423,30 +423,30 @@ def mf_japan_view_2(request):
         t_content_heads = []
         t_content_rows = {}
         
-        exchange_report = mf_report.report_exchange
+        exchange_report = list(mf_report.report_exchange)
         for t_entry in exchange_report:
             t_content_rows[t_entry[0].strftime("%Y%m%d")] = (t_entry[0].strftime("%Y/%m/%d"), t_entry[1],)
             t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
         t_content_heads.append('Date')
         t_content_heads.append('JPY/TW')
         
-        profit_report = mf_report.report_profit
+        profit_report = list(mf_report.report_profit)
         for t_entry in profit_report:
             t_content_rows[t_entry[0].strftime("%Y%m%d")] += ('{:.2}%'.format(t_entry[1]),)
             t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
         t_content_heads.append('Profit')
         
-        nav_report = mf_report.report_nav
+        nav_report = list(mf_report.report_nav)
         for t_entry in nav_report:
             t_content_rows[t_entry[0].strftime("%Y%m%d")] += (t_entry[1],)
             t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
         t_content_heads.append('NAV')
     
-        cost_report = mf_report.report_cost
+        cost_report = list(mf_report.report_cost)
         for t_entry in cost_report:
             t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000        
         
-        cost_report_2 = mf_report.report_cost2
+        cost_report_2 = list(mf_report.report_cost2)
         for t_entry in cost_report_2:
             t_content_rows[t_entry[0].strftime("%Y%m%d")] += (t_entry[1],)
         t_content_heads.append('Cost')
