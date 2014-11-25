@@ -1,0 +1,11 @@
+{% extends "dashboard.tpl.html" %}
+{% load static %}
+
+{% block tpl_dashboard_main %}
+  <h2 class="sub-header">{{ tpl_section_title|default:"tpl_section_title"|safe }}</h2>
+  <div>{{ tpl_info|default:"tpl_info"|safe }}</div>
+{% endblock %}
+
+{% block tpl_script %}
+{% endblock %}
+	

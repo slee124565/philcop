@@ -12,7 +12,8 @@ from fundclear.models import FundClearModel
 from utils.util_bollingerbands import get_bollingerbands
 from utils.util_date import get_sample_date_list_2
 
-from fundclear2.models import FundClearInfoModel
+from fundclear2.models import FundClearInfoModel,FundClearDataModel
+import fundclear2.models as fc2
 from fundcodereader.models import FundCodeModel
 from indexreview.models import IndexReviewModel
 
@@ -23,17 +24,27 @@ BB_VIEW_MONTHS = 12
 def list_all_fund_view(request):
     t_fundcode_list = FundCodeModel.get_codename_list()
     
-    content_head_list = ['Code', 'Name', 'BB View', 'NAV View']
+    content_head_list = ['Code', 'Name', 'BB View', 'NAV View', 'Year Detail','SRC View']
     content_rows = []
+    this_year = date.today().year
+    t_begin_date = date(this_year-2,1,1).strftime("%Y/%m/%d")
+    t_end_date = date.today().strftime("%Y/%m/%d")
     
     for t_entry in t_fundcode_list:
         #t_entry[2] = '<a href="/mf/bb/'+t_entry[1]+'/">' + t_entry[2] + "</a>"
         #t_entry[2] = '<a href="/fc/flot/'+t_entry[1]+'/">' + t_entry[2] + "</a>"
+        src_url = fc2.URL_TEMPLATE.format(fund_id=t_entry[0],
+                                          begin_date=t_begin_date,
+                                          end_date=t_end_date)
         content_rows.append([
                              t_entry[0],
                              t_entry[1],
                              '<a href="/mf/fc/bb/'+t_entry[0]+'/">BB View</a>',
                              '<a href="/mf/fc/nav/'+t_entry[0]+'/">NAV View</a>',
+                             '<a href="/mf/fc/nav_str/{}/{}/">{}</a>'.format(t_entry[0],
+                                                                             date.today().year,
+                                                                             date.today().year),
+                             '<a href="{}">View</a>'.format(src_url),
                              ])
     
     tbl_content = {
@@ -47,7 +58,43 @@ def list_all_fund_view(request):
             }
     return render_to_response('mf_simple_table.tpl.html', args)
 
-
+def fund_nav_str_view(request,p_fund_id,p_year):
+    try:
+        t_fund = FundClearInfoModel.get_fund(p_fund_id)
+        t_fdata = FundClearDataModel.get_by_key_name(
+                                                    FundClearDataModel.compose_key_name(p_fund_id, p_year),
+                                                    t_fund)
+        nav_dict = t_fdata._get_nav_dict()
+        nav_dict = collections.OrderedDict(sorted(nav_dict.items()))
+        nav_info = ''
+        for t_key, t_entry in nav_dict.items():
+            nav_info += '{}:{}<br>\n'.format(t_key,t_entry)
+        next_year = int(p_year) - 1
+        t_fdata = FundClearDataModel.get_by_key_name(
+                                                    FundClearDataModel.compose_key_name(p_fund_id, next_year),
+                                                    t_fund)
+        if t_fdata is None or len(t_fdata._get_nav_dict())==0:
+            next_year_link = 'NAV End'
+        else:
+            next_year_link = '<a href="/mf/fc/nav_str/{}/{}/">{}</a>'.format(p_fund_id,
+                                                                         next_year,
+                                                                         'next')
+        args = {
+                'tpl_section_title': 'fund {} year {}, {}'.format(p_fund_id
+                                                                ,p_year,
+                                                                next_year_link),
+                'tpl_info': nav_info,
+                }
+        return render_to_response('mf_simple_info.tpl.html',args)
+        
+    except Exception, e:
+        err_msg = 'fund_nav_table_view: err {}'.format(e)
+        logging.error(err_msg)
+        args = {
+                'tpl_info': err_msg,
+                }
+        return render_to_response('mf_simple_info.tpl.html',args)
+    
 def nav_view(request,p_fund_id):
     
     f_fund_id = p_fund_id
