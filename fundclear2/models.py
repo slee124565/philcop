@@ -106,7 +106,7 @@ class FundClearInfoModel(db.Model):
         value_list = t_year_nav.values()
         value_list.sort(key=lambda x: x[0])
         #logging.debug('get_value_list_for_year {year}\n{value_list}'.format(year=p_year,value_list=str(value_list)))
-        return value_list
+        return list(value_list)
     
     def get_index_list(self):
         '''
