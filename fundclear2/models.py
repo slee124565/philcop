@@ -12,7 +12,7 @@ from indexreview.models import IndexReviewModel
 from fundcodereader.models import FundCodeModel
 
 import csv,StringIO
-import logging,calendar,copy
+import logging
 
 HTTP_STATUS_CODE_OK = 200
 HTTP_STATUS_CODE_SERVER_ERROR = 500
@@ -49,7 +49,7 @@ class FundClearInfoModel(db.Model):
                 fundinfo = FundClearInfoModel.get_by_key_name(key_name)
             else:
                 return None
-
+        fundinfo.nav_year_dict = {}
         fundinfo._load_year_nav(p_year)
 
         #-> check if today's nav exist
@@ -125,12 +125,9 @@ class FundClearInfoModel(db.Model):
         this_year = date.today().year
         value_list = []
         while t_year <= this_year:
-            self._load_year_nav(t_year)
-            '''
             if not str(t_year) in self.nav_year_dict.keys():
                 self._load_year_nav(t_year)
                 logging.debug('get_value_list: load year nav {}'.format(t_year))
-            '''
             if str(t_year) in self.nav_year_dict.keys():
                 t_year_list = self.nav_year_dict[str(t_year)].values()
                 value_list += t_year_list
