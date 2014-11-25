@@ -80,7 +80,7 @@ def test_load_year_nav(reqeust):
     
 def test_update_from_web(request):
     fund_id = '618344'
-    year = date.today().year-1
+    year = date.today().year
     
     response = HttpResponse(content_type='text/plain')
     
