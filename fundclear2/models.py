@@ -129,7 +129,7 @@ class FundClearInfoModel(db.Model):
             if str(t_year) in self.nav_year_dict.keys():
                 t_year_list = self.nav_year_dict[str(t_year)].values()
                 value_list += t_year_list
-                logging.debug('get_value_list: add year nav {}\n{}'.format(t_year))
+                logging.debug('get_value_list: add year nav {}'.format(t_year))
             t_year += 1
                 
         value_list.sort(key=lambda x: x[0])
