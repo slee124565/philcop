@@ -167,7 +167,7 @@ def bb_view(request,p_fund_id):
         return render_to_response('mf_simple_flot.tpl.html',args)
     else:
         year_since = date.today().year - 5
-        t_value_list = list(t_fund.get_value_list(year_since))
+        t_value_list = t_fund.get_value_list(year_since)
         sma,tb1,tb2,bb1,bb2 = get_bollingerbands(t_value_list)
         
         t_view_date_since = date.today() + relativedelta(months=-BB_VIEW_MONTHS)
@@ -199,7 +199,7 @@ def bb_view(request,p_fund_id):
         
         args = {
                 'tpl_img_header' : t_fund.title,
-                'tpl_section_title' : ' ',
+                'tpl_section_title' : str(t_value_list),
                 'plot' : plot,
                 }
         
