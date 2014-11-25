@@ -113,7 +113,7 @@ def nav_view(request,p_fund_id):
     t_content_heads = []
     t_content_rows = {}
     
-    t_nav_list = t_review.index_list()
+    t_nav_list = list(t_review.index_list())
     for t_entry in t_nav_list:
         t_content_rows[t_entry[0].strftime('%Y%m%d')] = (t_entry[0].strftime('%Y/%m/%d'),)
         t_content_rows[t_entry[0].strftime('%Y%m%d')] += (t_entry[1],)
@@ -121,13 +121,13 @@ def nav_view(request,p_fund_id):
     t_content_heads.append('Date')
     t_content_heads.append('NAV')
     
-    t_yoy_1_list = t_review.yoy_list(1)
+    t_yoy_1_list = list(t_review.yoy_list(1))
     for t_entry in t_yoy_1_list:
         t_content_rows[t_entry[0].strftime('%Y%m%d')] += ('{:.2f}%'.format(t_entry[1]),)
         t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000 
     t_content_heads.append('YoY_1')
     
-    t_yoy_2_list = t_review.yoy_list(2)
+    t_yoy_2_list = list(t_review.yoy_list(2))
     for t_entry in t_yoy_2_list:
         t_content_rows[t_entry[0].strftime('%Y%m%d')] += ('{:.2f}%'.format(t_entry[1]),)
         t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000 
@@ -167,7 +167,7 @@ def bb_view(request,p_fund_id):
         return render_to_response('mf_simple_flot.tpl.html',args)
     else:
         year_since = date.today().year - 5
-        t_value_list = t_fund.get_value_list(year_since)
+        t_value_list = list(t_fund.get_value_list(year_since))
         sma,tb1,tb2,bb1,bb2 = get_bollingerbands(t_value_list)
         
         t_view_date_since = date.today() + relativedelta(months=-BB_VIEW_MONTHS)
