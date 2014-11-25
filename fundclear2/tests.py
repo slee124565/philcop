@@ -44,8 +44,10 @@ def test_get_nav_by_date(request):
     
 def test_get_value_list(request):
     fund_id = '618344' #'CIFGHIOT'
+    fund_id = request.REQUEST['id']
     fund = FundClearInfoModel.get_fund(fund_id)
-    value_list = fund.get_value_list(2013)
+    year_since = date.today().year - 5
+    value_list = fund.get_value_list(year_since)
     t_content = ''
     for t_entry in value_list:
         t_content += str(t_entry) + '\n'
