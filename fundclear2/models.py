@@ -125,9 +125,12 @@ class FundClearInfoModel(db.Model):
         this_year = date.today().year
         value_list = []
         while t_year <= this_year:
+            self._load_year_nav(t_year)
+            '''
             if not str(t_year) in self.nav_year_dict.keys():
                 self._load_year_nav(t_year)
                 logging.debug('get_value_list: load year nav {}'.format(t_year))
+            '''
             if str(t_year) in self.nav_year_dict.keys():
                 t_year_list = self.nav_year_dict[str(t_year)].values()
                 value_list += t_year_list
@@ -135,7 +138,7 @@ class FundClearInfoModel(db.Model):
             t_year += 1
                 
         value_list.sort(key=lambda x: x[0])
-        return copy.copy(value_list)
+        return list(value_list)
 
     def get_nav_by_date(self, p_date):
         t_date = p_date        
