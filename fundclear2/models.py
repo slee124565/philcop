@@ -58,7 +58,7 @@ class FundClearInfoModel(db.Model):
             FundClearDataModel._update_from_web(p_fund_id, p_year)
             fundinfo._load_year_nav(p_year)
         
-        logging.debug('get_fund: with id {}'.format(p_fund_id))
+        logging.debug('get_fund: with id {} success'.format(p_fund_id))
         return fundinfo
     
     def get_sample_value_list(self, p_date_list):
@@ -131,11 +131,11 @@ class FundClearInfoModel(db.Model):
             if str(t_year) in self.nav_year_dict.keys():
                 t_year_list = self.nav_year_dict[str(t_year)].values()
                 value_list += t_year_list
-                logging.debug('get_value_list: add year nav {}'.format(t_year))
+                logging.debug('get_value_list: add year nav {}\n{}'.format(t_year,str(t_year_list)))
             t_year += 1
                 
         value_list.sort(key=lambda x: x[0])
-        return value_list
+        return list(value_list)
 
     def get_nav_by_date(self, p_date):
         t_date = p_date        
