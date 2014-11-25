@@ -199,7 +199,7 @@ def bb_view(request,p_fund_id):
         
         args = {
                 'tpl_img_header' : t_fund.title,
-                'tpl_section_title' : str(t_value_list),
+                'tpl_section_title' : ' ',
                 'plot' : plot,
                 }
         
