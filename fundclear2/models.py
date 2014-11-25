@@ -232,7 +232,6 @@ class FundClearDataModel(db.Model):
                 
                 t_count = 0
                 t_added = 0
-                this_date = date.today().strftime("%Y/%m/%d")
                 csv_content = CSV_ITEM_KEY_DATE + ',' + CSV_ITEM_KEY_NAV + '\n'
                 while (t_count < len(dataset)):
                     #logging.info('t_count ' + str(t_count))
@@ -245,11 +244,7 @@ class FundClearDataModel(db.Model):
                             continue
                         else:
                             #logging.warning('replace value with previous one, date ' + str(dataset[t_count]))
-                            if this_date == t_date:
-                                logging.debug('_update_from_web: end of today')
-                                break
-                            else:
-                                dataset[t_count][1] = dataset[t_count-1][1]
+                            dataset[t_count][1] = dataset[t_count-1][1]
                     #if (t_count > 192):
                     #    logging.info('DEBUG:' + str([t_date,t_value]))
                     csv_content += dataset[t_count][0] + ',' + str(float(dataset[t_count][1])) + '\n'
