@@ -170,81 +170,102 @@ def db_scan_taskhandler(request):
     '''
     #TODO:
     #response = HttpResponse(content_type='text/plain')
-    response = HttpResponse('db_scan_taskhandler')
+    try:
+        response = HttpResponse('db_scan_taskhandler')
+        
+        scan_dict_mem = memcache.get(KEY_FUND_SCAN)
+        if scan_dict_mem:
+            scan_dict = pickle.loads(scan_dict_mem)
+            
+        all_fund_in_db = FundClearInfoModel.all()
+        fund_cursor = memcache.get(KEY_FUND_CURSOR)
+        if fund_cursor:
+            all_fund_in_db.with_cursor(start_cursor=fund_cursor)
+            logging.debug('db_scan_taskhandler: with cursor {}'.format(fund_cursor))
+        else:
+            scan_dict = {
+                         'not_in_fundclear_list': [],   #-> remove from db or fund closed
+                         'zero_year_nav': [],           #-> fund closed
+                         'has_discontinuous_year': [],  #-> need update
+                         'not_update_yet': [],          #-> need update
+                         }
+        
+        code_list_all = FundCodeModel.get_code_list()
+        t_content = ''
+        t_fetch_fund_list = all_fund_in_db.fetch(limit=FUND_DB_SCAN_SIZE)
+        for t_fund in t_fetch_fund_list:
+            t_code = t_fund.key().name()
+            t_content += '{} <br/>\n'.format(t_code)
+            
+            #->not_in_fundclear_list
+            if not t_code in code_list_all:
+                scan_dict['not_in_fundclear_list'].append(t_code)
+            
+            #-> zero_year_nav & has_discontinuous_year
+            data_query = FundClearDataModel.all().ancestor(t_fund).order('-year')
+            check_year = date.today().year
+            this_year = str(check_year)
+            t_year_list = ''
+            for t_data in data_query:
+                if t_data.year == this_year:
+                    nav_dict = t_data._get_nav_dict()
+                    if len(nav_dict) == 0:
+                        scan_dict['zero_year_nav'].append(t_code)
+                t_year_list += '{}, '.format(t_data.year)
+                if str(check_year) != t_data.year:
+                    scan_dict['has_discontinuous_year'].append(t_code)
+                    break
+                else:
+                    check_year -= 1 
+            
+        if len(t_fetch_fund_list) == FUND_DB_SCAN_SIZE:
+            fund_cursor = all_fund_in_db.cursor()
+            memcache.set(KEY_FUND_CURSOR,fund_cursor)
+            t_content += 'cursor: {}<br/>\n'.format(fund_cursor)
+            t_content += '<a href="{}">next page</a>'.format(get_db_scan_taskhandler_url())
+            taskqueue.add(method = 'GET', 
+                          url = get_db_scan_taskhandler_url(),
+                          countdown = 3,
+                          )
+        else:
+            memcache.delete(KEY_FUND_CURSOR)
+            #-> not_update_yet
+            for t_code in code_list_all:
+                t_fund = FundClearInfoModel.get_by_key_name(FundClearInfoModel.compose_key_name(t_code))
+                if t_fund is None:
+                    scan_dict['not_update_yet'].append(t_code)
+            t_content += 'End of Scan<br/>\n'
+            logging.info('db_scan_taskhandler: end of scan, result:\n{}'.format(str(scan_dict)))
+            
+        
+        memcache.set(KEY_FUND_SCAN,pickle.dumps(scan_dict))
     
-    scan_dict_mem = memcache.get(KEY_FUND_SCAN)
-    if scan_dict_mem:
-        scan_dict = pickle.loads(scan_dict_mem)
-        
-    all_fund_in_db = FundClearInfoModel.all()
-    fund_cursor = memcache.get(KEY_FUND_CURSOR)
-    if fund_cursor:
-        all_fund_in_db.with_cursor(start_cursor=fund_cursor)
-        logging.debug('db_scan_taskhandler: with cursor {}'.format(fund_cursor))
-    else:
-        scan_dict = {
-                     'not_in_fundclear_list': [],   #-> remove from db or fund closed
-                     'zero_year_nav': [],           #-> fund closed
-                     'has_discontinuous_year': [],  #-> need update
-                     'not_update_yet': [],          #-> need update
-                     }
+        response.content = t_content
+        response.status_code = httplib.OK        
+        return response
     
-    code_list_all = FundCodeModel.get_code_list()
-    t_content = ''
-    t_fetch_fund_list = all_fund_in_db.fetch(limit=FUND_DB_SCAN_SIZE)
-    for t_fund in t_fetch_fund_list:
-        t_code = t_fund.key().name()
-        t_content += '{} <br/>\n'.format(t_code)
+    except Exception, e:
+        err_msg = '{}'.format(e)
+        logging.error('db_scan_taskhandler: err {}'.format(err_msg))
+        response.status_code = httplib.OK        
+        return response
         
-        #->not_in_fundclear_list
-        if not t_code in code_list_all:
-            scan_dict['not_in_fundclear_list'].append(t_code)
-        
-        #-> zero_year_nav & has_discontinuous_year
-        data_query = FundClearDataModel.all().ancestor(t_fund).order('-year')
-        check_year = date.today().year
-        this_year = str(check_year)
-        t_year_list = ''
-        for t_data in data_query:
-            if t_data.year == this_year:
-                nav_dict = t_data._get_nav_dict()
-                if len(nav_dict) == 0:
-                    scan_dict['zero_year_nav'].append(t_code)
-            t_year_list += '{}, '.format(t_data.year)
-            if str(check_year) != t_data.year:
-                scan_dict['has_discontinuous_year'].append(t_code)
-                break
-            else:
-                check_year -= 1 
-        
-    if len(t_fetch_fund_list) == FUND_DB_SCAN_SIZE:
-        fund_cursor = all_fund_in_db.cursor()
-        memcache.set(KEY_FUND_CURSOR,fund_cursor)
-        t_content += 'cursor: {}<br/>\n'.format(fund_cursor)
-        t_content += '<a href="{}">next page</a>'.format(get_db_scan_taskhandler_url())
-        taskqueue.add(method = 'GET', 
-                      url = get_db_scan_taskhandler_url(),
-                      countdown = 3,
-                      )
-    else:
-        memcache.delete(KEY_FUND_CURSOR)
-        #-> not_update_yet
-        for t_code in code_list_all:
-            t_fund = FundClearInfoModel.get_by_key_name(FundClearInfoModel.compose_key_name(t_code))
-            if t_fund is None:
-                scan_dict['not_update_yet'].append(t_code)
-        t_content += 'End of Scan<br/>\n'
-        logging.info('db_scan_taskhandler: end of scan, result:\n{}'.format(str(scan_dict)))
-        
-    
-    memcache.set(KEY_FUND_SCAN,pickle.dumps(scan_dict))
 
+def db_scan_review(request):
+    response = HttpResponse(content_type='text/plain')
+    t_content = ''
+    mem_scan_dict = memcache.get(KEY_FUND_SCAN)
+    if mem_scan_dict:
+        scan_dict = pickle.loads(mem_scan_dict)
+        for t_key in scan_dict.keys():
+            t_content += '{}:\n{}\n'.format(t_key,str(scan_dict[t_key]))
+    else:
+        t_content = 'no db scan result to display'
+    
     response.content = t_content
-    response.status_code = httplib.OK        
     return response
+    
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    
-    
     
     
 def get_db_err_fund_id_list():
