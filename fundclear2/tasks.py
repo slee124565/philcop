@@ -200,11 +200,6 @@ def db_scan_taskhandler(request):
         if not t_code in code_list_all:
             scan_dict['not_in_fundclear_list'].append(t_code)
         
-        #-> zero_year_nav
-        this_year = date.today().year
-        if len(t_fund.get_year_nav_dict(this_year)) == 0:
-            scan_dict['zero_year_nav'].append(t_code)
-        
         #-> zero_year_nav & has_discontinuous_year
         data_query = FundClearDataModel.all().ancestor(t_fund).order('-year')
         check_year = date.today().year
