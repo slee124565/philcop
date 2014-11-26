@@ -6,6 +6,8 @@ urlpatterns = patterns('',
      url(r'^task/update/$', 'fundclear2.tasks.funddata_update'),
      url(r'^task/dupdate/$', 'fundclear2.tasks.update_funddata_taskhandler'),
      url(r'^task/cupdate/$', 'fundclear2.tasks.chain_update_taskhandler'),
+     url(r'^task/db_scan/$', 'fundclear2.tasks.db_scan_task'),
+     url(r'^task/db_scan_task/$', 'fundclear2.tasks.db_scan_taskhandler'),
 
      url(r'^statistic/$', 'fundclear2.views.datamodel_statistic_report_view'),
      
