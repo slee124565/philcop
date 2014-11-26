@@ -12,7 +12,7 @@ from indexreview.models import IndexReviewModel
 from fundcodereader.models import FundCodeModel
 
 import csv,StringIO
-import logging
+import logging, codecs
 
 HTTP_STATUS_CODE_OK = 200
 HTTP_STATUS_CODE_SERVER_ERROR = 500
@@ -195,22 +195,25 @@ class FundClearDataModel(db.Model):
         try :
             web_fetch = urlfetch.fetch(url)
             if web_fetch.status_code == HTTP_STATUS_CODE_OK:
-                web_content = document_fromstring(str(web_fetch.content).decode('big5'))
+                #logging.debug('web_content:\n{}'.format(web_fetch.content))
+                #web_content = document_fromstring(str(web_fetch.content).decode('big5'))
+                #web_content = document_fromstring(codecs.decode(web_fetch.content,'big5').encode('utf-8'))
+                web_content = document_fromstring(codecs.decode(web_fetch.content,'big5','ignore'))
+                #web_content = document_fromstring(web_fetch.content)
                 
                 #xpath: /html/body/table/tbody/tr[1]/td/table/tbody/tr[2]/td/table[2]/tbody
                 #t_tables = web_content.xpath("/html/body/table/tr[1]/td/table/tr[2]/td/table[2]")
                 #return etree.tostring(t_tables[0])
                 
                 t_tables = web_content.xpath("//table")
+                #logging.debug('table len: {}'.format(len(t_tables)))
                 TABLE_TITLE_INDEX = 4
                 TABLE_NAV_INDEX_START = 5
                 
                 fund_title = t_tables[TABLE_TITLE_INDEX][0][0].text.replace('\r\n','')
-                #logging.debug('get fund title: ' + fund_title)
-                if model_parent.title == '':
-                    model_parent.title = fund_title
-                    model_parent.put()
-                    logging.info('Fund title saved.')
+                #fund_title = codecs.encode(fund_title,'utf-8','ignore')
+                #logging.debug('get fund title: {}'.format(fund_title))
+                model_parent.title = fund_title
                 
                 dataset = []
                 t_total = len(t_tables)

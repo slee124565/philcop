@@ -199,7 +199,9 @@ def db_scan_taskhandler(request):
             
             #->not_in_fundclear_list
             if not t_code in code_list_all:
-                scan_dict['not_in_fundclear_list'].append(t_code)
+                if not t_code in scan_dict['not_in_fundclear_list']:
+                    scan_dict['not_in_fundclear_list'].append(t_code)
+                    logging.info('db_scan_taskhandler: {} not in fundclear list'.format(t_code))
             
             #-> zero_year_nav & has_discontinuous_year
             data_query = FundClearDataModel.all().ancestor(t_fund).order('-year')
@@ -210,10 +212,14 @@ def db_scan_taskhandler(request):
                 if t_data.year == this_year:
                     nav_dict = t_data._get_nav_dict()
                     if len(nav_dict) == 0:
-                        scan_dict['zero_year_nav'].append(t_code)
+                        if not t_code in scan_dict['zero_year_nav']:
+                            scan_dict['zero_year_nav'].append(t_code)
+                            logging.info('db_scan_taskhandler: {} has zero nav in year {}'.format(t_code,this_year))
                 t_year_list += '{}, '.format(t_data.year)
                 if str(check_year) != t_data.year:
-                    scan_dict['has_discontinuous_year'].append(t_code)
+                    if not t_code in scan_dict['has_discontinuous_year']:
+                        scan_dict['has_discontinuous_year'].append(t_code)
+                        logging.info('db_scan_taskhandler: {} year {} with check {} not equal'.format(t_code,t_data.year,check_year))
                     break
                 else:
                     check_year -= 1 
@@ -233,7 +239,9 @@ def db_scan_taskhandler(request):
             for t_code in code_list_all:
                 t_fund = FundClearInfoModel.get_by_key_name(FundClearInfoModel.compose_key_name(t_code))
                 if t_fund is None:
-                    scan_dict['not_update_yet'].append(t_code)
+                    if not t_code in scan_dict['not_update_yet']:
+                        scan_dict['not_update_yet'].append(t_code)
+                        logging.info('db_scan_taskhandler: {} not update yet'.format(t_code))
             t_content += 'End of Scan<br/>\n'
             logging.info('db_scan_taskhandler: end of scan, result:\n{}'.format(str(scan_dict)))
             

@@ -88,7 +88,7 @@ def fund_nav_str_view(request,p_fund_id,p_year):
         return render_to_response('mf_simple_info.tpl.html',args)
         
     except Exception, e:
-        err_msg = 'fund_nav_table_view: err {}'.format(e)
+        err_msg = 'fund_nav_table_view ERROR: {}'.format(e)
         logging.error(err_msg)
         args = {
                 'tpl_info': err_msg,
