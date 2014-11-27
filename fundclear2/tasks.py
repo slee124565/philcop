@@ -93,6 +93,36 @@ def chain_update_taskhandler(request):
     response.status_code = httplib.OK
     return response
 
+def get_reload_funddata_taskhandler_url(p_fund_id):
+    return '/fc2/task/reload/?PARAM1={}'.format(p_fund_id)
+
+def reload_funddata_taskhandler(request):
+    '''
+    reload task should delete all existing entity and then start a download all task
+    '''
+    try:
+        response = HttpResponse('reload_funddata_taskhandler')
+        p_fund_id = str(request.REQUEST['PARAM1'])
+        t_fund = FundClearInfoModel.get_fund(p_fund_id)
+        for t_data in FundClearDataModel.all().ancestor(t_fund):
+            logging.debug('reload_funddata_taskhandler: remove FundClearDataModel key {}'.format(
+                                                                                t_data.key().name()))
+            t_data.delete()
+            
+        taskqueue.add(method = 'GET', 
+                      url = get_update_funddata_taskhandler_url(p_fund_id=p_fund_id,
+                                                                p_type='all'),
+                      countdown = 3,
+                      )
+        logging.debug('reload_funddata_taskhandler: add update task for {}'.format(p_fund_id))
+        response.status_code = httplib.OK
+        return response
+    except Exception, e:
+        err_msg = '{}'.format(e)
+        logging.error('reload_funddata_taskhandler ERROR: {}'.format(err_msg))
+        response.status_code = httplib.INTERNAL_SERVER_ERROR
+        return response
+    
 def get_update_funddata_taskhandler_url(p_fund_id,p_year_end=date.today().year,p_type=''):
     return '/fc2/task/dupdate/?PARAM1={}&PARAM2={}&PARAM3={}'.format(p_fund_id,p_year_end,p_type)
 

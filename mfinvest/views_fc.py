@@ -42,13 +42,15 @@ def list_all_fund_view(request):
                              t_entry[1],
                              '<a href="/mf/fc/bb/'+t_entry[0]+'/">BB View</a>',
                              '<a href="/mf/fc/nav/'+t_entry[0]+'/">NAV View</a>',
-                             '<a href="{}">Reload</a>'.format(fc2task.get_update_funddata_taskhandler_url(
-                                                                                            p_fund_id=t_entry[0],
-                                                                                            p_type='all')),
+                             '<a target="_blank" href="{}">Reload</a>'.format(
+                                                        fc2task.get_reload_funddata_taskhandler_url(
+                                                                    p_fund_id=t_entry[0]
+                                                                    )
+                                                        ),
                              '<a href="/mf/fc/nav_str/{}/{}/">{}</a>'.format(t_entry[0],
                                                                              date.today().year,
                                                                              date.today().year),
-                             '<a href="{}">View</a>'.format(src_url),
+                             '<a target="_blank" href="{}">View</a>'.format(src_url),
                              ])
     
     tbl_content = {
@@ -92,7 +94,7 @@ def fund_nav_str_view(request,p_fund_id,p_year):
         return render_to_response('mf_simple_info.tpl.html',args)
         
     except Exception, e:
-        err_msg = 'fund_nav_table_view ERROR: {}'.format(e)
+        err_msg = 'fund_nav_str_view ERROR: {}'.format(e)
         logging.error(err_msg)
         args = {
                 'tpl_info': err_msg,
