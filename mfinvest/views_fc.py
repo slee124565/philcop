@@ -14,6 +14,7 @@ from utils.util_date import get_sample_date_list_2
 
 from fundclear2.models import FundClearInfoModel,FundClearDataModel
 import fundclear2.models as fc2
+import fundclear2.tasks as fc2task
 from fundcodereader.models import FundCodeModel
 from indexreview.models import IndexReviewModel
 
@@ -24,7 +25,7 @@ BB_VIEW_MONTHS = 12
 def list_all_fund_view(request):
     t_fundcode_list = FundCodeModel.get_codename_list()
     
-    content_head_list = ['Code', 'Name', 'BB View', 'NAV View', 'Year Detail','SRC View']
+    content_head_list = ['Code', 'Name', 'BB View', 'NAV View', 'Update', 'Year Detail','SRC View']
     content_rows = []
     this_year = date.today().year
     t_begin_date = date(this_year-2,1,1).strftime("%Y/%m/%d")
@@ -41,6 +42,9 @@ def list_all_fund_view(request):
                              t_entry[1],
                              '<a href="/mf/fc/bb/'+t_entry[0]+'/">BB View</a>',
                              '<a href="/mf/fc/nav/'+t_entry[0]+'/">NAV View</a>',
+                             '<a href="{}">Reload</a>'.format(fc2task.get_update_funddata_taskhandler_url(
+                                                                                            p_fund_id=t_entry[0],
+                                                                                            p_type='all')),
                              '<a href="/mf/fc/nav_str/{}/{}/">{}</a>'.format(t_entry[0],
                                                                              date.today().year,
                                                                              date.today().year),

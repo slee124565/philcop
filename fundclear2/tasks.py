@@ -93,6 +93,9 @@ def chain_update_taskhandler(request):
     response.status_code = httplib.OK
     return response
 
+def get_update_funddata_taskhandler_url(p_fund_id,p_year_end=date.today().year,p_type=''):
+    return '/fc2/task/dupdate/?PARAM1={}&PARAM2={}&PARAM3={}'.format(p_fund_id,p_year_end,p_type)
+
 def update_funddata_taskhandler(request):
     '''
     function request 3 param: fund_id, download_year, update_type
@@ -219,7 +222,11 @@ def db_scan_taskhandler(request):
                 if str(check_year) != t_data.year:
                     if not t_code in scan_dict['has_discontinuous_year']:
                         scan_dict['has_discontinuous_year'].append(t_code)
-                        logging.info('db_scan_taskhandler: {} year {} with check {} not equal'.format(t_code,t_data.year,check_year))
+                        logging.info('db_scan_taskhandler: {} year {} with check {} not equal; {}'.format(
+                                                                                                          t_code,
+                                                                                                          t_data.year,
+                                                                                                          check_year,
+                                                                                                          t_year_list))
                     break
                 else:
                     check_year -= 1 
