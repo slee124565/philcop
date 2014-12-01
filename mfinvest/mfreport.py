@@ -105,7 +105,7 @@ class MFReport():
         
         #-> date_begin: the end day of the month which 12 months ago
         t_date_sample_start = date.today() - relativedelta(months=+12)
-        self.date_begin = date(t_date_sample_start.year,t_date_sample_start.month+1,1) - relativedelta(days=+1)
+        self.date_begin = date(t_date_sample_start.year,t_date_sample_start.month,1) - relativedelta(months=+1,days=+1)
         
         #-> date_end: yesterday
         self.date_end = date.today() - relativedelta(days=+1)
