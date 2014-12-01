@@ -80,6 +80,7 @@ def add_my_trade(request):
         ['2014/8/1', 80000.0, 25.0, exchange.CURRENCY_TWD, 63.72, 1255.49, 1.0],
         ['2014/9/1', 80000.0, 25.0, exchange.CURRENCY_TWD, 66.29, 1206.82, 1.0],
         ['2014/10/1', 80000.0, 25.0, exchange.CURRENCY_TWD, 66.47, 1203.55, 1.0],
+        ['2014/11/1', 80000.0, 25.0, exchange.CURRENCY_TWD, 68.61, 1166.01, 1.0],
                      ]
     
     for t_trade in my_trade_logs:
