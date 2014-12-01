@@ -256,12 +256,19 @@ class FundClearDataModel(db.Model):
                     #dataset[t_count][1] = float(dataset[t_count][1])
                     t_count += 1
                 #return csv_content
-                fund.year = str(p_year)
-                fund.content_csv = csv_content
-                fund.put()
-                logging.info('Fund {id} with year {year} with item {item} saved.'.format(
-                                                                        id=str(p_fund_id),
-                                                                        year=str(p_year),
+                if t_added > 0:
+                    fund.year = str(p_year)
+                    fund.content_csv = csv_content
+                    fund.put()
+                    logging.info('Fund {id} with year {year} with item {item} saved.'.format(
+                                                                            id=str(p_fund_id),
+                                                                            year=str(p_year),
+                                                                                item=t_added))
+                else:
+                    fund.delete()
+                    logging.info('Fund {id} with year {year} with item {item}, skip save.'.format(
+                                                                            id=str(p_fund_id),
+                                                                            year=str(p_year),
                                                                             item=t_added))
                 return True
             else:

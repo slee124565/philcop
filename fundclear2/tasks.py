@@ -53,7 +53,7 @@ def chain_update_taskhandler(request):
 
     codename_list = FundCodeModel.get_codename_list()
     #codename_list = codename_list[:5]
-    response = HttpResponse('update_funddata_taskhandler with code_index {code_index}'.format(code_index=p_code_index))
+    response = HttpResponse('chain_update_taskhandler with code_index {code_index}'.format(code_index=p_code_index))
     if p_code_index < len(codename_list):
         #-> add update_funddata_task for p_code_index
         p_code = codename_list[p_code_index][0]
@@ -88,7 +88,6 @@ def chain_update_taskhandler(request):
             '''
     else:
         logging.warning('chain_update_taskhandler: code index {code_index} param error'.format(code_index=p_code_index))
-    pass
 
     response.status_code = httplib.OK
     return response
@@ -168,11 +167,12 @@ def update_funddata_taskhandler(request):
                                         'PARAM3': p_type,
                                         })
     
+        return response
     else:
         response.status_code = httplib.INTERNAL_SERVER_ERROR
         logging.warning('update_funddata_taskhandler fail!')
+        return response
 
-    return response
 
 KEY_FUND_CURSOR = 'fund_cursor'
 KEY_FUND_SCAN = 'fund_scan_result_dict'
