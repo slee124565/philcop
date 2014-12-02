@@ -192,6 +192,7 @@ class FundClearDataModel(db.Model):
                                   end_date=end_date)
         logging.info('_update_from_web, url: ' + url)
 
+        csv_content = CSV_ITEM_KEY_DATE + ',' + CSV_ITEM_KEY_NAV + '\n'
         try :
             web_fetch = urlfetch.fetch(url)
             if web_fetch.status_code == HTTP_STATUS_CODE_OK:
@@ -235,7 +236,6 @@ class FundClearDataModel(db.Model):
                 
                 t_count = 0
                 t_added = 0
-                csv_content = CSV_ITEM_KEY_DATE + ',' + CSV_ITEM_KEY_NAV + '\n'
                 while (t_count < len(dataset)):
                     #logging.info('t_count ' + str(t_count))
                     (t_date,t_value) = dataset[t_count]
@@ -256,25 +256,23 @@ class FundClearDataModel(db.Model):
                     #dataset[t_count][1] = float(dataset[t_count][1])
                     t_count += 1
                 #return csv_content
-                if t_added > 0:
-                    fund.year = str(p_year)
-                    fund.content_csv = csv_content
-                    fund.put()
-                    logging.info('Fund {id} with year {year} with item {item} saved.'.format(
-                                                                            id=str(p_fund_id),
-                                                                            year=str(p_year),
-                                                                                item=t_added))
-                else:
-                    fund.delete()
-                    logging.info('Fund {id} with year {year} with item {item}, skip save.'.format(
-                                                                            id=str(p_fund_id),
-                                                                            year=str(p_year),
-                                                                            item=t_added))
-                return True
+                t_result = True
             else:
                 logging.warning('_update_from_web fail, HTTP STATUS CODE: ' + str(web_fetch.status_code))
-                return False
+                t_result = False
+                        
+            fund.year = str(p_year)
+            fund.content_csv = csv_content
+            fund.put()
+            logging.info('Fund {id} with year {year} with item {item} saved.'.format(
+                                                                    id=str(p_fund_id),
+                                                                    year=str(p_year),
+                                                                        item=t_added))
+            return t_result
         except DownloadError:
+            fund.year = str(p_year)
+            fund.content_csv = csv_content
+            fund.put()
             logging.warning('_update_from_web : Internet Download Error')
             return False
 
