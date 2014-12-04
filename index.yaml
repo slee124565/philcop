@@ -10,6 +10,11 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: BotExchangeDataModel
+  ancestor: yes
+  properties:
+  - name: year
+
 - kind: FundClearDataModel
   ancestor: yes
   properties:
