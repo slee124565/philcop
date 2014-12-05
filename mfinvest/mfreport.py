@@ -2,7 +2,7 @@
 from mfinvest.models import MutualFundInvestModel
 #from fundclear.models import FundClearModel
 from fundclear2.models import FundClearInfoModel
-from bankoftaiwan.models import BotExchangeModel, exchange
+import bankoftaiwan2.models_exchange as bot_ex
 
 from datetime import date
 from dateutil.relativedelta import relativedelta
@@ -64,7 +64,7 @@ class MFReport():
     date_begin = None
     date_end = None
     m_fund = None               #-> FundClearInfoModel #FundClearModel
-    m_exchange = None           #-> BotExchangeModel
+    m_exchange = None           #-> BotExchangeInfoModel
     _sample_date_list = []
     report_cost = []            #-> only contain date that change
     report_cost2 = []           #-> sync with _sample_date_list
@@ -78,7 +78,7 @@ class MFReport():
     def get_mfreport_by_id(cls, p_fund_id, p_currency_type):
         report = MFReport(fund_id=p_fund_id, currency_type=p_currency_type)
         report.m_fund = FundClearInfoModel.get_fund(p_fund_id) # FundClearModel.get_fund(report.fund_id)
-        report.m_exchange = BotExchangeModel.get_bot_exchange(exchange.CURRENCY_JPY)
+        report.m_exchange = bot_ex.BotExchangeInfoModel.get_bot_exchange(bot_ex.CURRENCY_JPY)
         
         if report.m_fund is None or report.m_exchange is None:
             logging.warning(__name__ + ', get_mfreport_by_id: fund or exchange data download fail!!!')

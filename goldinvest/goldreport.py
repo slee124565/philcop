@@ -1,7 +1,7 @@
 
 from utils.util_date import get_sample_date_list_2
-from bankoftaiwan import const_inc, exchange
-from bankoftaiwan.models import BotGoldModel, BotExchangeModel
+from bankoftaiwan.models import BotGoldModel
+import bankoftaiwan2.models_exchange as bot_ex
 from models import GoldInvestModel
 from dateutil.relativedelta import relativedelta
 from datetime import date
@@ -28,7 +28,7 @@ class GoldReport(object):
     report_profit = []
 
     @classmethod
-    def get_report(cls, p_currency_type=exchange.CURRENCY_TWD):
+    def get_report(cls, p_currency_type=bot_ex.CURRENCY_TWD):
         report = GoldReport(p_currency_type)
         if report is not None:
             report._get_history_cost_n_share_report(p_currency_type)
@@ -37,7 +37,7 @@ class GoldReport(object):
         return report
         
         
-    def __init__(self, p_currency_type=exchange.CURRENCY_TWD):
+    def __init__(self, p_currency_type=bot_ex.CURRENCY_TWD):
         '''
         Constructor
         '''
@@ -57,8 +57,9 @@ class GoldReport(object):
             return None
         
         #-> get BOT Exchange Model
-        if (p_currency_type != exchange.CURRENCY_TWD):
-            self.m_exchange = BotExchangeModel.get_bot_exchange(exchange.CURRENCY_JPY)
+        if (p_currency_type != bot_ex.CURRENCY_TWD):
+            self.m_exchange = bot_ex.BotExchangeInfoModel.get_bot_exchange(bot_ex.CURRENCY_USD) 
+            
             if self.m_exchange is None:
                 logging.warning(__name__ + ',__init__: exchange data download fail!')
                 return None
@@ -78,7 +79,7 @@ class GoldReport(object):
         self.report_sell_price = self.m_bot_gold.get_sample_value_list(self._sample_date_list)
         
         #-> get BOT exchange sample data
-        if (p_currency_type != exchange.CURRENCY_TWD):
+        if (p_currency_type != bot_ex.CURRENCY_TWD):
             self.report_exchange = self.m_exchange.get_sample_value_list(self._sample_date_list)
         else:
             for t_date in self._sample_date_list:

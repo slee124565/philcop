@@ -13,8 +13,7 @@ import logging, calendar, collections
 from mfinvest.models import MutualFundInvestModel
 from fundclear.models import FundClearModel
 from fundclear.fundreview.models import FundReviewModel
-from bankoftaiwan.models import BotExchangeModel
-import bankoftaiwan.exchange
+import bankoftaiwan2.models_exchange as bot_ex
 from mfinvest.mfreport import MFReport
 from mfinvest import fundreview
 from fundclear.fcreader import get_fundcode_list, get_fundcode_dictlist, get_name_with_fundcode_list
@@ -416,7 +415,7 @@ def japan_nav_compare_view(request):
 
 def mf_japan_view_2(request):
     t_fund_id = 'LU0069970746'
-    t_currency_type = bankoftaiwan.exchange.CURRENCY_JPY
+    t_currency_type = bot_ex.CURRENCY_JPY
     mf_report = MFReport.get_mfreport_by_id(t_fund_id, t_currency_type)
     args = {}
     if not mf_report is None:
@@ -478,7 +477,7 @@ def mf_japan_view_2(request):
         
 def mf_japan_view(request):
     t_fund_id = 'LU0069970746'
-    t_currency_type = bankoftaiwan.exchange.CURRENCY_JPY
+    t_currency_type = bot_ex.CURRENCY_JPY
     mf_report = MFReport.get_mfreport_by_id(t_fund_id, t_currency_type)
     if mf_report is None:
         return HttpResponse('MFReport Fail')
@@ -530,7 +529,7 @@ def add_my_trade(request):
                       fund_id = 'LU0069970746', \
                       amount_trade = 100000.0, \
                       trade_fee = 1950.0, \
-                      currency_type = bankoftaiwan.exchange.CURRENCY_JPY, \
+                      currency_type = bot_ex.CURRENCY_JPY, \
                       share = 49.144, \
                       fund_nav = 6872.0, \
                       exchange_rate = 0.2961
@@ -542,7 +541,7 @@ def add_my_trade_2(request):
                       fund_id = 'LU0069970746', \
                       amount_trade = 100000.0, \
                       trade_fee = 1950.0, \
-                      currency_type = bankoftaiwan.exchange.CURRENCY_JPY, \
+                      currency_type = bot_ex.CURRENCY_JPY, \
                       share = 48.601, \
                       fund_nav = 7061.0, \
                       exchange_rate = 0.2914
@@ -554,7 +553,7 @@ def add_my_trade_3(request):
                       fund_id = 'LU0069970746', \
                       amount_trade = 100000.0, \
                       trade_fee = 1950.0, \
-                      currency_type = bankoftaiwan.exchange.CURRENCY_JPY, \
+                      currency_type = bot_ex.CURRENCY_JPY, \
                       share = 48.866, \
                       fund_nav = 7319.0, \
                       exchange_rate = 0.2796, \
@@ -582,10 +581,10 @@ def add_sample(request):
     fund_id = 'LU0069970746'
     amount_trade = float(100000)
     trade_fee = float(1950)
-    currency_type = bankoftaiwan.exchange.CURRENCY_JPY
+    currency_type = bot_ex.CURRENCY_JPY
     date_since = date.today() - relativedelta(months=+8) - relativedelta(days=+1)
     fund = FundClearModel.get_fund(fund_id)
-    exchange = BotExchangeModel.get_bot_exchange(currency_type)
+    exchange = bot_ex.BotExchangeInfoModel.get_bot_exchange(currency_type) 
     
     for i in range(0,7):
         date_invest = date_since + relativedelta(months=i)

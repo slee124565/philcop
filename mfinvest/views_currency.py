@@ -6,13 +6,12 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 
 from bankoftaiwan.models import BotExchangeModel
+import bankoftaiwan2.models_exchange as bot_ex
 from utils import util_date
-import bankoftaiwan.exchange as bot
 import calendar, logging, collections
  
 def tw_exchange_changing_view(request):
-    target_currency = [bot.CURRENCY_CNY, bot.CURRENCY_USD, bot.CURRENCY_JPY]
-    #target_currency = [bot.CURRENCY_CNY]
+    target_currency = [bot_ex.CURRENCY_CNY, bot_ex.CURRENCY_USD, bot_ex.CURRENCY_JPY]
     
     content_head_list = ['Date'] + target_currency
     content_rows = {}
@@ -30,9 +29,8 @@ def tw_exchange_changing_view(request):
     tw_exchanges = {}
     for t_currency in target_currency:
         #logging.debug('currency: ' + str(t_currency))
-        t_exchange = BotExchangeModel.get_bot_exchange(p_currency_type=t_currency)
-        #tw_exchanges[t_currency] =  t_exchange.get_exchange_list(bot.FIELD_SELL_CASH)
-        tw_exchanges[t_currency] =  t_exchange.get_sample_value_list(date_list,bot.FIELD_SELL_CASH)
+        t_exchange = bot_ex.BotExchangeInfoModel.get_bot_exchange(t_currency)
+        tw_exchanges[t_currency] =  t_exchange.get_sample_value_list(date_list,bot_ex.CSV_COL_SELL_CASH)
         #logging.debug(str(tw_exchanges[t_currency]))
         prev_rate = tw_exchanges[t_currency][0][1]
         for ndx, t_entry in enumerate(tw_exchanges[t_currency]):

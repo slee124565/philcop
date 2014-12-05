@@ -6,7 +6,7 @@ from django.shortcuts import render_to_response
 from django.conf import settings
 
 from fundclear.models import FundClearModel
-from bankoftaiwan.models import BotExchangeModel, exchange
+import bankoftaiwan2.models_exchange as bot_ex
 
 def home(request):
     return HttpResponseRedirect('/mf/fund_jpy/')
@@ -22,10 +22,10 @@ def print_config(request):
     return HttpResponse(t_result)
     
 def default_view(request):
-    bot_exchange = BotExchangeModel.get_bot_exchange(exchange.CURRENCY_JPY)
+    bot_exchange = bot_ex.BotExchangeInfoModel.get_bot_exchange(bot_ex.CURRENCY_JPY)
     exchange_data = []
     if bot_exchange:
-        bot_list = bot_exchange.get_exchange_list(exchange.FIELD_SELL_ON_DEMAND)
+        bot_list = bot_exchange.get_exchange_list(bot_ex.CSV_COL_SELL_ONDEMAND)
         for t_entry in bot_list:
             exchange_data.append([calendar.timegm((t_entry[0]).timetuple()) * 1000 , t_entry[1]])
     
