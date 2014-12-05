@@ -36,7 +36,7 @@ def get_sample_date_list_2(p_date_begin, p_date_end, p_inc_everyday_of_last_mont
     
     #-> date_begin: the end day of the month for p_date_begin
     t_date_sample_start = p_date_begin
-    t_date_begin = date(t_date_sample_start.year,t_date_sample_start.month+1,1) - relativedelta(days=+1)
+    t_date_begin = date(t_date_sample_start.year,t_date_sample_start.month,1) + relativedelta(months=+1, days=-1)
     
     t_date_end =p_date_end
     
