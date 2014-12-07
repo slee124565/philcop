@@ -10,7 +10,7 @@ def get_sample_date_list(p_count=12,p_inc_last_day=True):
     
     #-> date_begin: the end day of the month which 12 months ago
     t_date_sample_start = date.today() - relativedelta(months=p_count)
-    t_date_begin = date(t_date_sample_start.year,t_date_sample_start.month+1,1) - relativedelta(days=+1)
+    t_date_begin = date(t_date_sample_start.year,t_date_sample_start.month,1) + relativedelta(months=+1,days=-1)
     
     #-> date_end: yesterday
     t_date_end = date.today() - relativedelta(days=+1)
