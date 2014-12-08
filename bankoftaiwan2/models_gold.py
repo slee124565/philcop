@@ -28,6 +28,8 @@ CSV_COLS = '{},{},{},{},{}'.format(CSV_COL_DATE,
                                    CSV_COL_SELL_ONDEMAND
                                    )
 
+BOT_GOLD_TRADE_CURRENCY_LIST = [bot_ex.CURRENCY_TWD,bot_ex.CURRENCY_USD]
+
 class BotGoldInfoModel(db.Model):
     data_year_dict = {}
     
@@ -177,6 +179,7 @@ class BotGoldDataModel(db.Model):
             return False
     
     def _get_data_dict(self):
+        func = '{} {}'.format(__name__,'_get_data_dict')
         col_names = [CSV_COLS]
         rows = self.content_csv.splitlines()
         rows = col_names + rows[1:]
@@ -186,5 +189,9 @@ class BotGoldDataModel(db.Model):
         data_dict = {}
         for row in csv_reader:
             t_item = dict(row)
-            data_dict[t_item['date']] = t_item
+            #logging.debug('{} {}'.format(len(t_item),len(col_names.split(','))))
+            if not t_item[CSV_COL_UNIT] is None:
+                data_dict[t_item[CSV_COL_DATE]] = t_item
+            else:
+                logging.debug('{}: row item len error, skip\n{}'.format(func,t_item))
         return data_dict

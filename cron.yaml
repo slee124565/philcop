@@ -18,4 +18,15 @@ cron:
   url: /fc2/task/update/
   schedule: 3 of month 08:10
   timezone: Asia/Taipei
+
+- description: update BotGoldDataModel from BankOfTaiwan every month
+  url: /bot2/task/update_g_db/
+  schedule: 3 of month 07:10
+  timezone: Asia/Taipei
+
+- description: update BotExchangeDataModel from BankOfTaiwan every month
+  url: /bot2/task/update_ex_db/
+  schedule: 3 of month 06:10
+  timezone: Asia/Taipei
+
   

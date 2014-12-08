@@ -1,6 +1,5 @@
 
 from utils.util_date import get_sample_date_list_2
-from bankoftaiwan.models import BotGoldModel
 from bankoftaiwan2.models_gold import BotGoldInfoModel
 import bankoftaiwan2.models_exchange as bot_ex
 from models import GoldInvestModel

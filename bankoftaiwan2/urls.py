@@ -6,6 +6,10 @@ urlpatterns = patterns('',
     url(r'^task/update_ex_db/$', 'bankoftaiwan2.tasks.update_ex_taskhandler'),
     url(r'^task/ex_cupdate/$', 'bankoftaiwan2.tasks.ex_chain_update_taskhandler'),
     
+    url(r'^task/init_g_db/$', 'bankoftaiwan2.tasks.init_gold_taskhandler'),
+    url(r'^task/update_g_db/$', 'bankoftaiwan2.tasks.update_gold_taskhandler'),
+    url(r'^task/g_cupdate/$', 'bankoftaiwan2.tasks.gold_chain_update_taskhandler'),
+
     url(r'^func/test1/$', 'bankoftaiwan2.tests.test_update_from_web'),
     url(r'^func/test2/$', 'bankoftaiwan2.tests.test_get_data_dict'),
     url(r'^func/test3/$', 'bankoftaiwan2.tests.test_get_exchange'),
