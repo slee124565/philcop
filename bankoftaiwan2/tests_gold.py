@@ -41,6 +41,7 @@ def test_get_data_dict(request):
 def test_update_from_web(request):
     p_currency = bot_ex.CURRENCY_TWD
     this_year = date.today().year-1
+    this_year = 2009
     
     t_content = ''
     if BotGoldDataModel._update_from_web(p_currency, this_year):
