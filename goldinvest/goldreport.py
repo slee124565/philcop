@@ -2,6 +2,7 @@
 from utils.util_date import get_sample_date_list_2
 from bankoftaiwan2.models_gold import BotGoldInfoModel
 import bankoftaiwan2.models_exchange as bot_ex
+import bankoftaiwan2.models_gold as bot_gold
 from models import GoldInvestModel
 from dateutil.relativedelta import relativedelta
 from datetime import date
@@ -75,7 +76,7 @@ class GoldReport(object):
         self._sample_date_list = get_sample_date_list_2(self.date_begin, self.date_end, True)
         
         #-> get BOT gold sell price sample data
-        self.report_sell_price = self.m_bot_gold.get_sample_value_list(self._sample_date_list)
+        self.report_sell_price = self.m_bot_gold.get_sample_value_list(self._sample_date_list, bot_gold.CSV_COL_BUY_ONDEMAND)
         
         #-> get BOT exchange sample data
         if (p_currency_type != bot_ex.CURRENCY_TWD):
