@@ -1,6 +1,7 @@
 
 from utils.util_date import get_sample_date_list_2
 from bankoftaiwan.models import BotGoldModel
+from bankoftaiwan2.models_gold import BotGoldInfoModel
 import bankoftaiwan2.models_exchange as bot_ex
 from models import GoldInvestModel
 from dateutil.relativedelta import relativedelta
@@ -41,7 +42,6 @@ class GoldReport(object):
         '''
         Constructor
         '''
-        t_debug = True
         self._report_cost = []
         self.report_cost = []
         self.report_exchange = []
@@ -51,7 +51,7 @@ class GoldReport(object):
         self.report_profit = []
         
         #-> get BOT Gold Model
-        self.m_bot_gold = BotGoldModel.get_bot_gold(p_currency_type, TOTAL_MONTH_TRACK,t_debug)
+        self.m_bot_gold = BotGoldInfoModel.get_bot_gold(p_currency_type)
         if self.m_bot_gold is None:
             logging.warning(__name__ + ', __init__: gold data download fail!!!')
             return None

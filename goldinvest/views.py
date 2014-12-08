@@ -2,7 +2,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from goldreport import GoldReport
 from models import GoldInvestModel
-from bankoftaiwan import exchange
+import bankoftaiwan2.models_exchange as bot_ex
 from datetime import datetime
 from django.utils.translation import ugettext as _
 
@@ -67,20 +67,20 @@ def default_view(request):
 def add_my_trade(request):
     #-> [trade_date,amount_trade,trade_fee,currency_type,weight_purchase,bid_price,exchange_rate]
     my_trade_logs = [
-        ['2013/11/19', 19440.0, 0.0, exchange.CURRENCY_TWD, 16.0, 1215.0, 1.0],
-        ['2013/12/31', 20000.0, 25.0, exchange.CURRENCY_TWD, 17.0, 1176.47, 1.0],
-        ['2014/1/2', 20000.0, 25.0, exchange.CURRENCY_TWD, 16.56, 1207.73, 1.0],
-        ['2014/2/1', 80000.0, 25.0, exchange.CURRENCY_TWD, 62.84, 1273.07, 1.0],
-        ['2014/3/1', 80000.0, 25.0, exchange.CURRENCY_TWD, 60.92, 1313.20, 1.0],
-        ['2014/4/1', 80000.0, 25.0, exchange.CURRENCY_TWD, 63.01, 1269.64, 1.0],
-        ['2014/4/1', 80000.0, 25.0, exchange.CURRENCY_TWD, 63.01, 1269.64, 1.0],
-        ['2014/5/1', 80000.0, 25.0, exchange.CURRENCY_TWD, 63.67, 1256.48, 1.0],
-        ['2014/6/1', 80000.0, 25.0, exchange.CURRENCY_TWD, 64.47, 1240.89, 1.0],
-        ['2014/7/1', 80000.0, 25.0, exchange.CURRENCY_TWD, 62.96, 1270.65, 1.0],
-        ['2014/8/1', 80000.0, 25.0, exchange.CURRENCY_TWD, 63.72, 1255.49, 1.0],
-        ['2014/9/1', 80000.0, 25.0, exchange.CURRENCY_TWD, 66.29, 1206.82, 1.0],
-        ['2014/10/1', 80000.0, 25.0, exchange.CURRENCY_TWD, 66.47, 1203.55, 1.0],
-        ['2014/11/1', 80000.0, 25.0, exchange.CURRENCY_TWD, 68.61, 1166.01, 1.0],
+        ['2013/11/19', 19440.0, 0.0, bot_ex.CURRENCY_TWD, 16.0, 1215.0, 1.0],
+        ['2013/12/31', 20000.0, 25.0, bot_ex.CURRENCY_TWD, 17.0, 1176.47, 1.0],
+        ['2014/1/2', 20000.0, 25.0, bot_ex.CURRENCY_TWD, 16.56, 1207.73, 1.0],
+        ['2014/2/1', 80000.0, 25.0, bot_ex.CURRENCY_TWD, 62.84, 1273.07, 1.0],
+        ['2014/3/1', 80000.0, 25.0, bot_ex.CURRENCY_TWD, 60.92, 1313.20, 1.0],
+        ['2014/4/1', 80000.0, 25.0, bot_ex.CURRENCY_TWD, 63.01, 1269.64, 1.0],
+        ['2014/4/1', 80000.0, 25.0, bot_ex.CURRENCY_TWD, 63.01, 1269.64, 1.0],
+        ['2014/5/1', 80000.0, 25.0, bot_ex.CURRENCY_TWD, 63.67, 1256.48, 1.0],
+        ['2014/6/1', 80000.0, 25.0, bot_ex.CURRENCY_TWD, 64.47, 1240.89, 1.0],
+        ['2014/7/1', 80000.0, 25.0, bot_ex.CURRENCY_TWD, 62.96, 1270.65, 1.0],
+        ['2014/8/1', 80000.0, 25.0, bot_ex.CURRENCY_TWD, 63.72, 1255.49, 1.0],
+        ['2014/9/1', 80000.0, 25.0, bot_ex.CURRENCY_TWD, 66.29, 1206.82, 1.0],
+        ['2014/10/1', 80000.0, 25.0, bot_ex.CURRENCY_TWD, 66.47, 1203.55, 1.0],
+        ['2014/11/1', 80000.0, 25.0, bot_ex.CURRENCY_TWD, 68.61, 1166.01, 1.0],
                      ]
     
     for t_trade in my_trade_logs:

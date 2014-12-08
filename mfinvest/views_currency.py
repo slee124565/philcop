@@ -5,7 +5,6 @@ from django.utils.translation import ugettext as _
 from datetime import date
 from dateutil.relativedelta import relativedelta
 
-from bankoftaiwan.models import BotExchangeModel
 import bankoftaiwan2.models_exchange as bot_ex
 from utils import util_date
 import calendar, logging, collections

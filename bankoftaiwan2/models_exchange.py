@@ -153,27 +153,29 @@ class BotExchangeDataModel(db.Model):
     
     @classmethod
     def _update_from_web(cls, p_currency_type, p_year=date.today().year):
-        model_parent = BotExchangeInfoModel.get_or_insert(BotExchangeInfoModel.compose_key_name(p_currency_type))
-        t_model = BotExchangeDataModel.get_or_insert(BotExchangeDataModel.compose_key_name(p_currency_type, p_year),
-                                                parent=model_parent)
-        t_model.year = str(p_year)
-        begin_date = date(int(p_year),1,1).strftime("%Y%m%d")
-        if int(p_year) == date.today().year:
-            end_date = date.today() + relativedelta(days=-1)
-            end_date = end_date.strftime("%Y%m%d")
-        else:
-            end_date = date(int(p_year),12,31).strftime("%Y%m%d")  
-        t_url = URL_EXCHANGE_TEMPLATE.format(currency_type=p_currency_type,
-                                           begin_date=begin_date,
-                                           end_date=end_date)
-
-        logging.info('_update_from_web, url: ' + t_url)
-        
+        func = '{} {}'.format(__name__,'_update_from_web')
         try :
+            model_parent = BotExchangeInfoModel.get_or_insert(BotExchangeInfoModel.compose_key_name(p_currency_type))
+            t_model = BotExchangeDataModel.get_or_insert(BotExchangeDataModel.compose_key_name(p_currency_type, p_year),
+                                                    parent=model_parent)
+            t_model.year = str(p_year)
+            begin_date = date(int(p_year),1,1).strftime("%Y%m%d")
+            if int(p_year) == date.today().year:
+                end_date = date.today() + relativedelta(days=-1)
+                end_date = end_date.strftime("%Y%m%d")
+            else:
+                end_date = date(int(p_year),12,31).strftime("%Y%m%d")  
+            t_url = URL_EXCHANGE_TEMPLATE.format(currency_type=p_currency_type,
+                                               begin_date=begin_date,
+                                               end_date=end_date)
+    
+            logging.info('_update_from_web, url: ' + t_url)
+        
             web_fetch = urlfetch.fetch(t_url)
             t_dwn_result = False
             if web_fetch.status_code == httplib.OK:
                 t_model.content_csv = web_fetch.content
+                logging.info('{}: get {} lines content'.format(func,len(t_model.content_csv.splitlines())))
                 t_dwn_result = True
             t_model.put()
             

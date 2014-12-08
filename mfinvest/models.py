@@ -1,9 +1,5 @@
 from google.appengine.ext import db
 
-#from fundclear.models import FundClearModel
-#from bankoftaiwan.models import BotExchangeModel
-#import bankoftaiwan.exchange
-
 class MutualFundInvestModel(db.Model):
     id = db.StringProperty()
     currency = db.StringProperty()
