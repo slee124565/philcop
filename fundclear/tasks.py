@@ -10,6 +10,23 @@ NUM_INDEX =0
 CODE_INDEX = 1
 NAME_INDEX = 2
 
+def get_erase_model_all_url():
+    return '/fc/task/erase_all/'
+
+def erase_model_all(request):
+    func = '{} {}'.format(__name__,'erase_model_all')
+    entities = FundClearModel.all().fetch(limit=20)
+    for t_entity in entities:
+        t_entity.delete()
+    if len(entities) == 20:
+        taskqueue.add(method = 'GET', \
+                      url = get_erase_model_all_url(), \
+                      )
+    else:
+        logging.info('{}: end of erase model all task'.format(func))
+    
+    return HttpResponse(func)
+    
 def update_all_taskhandler(request):
     logging.debug(__name__ + ', update_all_taskhandler activated')
     t_full_path = request.get_full_path()

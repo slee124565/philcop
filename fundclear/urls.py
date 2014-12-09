@@ -7,6 +7,7 @@ urlpatterns = patterns('',
     url(r'^task/chain_update/$', 'fundclear.tasks.chain_update_taskhandler'),
     url(r'^task/chain_update_test/$', 'fundclear.tasks.chain_update_test'),
     url(r'^task/update_all/$', 'fundclear.tasks.update_all_taskhandler'),
+    url(r'^task/erase_all/$', 'fundclear.tasks.erase_model_all'),
 
     url(r'^flot/(?P<fund_id>\w+(-\w+)?)/$', 'fundclear.views.flot_axes_time_view'),
 
