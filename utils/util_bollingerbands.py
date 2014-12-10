@@ -33,26 +33,30 @@ def get_bollingerbands(p_list, p_tff=20):
     topBand2 = []
     botBand1 = []
     botBand2 = []
+    logging.debug('{}'.format(p_list))
     
-    sma = movingaverage(p_list, p_tff)
-    sd_list = standard_deviation(p_list, p_tff)
-    #logging.debug('sma:\n' + str(sma) + '\nsd:\n' + str(sd_list))
-
-    x = 0
-    while x < len(sma):
-        curDate = sma[x][0]
-        curSMA = sma[x][1]
-        curSD = sd_list[x][1]
-        TB1 = curSMA + curSD
-        TB2 = curSMA + curSD*2
-        BB1 = curSMA - curSD
-        BB2 = curSMA - curSD*2
-        
-        topBand1.append([curDate,TB1])
-        topBand2.append([curDate,TB2])
-        botBand1.append([curDate,BB1])
-        botBand2.append([curDate,BB2])
-        x += 1
+    if len(p_list) > 0:
+        sma = movingaverage(p_list, p_tff)
+        sd_list = standard_deviation(p_list, p_tff)
+        #logging.debug('sma:\n' + str(sma) + '\nsd:\n' + str(sd_list))
+    
+        x = 0
+        while x < len(sma):
+            curDate = sma[x][0]
+            curSMA = sma[x][1]
+            curSD = sd_list[x][1]
+            TB1 = curSMA + curSD
+            TB2 = curSMA + curSD*2
+            BB1 = curSMA - curSD
+            BB2 = curSMA - curSD*2
+            
+            topBand1.append([curDate,TB1])
+            topBand2.append([curDate,TB2])
+            botBand1.append([curDate,BB1])
+            botBand2.append([curDate,BB2])
+            x += 1
+    else:
+        sma = []
     return sma, topBand1, topBand2, botBand1, botBand2
         
         
