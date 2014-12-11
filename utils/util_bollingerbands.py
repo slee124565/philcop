@@ -28,7 +28,7 @@ def movingaverage(p_list, p_window=20):
     #logging.debug(__name__ + ',movingaverage :\n' + str(smas))
     return smas
     
-def get_bollingerbands(p_list, p_tff=20):
+def get_bollingerbands(p_list, p_tff=20, p_sdw=1.0):
     topBand1 = []
     topBand2 = []
     botBand1 = []
@@ -36,8 +36,8 @@ def get_bollingerbands(p_list, p_tff=20):
     logging.debug('{}'.format(p_list))
     
     if len(p_list) > 0:
-        sma = movingaverage(p_list, p_tff)
-        sd_list = standard_deviation(p_list, p_tff)
+        sma = movingaverage(p_list, int(p_tff))
+        sd_list = standard_deviation(p_list, int(p_tff))
         #logging.debug('sma:\n' + str(sma) + '\nsd:\n' + str(sd_list))
     
         x = 0
@@ -45,10 +45,10 @@ def get_bollingerbands(p_list, p_tff=20):
             curDate = sma[x][0]
             curSMA = sma[x][1]
             curSD = sd_list[x][1]
-            TB1 = curSMA + curSD
-            TB2 = curSMA + curSD*2
-            BB1 = curSMA - curSD
-            BB2 = curSMA - curSD*2
+            TB1 = curSMA + curSD*float(p_sdw)
+            TB2 = curSMA + curSD*2*float(p_sdw)
+            BB1 = curSMA - curSD*float(p_sdw)
+            BB2 = curSMA - curSD*2*float(p_sdw)
             
             topBand1.append([curDate,TB1])
             topBand2.append([curDate,TB2])

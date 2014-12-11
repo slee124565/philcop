@@ -2,7 +2,7 @@ from google.appengine.ext import db
 from google.appengine.api import urlfetch
 from google.appengine.api.urlfetch import DownloadError
 
-from datetime import date
+from datetime import date, datetime
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
 
@@ -106,6 +106,7 @@ class BotExchangeInfoModel(db.Model):
         return t_list
     
     def get_rate(self, p_datetime, p_exchange_field=CSV_COL_SELL_ONDEMAND):
+        func = '{} {}'.format(__name__,'get_rate')
         if not type(p_datetime) is date:
             logging.warning('get_rate: p_datetime type is not date!')
             return 0.0
@@ -123,10 +124,13 @@ class BotExchangeInfoModel(db.Model):
             logging.debug('get_rate: {} rate not exist, check {} instead.'.format(t_key,str(t_prev_date)))
             t_key = t_prev_date.strftime(DICT_KEY_DATE_FORMAT)
             if str(t_prev_date.year) != t_year:
+                logging.debug('{}: year change'.format(func))
                 return self.get_rate(t_prev_date, p_exchange_field)
             t_count += 1
             if t_count > 30: #-> protect
+                logging.warning('{}: loop protect activate'.format(func))
                 return 0.0
+
         return float(t_year_dict[t_key][p_exchange_field])
     
     def get_exchange_list(self, p_exchange_field=CSV_COL_SELL_ONDEMAND):
@@ -138,7 +142,8 @@ class BotExchangeInfoModel(db.Model):
                     continue
             t_dict = self.data_year_dict[t_data.year]
             for t_key in t_dict:
-                t_list.append([t_dict[t_key][CSV_COL_DATE],t_dict[t_key][p_exchange_field]])
+                t_list.append([datetime.strptime(t_dict[t_key][CSV_COL_DATE],DICT_KEY_DATE_FORMAT).date(),
+                               float(t_dict[t_key][p_exchange_field])])
                 
         t_list.sort(key=lambda x: x[0])    
         return t_list

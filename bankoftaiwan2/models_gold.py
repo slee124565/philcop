@@ -2,7 +2,7 @@ from google.appengine.ext import db
 from google.appengine.api import urlfetch
 from google.appengine.api.urlfetch import DownloadError
 
-from datetime import date
+from datetime import date, datetime
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
 
@@ -129,7 +129,8 @@ class BotGoldInfoModel(db.Model):
                     continue
             t_dict = self.data_year_dict[t_data.year]
             for t_key in t_dict:
-                t_list.append([t_dict[t_key][CSV_COL_DATE],t_dict[t_key][p_csv_field]])
+                t_list.append([datetime.strptime(t_dict[t_key][CSV_COL_DATE],DICT_KEY_DATE_FORMAT).date(),
+                               float(t_dict[t_key][p_csv_field])])
                 
         t_list.sort(key=lambda x: x[0])    
         return t_list
