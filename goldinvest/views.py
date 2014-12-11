@@ -14,17 +14,25 @@ import logging, calendar, collections
 def price_view(request,p_currency=bot_ex.CURRENCY_TWD):
     MONTH_TO_VIEW = 12
     oz_over_gram = 28.3495231
+    
+    t_content_heads = ['Date']
+    t_content_rows = {}
+    
     if p_currency in [bot_ex.CURRENCY_TWD, bot_ex.CURRENCY_USD]:
         currency_list = [p_currency]
+        t_content_heads.append(p_currency)
     else:
         currency_list = [bot_ex.CURRENCY_TWD, bot_ex.CURRENCY_USD]
+        t_content_heads += [bot_ex.CURRENCY_TWD, bot_ex.CURRENCY_USD]
     
     t_plot_data = ''
     for t_currency in currency_list:
         t_gold = bot_gold.BotGoldInfoModel.get_bot_gold(t_currency)
+        '''
         t_ex = None
         if t_currency == bot_ex.CURRENCY_USD:
             t_ex = bot_ex.BotExchangeInfoModel.get_bot_exchange(t_currency)
+        '''
         t_date_after = date.today() + relativedelta(months=-MONTH_TO_VIEW)
         t_price_list = []
         while t_date_after <= date.today():
@@ -33,23 +41,37 @@ def price_view(request,p_currency=bot_ex.CURRENCY_TWD):
         
         logging.debug('{}'.format(str(t_price_list)))
         for t_entry in t_price_list:
+            '''
             if t_currency == bot_ex.CURRENCY_USD:
                 if t_ex.get_rate(t_entry[0]) == 0.0:
                     return HttpResponse(t_entry[0])
                 t_entry[1] = (t_ex.get_rate(t_entry[0])*t_entry[1])/oz_over_gram
+            '''
+            t_key = t_entry[0].strftime('%Y%m%d')
+            if t_key in t_content_rows.keys():
+                t_content_rows[t_entry[0].strftime("%Y%m%d")] += ('{:.2f}'.format(t_entry[1]),)
+            else:
+                t_content_rows[t_entry[0].strftime("%Y%m%d")] = (t_entry[0].strftime("%Y/%m/%d"), t_entry[1],)
             t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000
         
         t_plot_data += '{data: ' + str(t_price_list).replace('L', '') + \
                                 ', label: "Price ' + t_currency + '", lines: {show: true}, yaxis: 4},'
                                 
-        plot = {
-                'data': t_plot_data
-                }
+    plot = {
+            'data': t_plot_data
+            }
     
+    t_content_rows = collections.OrderedDict(sorted(t_content_rows.items()))
+    tbl_content = {
+                   'heads': t_content_heads,
+                   'rows': t_content_rows.values(),
+                   }
+
     args = {
             'tpl_img_header' : _('Gold Price View') + ' ;Currency:{}'.format(p_currency),
-            'tpl_section_title' : ' ',
             'plot' : plot,
+            'tpl_section_title' : _('Details'),
+            'tbl_content' : tbl_content,
             }
     
     return render_to_response('mf_simple_flot.tpl.html',args)
@@ -77,6 +99,11 @@ def daily_bb_view(request,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=10,p_sdw=10
      
     #return HttpResponse(str(t_price_list))   
     sma,tb1,tb2,bb1,bb2 = get_bollingerbands(t_price_list,p_timeframe,float(p_sdw)/100)
+    
+    #-> compose tbl_content
+    t_content_heads = ['Date','OnSell','SMA','TB1','TB2','BB1','BB2']
+    t_content_rows = {}
+
     t_view_date_since = date.today() + relativedelta(months=-BB_VIEW_MONTHS)
     t_ndx = 0
 
@@ -85,9 +112,19 @@ def daily_bb_view(request,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=10,p_sdw=10
             if t_entry[0] < t_view_date_since:
                 t_ndx = ndx
             else:
+                t_key = t_entry[0].strftime('%Y%m%d')
+                if t_key in t_content_rows.keys():
+                    t_content_rows[t_entry[0].strftime("%Y%m%d")] += ('{:.2f}'.format(t_entry[1]),)
+                else:
+                    t_content_rows[t_entry[0].strftime("%Y%m%d")] = (t_entry[0].strftime("%Y/%m/%d"), t_entry[1],)
                 t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000
         del t_list[:(t_ndx+1)]
     
+    t_content_rows = collections.OrderedDict(sorted(t_content_rows.items()))
+    tbl_content = {
+                   'heads': t_content_heads,
+                   'rows': t_content_rows.values(),
+                   }
         
     plot = {
             'data': '{data: ' + str(sma).replace('L', '') + \
@@ -108,8 +145,9 @@ def daily_bb_view(request,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=10,p_sdw=10
             'tpl_img_header' : _('Gold Daily View') + ' ;Currency:{}; TF:{}; SD_W: {}'.format(p_currency,
                                                                                                p_timeframe,
                                                                                                p_sdw),
-            'tpl_section_title' : ' ',
             'plot' : plot,
+            'tpl_section_title' : _('Details'),
+            'tbl_content' : tbl_content,
             }
     
     return render_to_response('mf_simple_flot.tpl.html',args)
@@ -133,6 +171,11 @@ def weekly_bb_view(request,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=6,p_sdw=90
     #return HttpResponse(str(t_price_list))
 
     sma,tb1,tb2,bb1,bb2 = get_bollingerbands(t_price_list,p_timeframe,float(p_sdw)/100)
+    
+    #-> compose tbl_content
+    t_content_heads = ['Date','OnSell','SMA','TB1','TB2','BB1','BB2']
+    t_content_rows = {}
+    
     t_view_date_since = date.today() + relativedelta(months=-BB_VIEW_MONTHS)
     t_ndx = 0
 
@@ -141,9 +184,19 @@ def weekly_bb_view(request,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=6,p_sdw=90
             if t_entry[0] < t_view_date_since:
                 t_ndx = ndx
             else:
+                t_key = t_entry[0].strftime('%Y%m%d')
+                if t_key in t_content_rows.keys():
+                    t_content_rows[t_entry[0].strftime("%Y%m%d")] += ('{:.2f}'.format(t_entry[1]),)
+                else:
+                    t_content_rows[t_entry[0].strftime("%Y%m%d")] = (t_entry[0].strftime("%Y/%m/%d"), t_entry[1],)
                 t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000
         del t_list[:(t_ndx+1)]
     
+    t_content_rows = collections.OrderedDict(sorted(t_content_rows.items()))
+    tbl_content = {
+                   'heads': t_content_heads,
+                   'rows': t_content_rows.values(),
+                   }
         
     plot = {
             'data': '{data: ' + str(sma).replace('L', '') + \
@@ -164,8 +217,9 @@ def weekly_bb_view(request,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=6,p_sdw=90
             'tpl_img_header' : _('Gold Weekly View') + ' ;Currency:{}; TF:{}; SD_W: {}'.format(p_currency,
                                                                                                p_timeframe,
                                                                                                p_sdw),
-            'tpl_section_title' : ' ',
             'plot' : plot,
+            'tpl_section_title' : _('Details'),
+            'tbl_content' : tbl_content,
             }
     
     return render_to_response('mf_simple_flot.tpl.html',args)
