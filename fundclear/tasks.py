@@ -21,6 +21,7 @@ def erase_model_all(request):
     if len(entities) == 20:
         taskqueue.add(method = 'GET', \
                       url = get_erase_model_all_url(), \
+                      countdown = 3, \
                       )
     else:
         logging.info('{}: end of erase model all task'.format(func))
