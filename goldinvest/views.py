@@ -16,13 +16,12 @@ def price_view(request, p_currency=bot_ex.CURRENCY_TWD,p_view_months=3):
     
     t_content_heads = ['Date', 
                        bot_gold.CSV_COL_SELL_ONDEMAND, 
-                       bot_gold.CSV_COL_BUY_ONDEMAND]
+                       bot_gold.CSV_COL_BUY_ONDEMAND,
+                       'Diff']
     t_content_rows = {}
     
-    if p_currency in [bot_ex.CURRENCY_TWD, bot_ex.CURRENCY_USD]:
-        t_content_heads.append(p_currency)
-    else:
-        return HttpResponse('Param Error!')
+    if not p_currency in [bot_ex.CURRENCY_TWD, bot_ex.CURRENCY_USD]:
+        return HttpResponse('Param p_currency Error!')
     
     t_plot_data = ''
     t_gold = bot_gold.BotGoldInfoModel.get_bot_gold(p_currency)
@@ -34,11 +33,13 @@ def price_view(request, p_currency=bot_ex.CURRENCY_TWD,p_view_months=3):
     t_date_after = date.today() + relativedelta(months=-MONTH_TO_VIEW)
     t_price_list = []
     t_price_list_2 = []
+    t_diff_list = []
     while t_date_after <= date.today():
-        t_price_list.append([t_date_after,t_gold.get_value(t_date_after,
-                                                        bot_gold.CSV_COL_SELL_ONDEMAND)])
-        t_price_list_2.append([t_date_after,t_gold.get_value(t_date_after,
-                                                        bot_gold.CSV_COL_BUY_ONDEMAND)])
+        t_price_1 = t_gold.get_value(t_date_after,bot_gold.CSV_COL_SELL_ONDEMAND)
+        t_price_list.append([t_date_after,t_price_1])
+        t_price_2 = t_gold.get_value(t_date_after,bot_gold.CSV_COL_BUY_ONDEMAND)
+        t_price_list_2.append([t_date_after,t_price_2])
+        t_diff_list.append([t_date_after,(t_price_1-t_price_2)])
         t_date_after += relativedelta(days=1)
     
     logging.debug('{}'.format(str(t_price_list)))
@@ -64,10 +65,18 @@ def price_view(request, p_currency=bot_ex.CURRENCY_TWD,p_view_months=3):
             t_content_rows[t_entry[0].strftime("%Y%m%d")] = (t_entry[0].strftime("%Y/%m/%d"), t_entry[1],)
         t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000
 
+    for t_entry in t_diff_list:
+        t_key = t_entry[0].strftime('%Y%m%d')
+        if t_key in t_content_rows.keys():
+            t_content_rows[t_entry[0].strftime("%Y%m%d")] += ('{:.2f}'.format(t_entry[1]),)
+        else:
+            t_content_rows[t_entry[0].strftime("%Y%m%d")] = (t_entry[0].strftime("%Y/%m/%d"), t_entry[1],)
+        t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000
+
     t_plot_data += '{data: ' + str(t_price_list).replace('L', '') + \
                     ', label: "Price ' + bot_gold.CSV_COL_SELL_ONDEMAND + '", lines: {show: true}, yaxis: 4},' + \
                     '{data: ' + str(t_price_list_2).replace('L', '') + \
-                    ', label: "Price ' + bot_gold.CSV_COL_BUY_ONDEMAND + '", lines: {show: true}, yaxis: 4},'
+                    ', label: "Price ' + bot_gold.CSV_COL_BUY_ONDEMAND + '", lines: {show: true}, yaxis: 4},' 
                                 
     plot = {
             'data': t_plot_data
