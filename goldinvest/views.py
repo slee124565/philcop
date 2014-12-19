@@ -11,7 +11,84 @@ from django.utils.translation import ugettext as _
 
 import logging, calendar, collections
 
-def price_view(request,p_currency=bot_ex.CURRENCY_TWD):
+def price_view(request, p_currency=bot_ex.CURRENCY_TWD,p_view_months=3):
+    MONTH_TO_VIEW = int(p_view_months)
+    
+    t_content_heads = ['Date', 
+                       bot_gold.CSV_COL_SELL_ONDEMAND, 
+                       bot_gold.CSV_COL_BUY_ONDEMAND]
+    t_content_rows = {}
+    
+    if p_currency in [bot_ex.CURRENCY_TWD, bot_ex.CURRENCY_USD]:
+        t_content_heads.append(p_currency)
+    else:
+        return HttpResponse('Param Error!')
+    
+    t_plot_data = ''
+    t_gold = bot_gold.BotGoldInfoModel.get_bot_gold(p_currency)
+    '''
+    t_ex = None
+    if t_currency == bot_ex.CURRENCY_USD:
+        t_ex = bot_ex.BotExchangeInfoModel.get_bot_exchange(t_currency)
+    '''
+    t_date_after = date.today() + relativedelta(months=-MONTH_TO_VIEW)
+    t_price_list = []
+    t_price_list_2 = []
+    while t_date_after <= date.today():
+        t_price_list.append([t_date_after,t_gold.get_value(t_date_after,
+                                                        bot_gold.CSV_COL_SELL_ONDEMAND)])
+        t_price_list_2.append([t_date_after,t_gold.get_value(t_date_after,
+                                                        bot_gold.CSV_COL_BUY_ONDEMAND)])
+        t_date_after += relativedelta(days=1)
+    
+    logging.debug('{}'.format(str(t_price_list)))
+    for t_entry in t_price_list:
+        '''
+        if t_currency == bot_ex.CURRENCY_USD:
+            if t_ex.get_rate(t_entry[0]) == 0.0:
+                return HttpResponse(t_entry[0])
+            t_entry[1] = (t_ex.get_rate(t_entry[0])*t_entry[1])/oz_over_gram
+        '''
+        t_key = t_entry[0].strftime('%Y%m%d')
+        if t_key in t_content_rows.keys():
+            t_content_rows[t_entry[0].strftime("%Y%m%d")] += ('{:.2f}'.format(t_entry[1]),)
+        else:
+            t_content_rows[t_entry[0].strftime("%Y%m%d")] = (t_entry[0].strftime("%Y/%m/%d"), t_entry[1],)
+        t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000
+    
+    for t_entry in t_price_list_2:
+        t_key = t_entry[0].strftime('%Y%m%d')
+        if t_key in t_content_rows.keys():
+            t_content_rows[t_entry[0].strftime("%Y%m%d")] += ('{:.2f}'.format(t_entry[1]),)
+        else:
+            t_content_rows[t_entry[0].strftime("%Y%m%d")] = (t_entry[0].strftime("%Y/%m/%d"), t_entry[1],)
+        t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000
+
+    t_plot_data += '{data: ' + str(t_price_list).replace('L', '') + \
+                    ', label: "Price ' + bot_gold.CSV_COL_SELL_ONDEMAND + '", lines: {show: true}, yaxis: 4},' + \
+                    '{data: ' + str(t_price_list_2).replace('L', '') + \
+                    ', label: "Price ' + bot_gold.CSV_COL_BUY_ONDEMAND + '", lines: {show: true}, yaxis: 4},'
+                                
+    plot = {
+            'data': t_plot_data
+            }
+    
+    t_content_rows = collections.OrderedDict(sorted(t_content_rows.items()))
+    tbl_content = {
+                   'heads': t_content_heads,
+                   'rows': t_content_rows.values(),
+                   }
+
+    args = {
+            'tpl_img_header' : _('Gold Price View') + ' ;Currency:{}'.format(p_currency),
+            'plot' : plot,
+            'tpl_section_title' : _('Details'),
+            'tbl_content' : tbl_content,
+            }
+    
+    return render_to_response('mf_simple_flot.tpl.html',args)
+    
+def usd_twd_price_view(request,p_currency=bot_ex.CURRENCY_TWD):
     MONTH_TO_VIEW = 12
     oz_over_gram = 28.3495231
     
