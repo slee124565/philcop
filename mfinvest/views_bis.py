@@ -44,8 +44,9 @@ def eers_view(request, p_code='TW'):
     #-> indices table content
     content_head_list = ['Date', 'Indices', 'YoY']
     content_rows = {}
-    yoy_list = IndexReviewModel.get_12_yoy_list(t_value_list,p_total_sample_count=25)
-    for t_entry in t_value_list[-24:]:
+    TOTAL_SAMPLE_COUNT = 25
+    yoy_list = IndexReviewModel.get_12_yoy_list(t_value_list,p_total_sample_count=TOTAL_SAMPLE_COUNT)
+    for t_entry in t_value_list[-TOTAL_SAMPLE_COUNT:]:
         content_rows[t_entry[0].strftime('%Y%m%d')] = [t_entry[0].strftime('%Y/%m/%d'), t_entry[1],'N/A']
     for t_entry in yoy_list:
         content_rows[t_entry[0].strftime('%Y%m%d')][2] = '{:.2f}%'.format(t_entry[1])
