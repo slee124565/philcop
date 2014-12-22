@@ -19,6 +19,8 @@ urlpatterns = patterns('',
     url(r'^price/(?P<p_currency>\w+)/(?P<p_view_months>\w+)/$', 'goldinvest.views.price_view'),
 
     url(r'^current/$', 'goldinvest.views.current_price_view'),
+    url(r'^current/(?P<p_currency>\w+)/$', 'goldinvest.views.current_price_view'),
+    url(r'^current/(?P<p_currency>\w+)/(?P<p_field>\w+)/$', 'goldinvest.views.current_price_view'),
 
     url(r'^$', 'goldinvest.views.default_view'),
 
