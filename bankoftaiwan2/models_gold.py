@@ -6,6 +6,9 @@ from datetime import date, datetime
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
 
+from lxml.html import document_fromstring
+from lxml import etree
+
 import models_exchange as bot_ex
 
 import csv,StringIO
@@ -13,6 +16,10 @@ import logging, httplib
 import codecs
 
 URL_GOLD_TW_TEMPLATE = 'http://rate.bot.com.tw/Pages/UIP005/Download.ashx?lang=zh-TW&fileType=1&whom=GB0030001000&date1={begin_date}&date2={end_date}&afterOrNot=1&curcd={currency_type}'
+
+DUTY_ON = 0
+DUTY_OFF = 1
+URL_GOLD_TODAY_TEMPLATE = 'http://rate.bot.com.tw/Pages/UIP005/UIP00511.aspx?lang=zh-TW&whom=GB0030001000&date={today}&afterOrNot={duty_type}&curcd={currency_type}'
 
 DICT_KEY_DATE_FORMAT = '%Y%m%d'
 
@@ -29,6 +36,50 @@ CSV_COLS = '{},{},{},{},{}'.format(CSV_COL_DATE,
                                    )
 
 BOT_GOLD_TRADE_CURRENCY_LIST = [bot_ex.CURRENCY_TWD,bot_ex.CURRENCY_USD]
+
+def get_current_price(p_currency=bot_ex.CURRENCY_TWD,p_field=CSV_COL_SELL_ONDEMAND):
+    func = '{} {}'.format(__name__,'get_current_price')
+    t_date = date.today()
+    t_date = t_date.strftime('%Y%m%d')
+    
+    #-> GAE timezone is not changeable and set to UTC; OFF_DUTY time is after 15:30:00 in Taiwan (153000-80000)
+    if int(datetime.now().strftime('%H%M%S')) < 73000:
+        t_url = URL_GOLD_TODAY_TEMPLATE.format(today=t_date,
+                                               duty_type=DUTY_ON,
+                                               currency_type=p_currency)
+    else:
+        t_url = URL_GOLD_TODAY_TEMPLATE.format(today=t_date,
+                                               duty_type=DUTY_OFF,
+                                               currency_type=p_currency)
+    try:
+        logging.debug('{}: t_url: {}'.format(func,t_url))
+        #return t_url
+        web_fetch = urlfetch.fetch(t_url)
+        if web_fetch.status_code == httplib.OK:
+            html_doc = document_fromstring(codecs.decode(web_fetch.content,'big5','ignore')) 
+            t_tables = html_doc.xpath("/html/body/ul/li[2]/center/table[5]")
+            #logging.debug('{}'.format(etree.tostring(t_tables[0])))
+            t_len = len(t_tables[0])
+            #logging.debug('len {}'.format(t_len))
+            if len(t_tables[0][t_len-1]) < 4:
+                #-> no web data available
+                return None
+            
+            t_time = t_tables[0][t_len-1][0].text
+            t_bot_buy = float(t_tables[0][t_len-1][3].text)
+            t_bot_sell = float(t_tables[0][t_len-1][4].text)
+            logging.debug('{}: {} buy {} sell {}'.format(func,t_time,t_bot_buy,t_bot_sell))
+            if p_field == CSV_COL_SELL_ONDEMAND:
+                return t_bot_sell
+            else:
+                return t_bot_buy
+        else:
+            logging.warning('{}: urlfetch fail!'.format(func))
+            return None
+    except Exception, e:
+        err_msg = '{}'.format(e)
+        logging.warning('{} : ERROR {}'.format(func,err_msg))
+        return None
 
 class BotGoldInfoModel(db.Model):
     data_year_dict = {}
@@ -101,6 +152,12 @@ class BotGoldInfoModel(db.Model):
             logging.warning('{}: p_datetime type is not date!'.format(func))
             return 0.0
         
+        #-> if datetime is today, get from web directly
+        if p_datetime == date.today():
+            t_current_price = get_current_price(self.key().name(), p_csv_field)
+            if not t_current_price is None:
+                return t_current_price
+        
         t_year = str(p_datetime.year)
         if not t_year in self.data_year_dict.keys():
             if not self._load_year_data(t_year):
@@ -123,6 +180,14 @@ class BotGoldInfoModel(db.Model):
     def get_price_list(self, p_csv_field=CSV_COL_SELL_ONDEMAND):
         t_dataset = BotGoldDataModel.all().ancestor(self).order('year')
         t_list = []
+        
+        #-> add today's price
+        if p_csv_field in [CSV_COL_SELL_ONDEMAND,CSV_COL_BUY_ONDEMAND]:
+            t_current_price = get_current_price(self.key().name(), p_csv_field)
+            if not t_current_price is None:
+                t_list.append([date.today(),t_current_price])
+        
+        #-> add other time price
         for t_data in t_dataset:
             if not t_data.year in self.data_year_dict.keys():
                 if not self._load_year_data(t_data.year):

@@ -79,6 +79,7 @@ DATABASES = {
 LANGUAGE_CODE = 'zh-tw'
 #LANGUAGE_CODE = 'zh-cn'
 
+#TIME_ZONE = 'Asia/Taipei'
 TIME_ZONE = 'UTC'
 
 USE_I18N = True

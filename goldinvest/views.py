@@ -11,6 +11,9 @@ from django.utils.translation import ugettext as _
 
 import logging, calendar, collections
 
+def current_price_view(request,p_currency=bot_ex.CURRENCY_TWD,p_field=bot_gold.CSV_COL_SELL_ONDEMAND):
+    return HttpResponse(bot_gold.get_current_price(p_currency,p_field))
+    
 def price_view(request, p_currency=bot_ex.CURRENCY_TWD,p_view_months=3):
     MONTH_TO_VIEW = int(p_view_months)
     
@@ -39,7 +42,7 @@ def price_view(request, p_currency=bot_ex.CURRENCY_TWD,p_view_months=3):
         t_price_list.append([t_date_after,t_price_1])
         t_price_2 = t_gold.get_value(t_date_after,bot_gold.CSV_COL_BUY_ONDEMAND)
         t_price_list_2.append([t_date_after,t_price_2])
-        t_diff_list.append([t_date_after,(t_price_1-t_price_2)])
+        t_diff_list.append([t_date_after,100*(t_price_1-t_price_2)/t_price_1])
         t_date_after += relativedelta(days=1)
     
     logging.debug('{}'.format(str(t_price_list)))
@@ -68,7 +71,7 @@ def price_view(request, p_currency=bot_ex.CURRENCY_TWD,p_view_months=3):
     for t_entry in t_diff_list:
         t_key = t_entry[0].strftime('%Y%m%d')
         if t_key in t_content_rows.keys():
-            t_content_rows[t_entry[0].strftime("%Y%m%d")] += ('{:.2f}'.format(t_entry[1]),)
+            t_content_rows[t_entry[0].strftime("%Y%m%d")] += ('{:.2f}%'.format(t_entry[1]),)
         else:
             t_content_rows[t_entry[0].strftime("%Y%m%d")] = (t_entry[0].strftime("%Y/%m/%d"), t_entry[1],)
         t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000
