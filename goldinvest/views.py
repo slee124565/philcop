@@ -190,13 +190,13 @@ def daily_bb_view(request,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=10,p_sdw=10
     sma,tb1,tb2,bb1,bb2 = get_bollingerbands(t_price_list,p_timeframe,float(p_sdw)/100)
     
     #-> compose tbl_content
-    t_content_heads = ['Date','OnSell','SMA','TB1','TB2','BB1','BB2']
+    t_content_heads = ['Date','OnSell','BB2','BB1','SMA','TB1','TB2']
     t_content_rows = {}
 
     t_view_date_since = date.today() + relativedelta(months=-BB_VIEW_MONTHS)
     t_ndx = 0
 
-    for ndx2, t_list in enumerate([t_price_list,sma,tb1,tb2,bb1,bb2]):
+    for ndx2, t_list in enumerate([t_price_list,bb2,bb1,sma,tb1,tb2]):
         for ndx,t_entry in enumerate(t_list):
             if t_entry[0] < t_view_date_since:
                 t_ndx = ndx
@@ -212,7 +212,7 @@ def daily_bb_view(request,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=10,p_sdw=10
     t_content_rows = collections.OrderedDict(sorted(t_content_rows.items()))
     tbl_content = {
                    'heads': t_content_heads,
-                   'rows': t_content_rows.values(),
+                   'rows': reversed(t_content_rows.values()),
                    }
         
     plot = {
@@ -249,7 +249,7 @@ def weekly_bb_view(request,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=6,p_sdw=90
     t_offset = 2 - t_date_since.weekday()
     t_date_since += relativedelta(days=t_offset)
     t_date_list = []
-    while t_date_since < date.today():
+    while t_date_since <= date.today():
         t_date_list.append(t_date_since)
         t_date_since += relativedelta(days=+7)
     #t_date_list.append(date.today())
@@ -262,13 +262,13 @@ def weekly_bb_view(request,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=6,p_sdw=90
     sma,tb1,tb2,bb1,bb2 = get_bollingerbands(t_price_list,p_timeframe,float(p_sdw)/100)
     
     #-> compose tbl_content
-    t_content_heads = ['Date','OnSell','SMA','TB1','TB2','BB1','BB2']
+    t_content_heads = ['Date','OnSell','BB2','BB1','SMA','TB1','TB2']
     t_content_rows = {}
     
     t_view_date_since = date.today() + relativedelta(months=-BB_VIEW_MONTHS)
     t_ndx = 0
 
-    for ndx2, t_list in enumerate([t_price_list,sma,tb1,tb2,bb1,bb2]):
+    for ndx2, t_list in enumerate([t_price_list,bb2,bb1,sma,tb1,tb2]):
         for ndx,t_entry in enumerate(t_list):
             if t_entry[0] < t_view_date_since:
                 t_ndx = ndx
@@ -284,7 +284,7 @@ def weekly_bb_view(request,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=6,p_sdw=90
     t_content_rows = collections.OrderedDict(sorted(t_content_rows.items()))
     tbl_content = {
                    'heads': t_content_heads,
-                   'rows': t_content_rows.values(),
+                   'rows': reversed(t_content_rows.values()),
                    }
         
     plot = {
@@ -357,7 +357,7 @@ def default_view(request):
     
     tbl_content = {
                    'heads': t_content_heads,
-                   'rows': t_content_rows.values(),
+                   'rows': reversed(t_content_rows.values()),
                    }
 
     args = {
