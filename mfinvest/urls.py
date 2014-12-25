@@ -28,6 +28,10 @@ urlpatterns = patterns('',
     url(r'^fc/$', 'mfinvest.views_fc.list_all_fund_view'),
     #url(r'^fc/bb/(?P<p_fund_id>\w+)/$', 'mfinvest.views_fc.bb_view'),
     url(r'^fc/bb/(?P<p_fund_id>\w+(-\w+)?)/$', 'mfinvest.views_fc.bb_view'),
+    url(r'^fc/bb/(?P<p_fund_id>\w+(-\w+)?)/(?P<p_b_type>\w+)/$', 'mfinvest.views_fc.bb_view'),
+    url(r'^fc/bb/(?P<p_fund_id>\w+(-\w+)?)/(?P<p_b_type>\w+)/(?P<p_timeframe>\w+)/$', 'mfinvest.views_fc.bb_view'),
+    url(r'^fc/bb/(?P<p_fund_id>\w+(-\w+)?)/(?P<p_b_type>\w+)/(?P<p_timeframe>\w+)/(?P<p_sdw>\w+)/$', 'mfinvest.views_fc.bb_view'),
+
     url(r'^fc/nav/(?P<p_fund_id>\w+(-\w+)?)/$', 'mfinvest.views_fc.nav_view'),
     url(r'^fc/nav_str/(?P<p_fund_id>\w+(-\w+)?)/(?P<p_year>\w+)/$', 'mfinvest.views_fc.fund_nav_str_view'),
 

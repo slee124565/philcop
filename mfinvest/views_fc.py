@@ -21,6 +21,8 @@ from indexreview.models import IndexReviewModel
 import logging, calendar, collections
 
 BB_VIEW_MONTHS = 12
+BB_TYPE_DAILY = 'daily'
+BB_TYPE_WEEKLY = 'weekly'
 
 def list_all_fund_view(request):
     t_fundcode_list = FundCodeModel.get_codename_list()
@@ -164,52 +166,91 @@ def nav_view(request,p_fund_id):
     return render_to_response('mf_my_japan.tpl.html', args)
     
     
-def bb_view(request,p_fund_id):
-    t_fund = FundClearInfoModel.get_fund(p_fund_id)
-    if t_fund is None:
-        args = {
-                'tpl_img_header' : FundCodeModel.get_fundname(p_fund_id),
-                }
-        return render_to_response('mf_simple_flot.tpl.html',args)
+def bb_view(request,p_fund_id,p_b_type=BB_TYPE_DAILY,p_timeframe=None,p_sdw=None):
+    if p_b_type == BB_TYPE_DAILY:
+        if p_timeframe is None:
+            p_timeframe = 18
+            p_sdw = 100
+        return _bb_view(p_fund_id, p_b_type, p_timeframe, p_sdw)
     else:
-        year_since = date.today().year - 5
-        t_value_list = t_fund.get_value_list(year_since)
-        sma,tb1,tb2,bb1,bb2 = get_bollingerbands(t_value_list)
-        
-        t_view_date_since = date.today() + relativedelta(months=-BB_VIEW_MONTHS)
-        t_ndx = 0
+        if p_timeframe is None:
+            p_timeframe = 5
+            p_sdw = 85
+        return _bb_view(p_fund_id, p_b_type, p_timeframe, p_sdw)
     
-        for ndx2, t_list in enumerate([t_value_list,sma,tb1,tb2,bb1,bb2]):
-            for ndx,t_entry in enumerate(t_list):
-                if t_entry[0] < t_view_date_since:
-                    t_ndx = ndx
-                else:
-                    t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000
-            del t_list[:(t_ndx+1)]
-        
-            
-        plot = {
-                'data': '{data: ' + str(sma).replace('L', '') + \
-                                ', label: "SMA", color: "black", lines: {show: true}, yaxis: 4},' + \
-                        '{data: ' + str(t_value_list).replace('L', '') + \
-                                ', label: "NAV", color: "blue", lines: {show: true}, yaxis: 4},' + \
-                        '{data: ' + str(tb1).replace('L', '') + \
-                                ', label: "TB1", color: "red", lines: {show: true}, yaxis: 4},' + \
-                        '{data: ' + str(tb2).replace('L', '') + \
-                                ', label: "TB2", color: "purple", lines: {show: true}, yaxis: 4},' + \
-                        '{data: ' + str(bb1).replace('L', '') + \
-                                ', label: "BB1", color: "red", lines: {show: true}, yaxis: 4},' + \
-                        '{data: ' + str(bb2).replace('L', '') + \
-                                ', label: "BB2", color: "purple", lines: {show: true}, yaxis: 4},' 
-                }
-        
-        args = {
-                'tpl_img_header' : t_fund.title,
-                'tpl_section_title' : ' ',
-                'plot' : plot,
-                }
-        
-        return render_to_response('mf_simple_flot.tpl.html',args)
-    
-    
+def _bb_view(p_fund_id,p_b_type,p_timeframe,p_sdw):
+    func = '{} {}'.format(__name__,'_bb_view')
+    t_fund = FundClearInfoModel.get_fund(p_fund_id)
 
+    if p_b_type == BB_TYPE_DAILY:
+        BB_VIEW_MONTHS = 6
+        t_date_since = date.today() + relativedelta(months=-(BB_VIEW_MONTHS*2))
+        year_since = t_date_since.year
+        t_value_list = t_fund.get_value_list(year_since)
+        t_index = [row[0] for row in t_value_list].index(t_date_since)
+        t_value_list = t_value_list[t_index:]
+    else: #-> BB_TYPE_WEEKLY
+        BB_VIEW_MONTHS = 14
+        t_date_since = date.today() + relativedelta(months=-(2*BB_VIEW_MONTHS))
+        t_offset = 2 - t_date_since.weekday()
+        t_date_since += relativedelta(days=t_offset)
+        t_date_list = []
+        while t_date_since <= date.today():
+            t_date_list.append(t_date_since)
+            t_date_since += relativedelta(days=+7)
+        t_value_list = t_fund.get_sample_value_list(t_date_list)
+
+    sma,tb1,tb2,bb1,bb2 = get_bollingerbands(t_value_list,p_timeframe,float(p_sdw)/100)
+
+    t_content_heads = ['Date','NAV','BB2','BB1','SMA','TB1','TB2']
+    t_content_rows = {}
+
+    t_view_date_since = date.today() + relativedelta(months=-BB_VIEW_MONTHS)
+    t_ndx = 0
+
+    for ndx2, t_list in enumerate([t_value_list,bb2,bb1,sma,tb1,tb2]):
+        for ndx,t_entry in enumerate(t_list):
+            if t_entry[0] < t_view_date_since:
+                t_ndx = ndx
+            else:
+                t_key = t_entry[0].strftime('%Y%m%d')
+                if t_key in t_content_rows.keys():
+                    t_content_rows[t_entry[0].strftime("%Y%m%d")] += ('{:.2f}'.format(t_entry[1]),)
+                else:
+                    t_content_rows[t_entry[0].strftime("%Y%m%d")] = (t_entry[0].strftime("%Y/%m/%d"), t_entry[1],)
+                t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000
+        del t_list[:(t_ndx+1)]
+    
+    t_content_rows = collections.OrderedDict(sorted(t_content_rows.items()))
+    tbl_content = {
+                   'heads': t_content_heads,
+                   'rows': reversed(t_content_rows.values()),
+                   }
+        
+    plot = {
+            'data': '{data: ' + str(sma).replace('L', '') + \
+                            ', label: "SMA", color: "black", lines: {show: true}, yaxis: 4},' + \
+                    '{data: ' + str(t_value_list).replace('L', '') + \
+                            ', label: "NAV", color: "blue", lines: {show: true}, yaxis: 4},' + \
+                    '{data: ' + str(tb1).replace('L', '') + \
+                            ', label: "TB1", color: "red", lines: {show: true}, yaxis: 4},' + \
+                    '{data: ' + str(tb2).replace('L', '') + \
+                            ', label: "TB2", color: "purple", lines: {show: true}, yaxis: 4},' + \
+                    '{data: ' + str(bb1).replace('L', '') + \
+                            ', label: "BB1", color: "red", lines: {show: true}, yaxis: 4},' + \
+                    '{data: ' + str(bb2).replace('L', '') + \
+                            ', label: "BB2", color: "purple", lines: {show: true}, yaxis: 4},' 
+            }
+    
+    args = {
+            'tpl_img_header' : t_fund.title, # FundCodeModel.get_fundname(p_fund_id),
+            'plot' : plot,
+            'tpl_section_title' :  'Fund {} View ;{}; TF:{}; SD_W: {}'.format(
+                                                                    p_b_type,
+                                                                    p_fund_id,
+                                                                    p_timeframe,
+                                                                    p_sdw),
+            'tbl_content' : tbl_content,
+            }
+    
+    return render_to_response('mf_simple_flot.tpl.html',args)
