@@ -12,7 +12,11 @@ from django.utils.translation import ugettext as _
 import logging, calendar, collections
 
 def current_price_view(request,p_currency=bot_ex.CURRENCY_TWD,p_field=bot_gold.CSV_COL_SELL_ONDEMAND):
-    return HttpResponse(bot_gold.get_current_price(p_currency,p_field))
+    t_price = bot_gold.get_current_price(p_currency,p_field)
+    if t_price is None:
+        t_gold = bot_gold.BotGoldInfoModel.get_bot_gold(p_currency)
+        t_price = t_gold.get_value(date.today(),p_field)
+    return HttpResponse(t_price)
     
 def price_view(request, p_currency=bot_ex.CURRENCY_TWD,p_view_months=3):
     MONTH_TO_VIEW = int(p_view_months)
