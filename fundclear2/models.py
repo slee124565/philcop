@@ -235,25 +235,14 @@ class FundClearDataModel(db.Model):
                     t_count += 1
                 
                 t_count = 0
-                t_added = 0
                 while (t_count < len(dataset)):
                     #logging.info('t_count ' + str(t_count))
                     (t_date,t_value) = dataset[t_count]
                     #logging.debug(str(t_count) + ' ' + str(dataset[t_count]))
                     if (t_value == '--') or (t_value == 'N/A'):
-                        if (t_count == 0):
-                            #logging.warning('removeing dataset element ' + str(dataset[t_count]))
-                            del dataset[t_count]
-                            continue
-                        else:
-                            #logging.warning('replace value with previous one, date ' + str(dataset[t_count]))
-                            dataset[t_count][1] = dataset[t_count-1][1]
-                    #if (t_count > 192):
-                    #    logging.info('DEBUG:' + str([t_date,t_value]))
+                        del dataset[t_count]
+                        continue
                     csv_content += dataset[t_count][0] + ',' + str(float(dataset[t_count][1])) + '\n'
-                    t_added += 1
-                    #dataset[t_count][0] = calendar.timegm((parser.parse(t_date)).timetuple()) * 1000
-                    #dataset[t_count][1] = float(dataset[t_count][1])
                     t_count += 1
                 #return csv_content
                 t_result = True
@@ -267,7 +256,7 @@ class FundClearDataModel(db.Model):
             logging.info('Fund {id} with year {year} with item {item} saved.'.format(
                                                                     id=str(p_fund_id),
                                                                     year=str(p_year),
-                                                                        item=t_added))
+                                                                        item=t_count))
             return t_result
         except DownloadError:
             fund.year = str(p_year)
