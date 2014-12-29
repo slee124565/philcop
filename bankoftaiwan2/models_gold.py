@@ -38,23 +38,32 @@ CSV_COLS = '{},{},{},{},{}'.format(CSV_COL_DATE,
 BOT_GOLD_TRADE_CURRENCY_LIST = [bot_ex.CURRENCY_TWD,bot_ex.CURRENCY_USD]
 
 def get_current_price(p_currency=bot_ex.CURRENCY_TWD,p_field=CSV_COL_SELL_ONDEMAND):
-    func = '{} {}'.format(__name__,'get_current_price')
     t_date = date.today()
     t_date = t_date.strftime('%Y%m%d')
-    
+    t_url_onduty = URL_GOLD_TODAY_TEMPLATE.format(today=t_date,
+                                           duty_type=DUTY_ON,
+                                           currency_type=p_currency)
+    t_url_offduty = URL_GOLD_TODAY_TEMPLATE.format(today=t_date,
+                                           duty_type=DUTY_OFF,
+                                           currency_type=p_currency)
+
     #-> GAE timezone is not changeable and set to UTC; OFF_DUTY time is after 15:30:00 in Taiwan (153000-80000)
     if int(datetime.now().strftime('%H%M%S')) < 73000:
-        t_url = URL_GOLD_TODAY_TEMPLATE.format(today=t_date,
-                                               duty_type=DUTY_ON,
-                                               currency_type=p_currency)
+        t_price = _get_current_price(t_url_onduty,p_currency,p_field)
     else:
-        t_url = URL_GOLD_TODAY_TEMPLATE.format(today=t_date,
-                                               duty_type=DUTY_OFF,
-                                               currency_type=p_currency)
+        t_price = _get_current_price(t_url_offduty,p_currency,p_field)
+        if t_price is None:
+            t_price = _get_current_price(t_url_onduty,p_currency,p_field)
+    return t_price
+
+def _get_current_price(p_url,p_currency=bot_ex.CURRENCY_TWD,p_field=CSV_COL_SELL_ONDEMAND):
+
+    func = '{} {}'.format(__name__,'get_current_price')
+    
     try:
-        logging.debug('{}: t_url: {}'.format(func,t_url))
+        logging.debug('{}: t_url: {}'.format(func,p_url))
         #return t_url
-        web_fetch = urlfetch.fetch(t_url)
+        web_fetch = urlfetch.fetch(p_url)
         if web_fetch.status_code == httplib.OK:
             html_doc = document_fromstring(codecs.decode(web_fetch.content,'big5','ignore')) 
             t_tables = html_doc.xpath("/html/body/ul/li[2]/center/table[5]")

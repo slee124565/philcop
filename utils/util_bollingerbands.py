@@ -33,7 +33,7 @@ def get_bollingerbands(p_list, p_tff=20, p_sdw=1.0):
     topBand2 = []
     botBand1 = []
     botBand2 = []
-    logging.debug('{}'.format(p_list))
+    #logging.debug('{}'.format(p_list))
     
     if len(p_list) > 0:
         sma = movingaverage(p_list, int(p_tff))
