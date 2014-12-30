@@ -38,6 +38,7 @@ CSV_COLS = '{},{},{},{},{}'.format(CSV_COL_DATE,
 BOT_GOLD_TRADE_CURRENCY_LIST = [bot_ex.CURRENCY_TWD,bot_ex.CURRENCY_USD]
 
 def get_current_price(p_currency=bot_ex.CURRENCY_TWD,p_field=CSV_COL_SELL_ONDEMAND):
+    func = '{} {}'.format(__name__,'get_current_price')
     t_date = date.today()
     t_date = t_date.strftime('%Y%m%d')
     t_url_onduty = URL_GOLD_TODAY_TEMPLATE.format(today=t_date,
@@ -53,12 +54,13 @@ def get_current_price(p_currency=bot_ex.CURRENCY_TWD,p_field=CSV_COL_SELL_ONDEMA
     else:
         t_price = _get_current_price(t_url_offduty,p_currency,p_field)
         if t_price is None:
+            logging.debug('{}: try onduty gold price'.format(func))
             t_price = _get_current_price(t_url_onduty,p_currency,p_field)
     return t_price
 
 def _get_current_price(p_url,p_currency=bot_ex.CURRENCY_TWD,p_field=CSV_COL_SELL_ONDEMAND):
 
-    func = '{} {}'.format(__name__,'get_current_price')
+    func = '{} {}'.format(__name__,'_get_current_price')
     
     try:
         logging.debug('{}: t_url: {}'.format(func,p_url))
@@ -163,7 +165,7 @@ class BotGoldInfoModel(db.Model):
         
         #-> if datetime is today, get from web directly
         if p_datetime == date.today():
-            t_current_price = get_current_price(self.key().name(), p_csv_field)
+            t_current_price = get_current_price(p_currency=self.key().name(),p_field=p_csv_field)
             if not t_current_price is None:
                 return t_current_price
         
@@ -192,7 +194,7 @@ class BotGoldInfoModel(db.Model):
         
         #-> add today's price
         if p_csv_field in [CSV_COL_SELL_ONDEMAND,CSV_COL_BUY_ONDEMAND]:
-            t_current_price = get_current_price(self.key().name(), p_csv_field)
+            t_current_price = get_current_price(p_currency=self.key().name(),p_field=p_csv_field)
             if not t_current_price is None:
                 t_list.append([date.today(),t_current_price])
         

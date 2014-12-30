@@ -169,28 +169,60 @@ def usd_twd_price_view(request,p_currency=bot_ex.CURRENCY_TWD):
     
     return render_to_response('mf_simple_flot.tpl.html',args)
     
-    
+BB_VIEW_DAILY = 'daily'
+BB_VIEW_WEEKLY = 'weekly'    
 def daily_bb_view(request,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=10,p_sdw=100):
-    BB_VIEW_MONTHS = 6
+    return _bb_view(BB_VIEW_DAILY, p_currency, p_timeframe, p_sdw)
+    
+def _bb_view(p_bb_type,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=None,p_sdw=None):
+    func = '{} {}'.format(__name__,'_bb_view')
 
-    func = '{} {}'.format(__name__,'daily_bb_view')
+    if not p_currency in [bot_ex.CURRENCY_TWD, bot_ex.CURRENCY_USD]:
+        logging.warning('{}: PARAM ERR p_currency {}'.format(func,p_currency))
+        return HttpResponse('PARAM ERR p_currency {}'.format(p_currency))
+    
     t_gold = bot_gold.BotGoldInfoModel.get_bot_gold(p_currency)
-    t_price_list = t_gold.get_price_list()
-    t_date_since = date.today() + relativedelta(months=-(BB_VIEW_MONTHS*2))
-    logging.debug('{}: date since {}'.format(func,t_date_since))
-    t_count = 0
-    t_date_list = [row[0] for row in t_price_list]
-    while not t_date_since in t_date_list:
-        t_date_since = (t_date_since + relativedelta(days=-1))
-        if t_count > 7: #protect infinite loop
-            t_date_since = None
-            break
-        t_count += 1
-    if t_date_since:
-        t_index = t_date_list.index(t_date_since)
-        t_price_list = t_price_list[t_index:]
-     
-    #return HttpResponse(str(t_price_list))   
+
+    if p_bb_type == BB_VIEW_DAILY:
+        BB_VIEW_MONTHS = 6
+        t_price_list = t_gold.get_price_list()
+        t_date_since = date.today() + relativedelta(months=-(BB_VIEW_MONTHS*2))
+        t_count = 0
+        t_date_list = [row[0] for row in t_price_list]
+        while not t_date_since in t_date_list:
+            t_date_since = (t_date_since + relativedelta(days=-1))
+            if t_count > 7: #protect infinite loop
+                t_date_since = None
+                break
+            t_count += 1
+        if t_date_since:
+            t_index = t_date_list.index(t_date_since)
+            t_price_list = t_price_list[t_index:]
+        
+        #-> default BB param
+        if p_timeframe is None:
+            p_timeframe = 15
+            p_sdw = 100
+        t_img_header = _('Gold Daily View')
+    else: #BB_VIEW_WEEKLY
+        BB_VIEW_MONTHS = 14
+        t_date_since = date.today() + relativedelta(months=-(2*BB_VIEW_MONTHS))
+        t_offset = 2 - t_date_since.weekday()
+        t_date_since += relativedelta(days=t_offset)
+        t_date_list = []
+        while t_date_since <= date.today():
+            t_date_list.append(t_date_since)
+            t_date_since += relativedelta(days=+7)
+        t_gold = bot_gold.BotGoldInfoModel.get_bot_gold(p_currency)
+        t_price_list = t_gold.get_sample_value_list(t_date_list)
+
+        #-> default BB param
+        if p_timeframe is None:
+            p_timeframe = 6
+            p_sdw = 90
+        t_img_header = _('Gold Weekly View')
+
+    logging.info('{}: param {} {} {}'.format(func,p_currency,p_timeframe,p_sdw))
     sma,tb1,tb2,bb1,bb2 = get_bollingerbands(t_price_list,p_timeframe,float(p_sdw)/100)
     
     #-> compose tbl_content
@@ -218,24 +250,24 @@ def daily_bb_view(request,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=10,p_sdw=10
                    'heads': t_content_heads,
                    'rows': reversed(t_content_rows.values()),
                    }
-        
+    t_lable = ' {}, {},TF:{},SDW:{}'.format(str(date.today()),p_bb_type,p_timeframe,p_sdw)    
     plot = {
             'data': '{data: ' + str(sma).replace('L', '') + \
-                            ', label: "SMA", color: "black", lines: {show: true}, yaxis: 4},' + \
+                            ', label: "' + t_lable + '", color: "black", lines: {show: true}, yaxis: 4},' + \
                     '{data: ' + str(t_price_list).replace('L', '') + \
-                            ', label: "NAV", color: "blue", lines: {show: true}, yaxis: 4},' + \
+                            ', color: "blue", lines: {show: true}, yaxis: 4},' + \
                     '{data: ' + str(tb1).replace('L', '') + \
-                            ', label: "TB1", color: "red", lines: {show: true}, yaxis: 4},' + \
+                            ', color: "red", lines: {show: true}, yaxis: 4},' + \
                     '{data: ' + str(tb2).replace('L', '') + \
-                            ', label: "TB2", color: "purple", lines: {show: true}, yaxis: 4},' + \
+                            ', color: "purple", lines: {show: true}, yaxis: 4},' + \
                     '{data: ' + str(bb1).replace('L', '') + \
-                            ', label: "BB1", color: "red", lines: {show: true}, yaxis: 4},' + \
+                            ', color: "red", lines: {show: true}, yaxis: 4},' + \
                     '{data: ' + str(bb2).replace('L', '') + \
-                            ', label: "BB2", color: "purple", lines: {show: true}, yaxis: 4},' 
+                            ', color: "purple", lines: {show: true}, yaxis: 4},' 
             }
     
     args = {
-            'tpl_img_header' : _('Gold Daily View') + ' ;Currency:{}; TF:{}; SD_W: {}'.format(p_currency,
+            'tpl_img_header' : t_img_header + ' ;Currency:{}; TF:{}; SD_W: {}'.format(p_currency,
                                                                                                p_timeframe,
                                                                                                p_sdw),
             'plot' : plot,
@@ -246,6 +278,8 @@ def daily_bb_view(request,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=10,p_sdw=10
     return render_to_response('mf_simple_flot.tpl.html',args)
 
 def weekly_bb_view(request,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=6,p_sdw=90):
+    return _bb_view(BB_VIEW_WEEKLY, p_currency, p_timeframe, p_sdw)
+
     BB_VIEW_MONTHS = 14
     
     func = '{} {}'.format(__name__,'weekly_bb_view')
