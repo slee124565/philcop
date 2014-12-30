@@ -138,27 +138,32 @@ class FundClearInfoModel(db.Model):
         return list(value_list)
 
     def get_nav_by_date(self, p_date):
+        func = '{} {}'.format(__name__,'get_nav_by_date')
         t_date = p_date        
         t_year = str(t_date.year)
         year_value_list = self.get_value_list_for_year(t_year)
+        
+        #-> return 0 if no data exist
         if len(year_value_list) == 0:
+            logging.debug('{}: no year value exist for year {}'.format(func,t_year))
             return 0.0
-        if t_date < year_value_list[0][NAV_INDEX_DATE]:
-            t_date = date(t_date.year-1,12,31)
-            logging.info('get_nav_by_date: get NAV for date {t_date} instead of {p_date}'.format(t_date=str(t_date),
-                                                                                p_date=str(p_date)))
-            return self.get_nav_by_date(t_date)
-        if t_date > year_value_list[-1][NAV_INDEX_DATE]: 
-            logging.info('get_nav_by_date: date {p_date} exceed year nav max date {max_date}'.format(p_date=str(p_date),
-                                                                                    max_date=str(year_value_list[-1][NAV_INDEX_DATE])))
-            return 0.0      
+        
+        #-> return value of most close to p_date
         t_key = t_date.strftime('%Y/%m/%d')
+        t_count = 0
         while not t_key in self.nav_year_dict[t_year].keys():
+            #logging.debug('{}: no matched date {} in value list, check previous day'.format(func,str(t_date)))
             t_date = t_date + relativedelta(days=-1)
+            
+            #-> check if t_date year change
+            if str(t_date.year) != t_year:
+                return self.get_nav_by_date(t_date)
+            t_count += 1
             t_key = t_date.strftime('%Y/%m/%d')
-            if t_date.day == 1 and t_date.month == 1:
-                logging.warning('get_nav_by_date fail: get NAV for {p_date}'.format(str(p_date)))
+            if t_count > 30:
+                logging.warning('{}: loop protection breached!'.format(func))
                 return 0.0
+        
         return self.nav_year_dict[t_year][t_key][NAV_INDEX_VALUE]
         
 class FundClearDataModel(db.Model):

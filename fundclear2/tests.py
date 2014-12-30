@@ -2,6 +2,7 @@
 from django.http import HttpResponse
 from models import FundClearDataModel, FundClearInfoModel
 from datetime import date
+from dateutil.relativedelta import relativedelta
 
 import logging
 
@@ -23,18 +24,16 @@ def test_load_all_nav(request):
     
     
 def test_get_nav_by_date(request):
-    fund_id = '618344' #'CIFGHIOT'
+    fund_id = 'LU0069970746' #'CIFGHIOT'
     fund = FundClearInfoModel.get_fund(fund_id)
     
-    t_date = date(2014,1,1)
-    t_date = date(2014,11,4)
-    t_content = 'date {t_date} nav is {nav}\n'.format(
-                                                    t_date=str(t_date),
-                                                    nav=fund.get_nav_by_date(t_date))
-
-    value_list = fund.get_value_list(t_date.year)
-    for t_entry in value_list:
-        t_content += str(t_entry) + '\n'
+    t_content = ''
+    t_date = date.today()
+    t_end_date = t_date + relativedelta(years=-1)
+    while t_date > t_end_date:
+        t_content += '{} : {}\n'.format(str(t_date),fund.get_nav_by_date(t_date))
+        t_date += relativedelta(days=-1)
+    
 
     response = HttpResponse(content_type='text/plain')
     response.content = t_content
