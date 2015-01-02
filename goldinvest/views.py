@@ -228,6 +228,7 @@ def _bb_view(p_bb_type,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=None,p_sdw=Non
     #-> compose tbl_content
     t_content_heads = ['Date','OnSell','BB2','BB1','SMA','TB1','TB2']
     t_content_rows = {}
+    t_lastdate = t_price_list[-1][0]
 
     t_view_date_since = date.today() + relativedelta(months=-BB_VIEW_MONTHS)
     t_ndx = 0
@@ -250,7 +251,7 @@ def _bb_view(p_bb_type,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=None,p_sdw=Non
                    'heads': t_content_heads,
                    'rows': reversed(t_content_rows.values()),
                    }
-    t_lable = ' {}, {},TF:{},SDW:{}'.format(str(date.today()),p_bb_type,p_timeframe,p_sdw)    
+    t_lable = ' lastDate:{}, {},TF:{},SDW:{}'.format(str(t_lastdate),p_bb_type,p_timeframe,p_sdw)    
     plot = {
             'data': '{data: ' + str(sma).replace('L', '') + \
                             ', label: "' + t_lable + '", color: "black", lines: {show: true}, yaxis: 4},' + \
