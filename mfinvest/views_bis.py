@@ -5,6 +5,7 @@ from indexreview.models import IndexReviewModel
 from utils import util_bollingerbands
 from django.utils.translation import ugettext as _
 import calendar, collections
+from django.http import HttpResponse
 
 def eers_area_list_view(request):
     bis_eers = BisEersModel.get_broad_indices()
@@ -32,6 +33,43 @@ def eers_area_list_view(request):
             }
     return render_to_response('mf_simple_table.tpl.html', args)
     
+def eers_area_compare_view(request,p_code_a='CN',p_code_b='TW'):
+    bis_eers = BisEersModel.get_broad_indices()
+    t_area_1 = bis_eers._get_area_name(p_code_a)
+    t_area_2 = bis_eers._get_area_name(p_code_b)
+    t_value_list_1 = bis_eers.get_area_real_bis_eers(t_area_1)[t_area_1]
+    t_value_list_2 = bis_eers.get_area_real_bis_eers(t_area_2)[t_area_2]
+    t_value_list = [[a[0],a[1]-b[1]] for a,b in zip(t_value_list_1,t_value_list_2)]
+
+    sma,tb1,tb2,bb1,bb2 = util_bollingerbands.get_bollingerbands(t_value_list)
+
+    for ndx2, t_list in enumerate([t_value_list,sma,tb1,tb2,bb1,bb2]):
+        for ndx,t_entry in enumerate(t_list):
+            t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000
+
+    plot = {
+            'data': '{data: ' + str(sma).replace('L', '') + \
+                            ', label: "SMA", color: "black", lines: {show: true}, yaxis: 4},' + \
+                    '{data: ' + str(t_value_list).replace('L', '') + \
+                            ', label: "Indices", color: "blue", lines: {show: true}, yaxis: 4},' + \
+                    '{data: ' + str(tb1).replace('L', '') + \
+                            ', label: "TB1", color: "yellow", lines: {show: true}, yaxis: 4},' + \
+                    '{data: ' + str(tb2).replace('L', '') + \
+                            ', label: "TB2", color: "red", lines: {show: true}, yaxis: 4},' + \
+                    '{data: ' + str(bb1).replace('L', '') + \
+                            ', label: "BB1", color: "yellow", lines: {show: true}, yaxis: 4},' + \
+                    '{data: ' + str(bb2).replace('L', '') + \
+                            ', label: "BB2", color: "red", lines: {show: true}, yaxis: 4},' 
+            }
+    
+    args = {
+            'tpl_img_header' :  ' BIS EERs Indices {} vs. {} Compare '.format(t_area_1,t_area_2),
+            'plot' : plot,
+            'tpl_section_title' : _('BIS EERs Indices'), 
+            #'tbl_content' : tbl_content,
+            }
+    
+    return render_to_response('mf_simple_flot.tpl.html',args)
     
 def eers_view(request, p_code='TW'):
     bis_eers = BisEersModel.get_broad_indices()

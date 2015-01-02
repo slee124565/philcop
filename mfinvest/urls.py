@@ -22,6 +22,10 @@ urlpatterns = patterns('',
 
     url(r'^bis/(?P<p_code>\w+)/$', 'mfinvest.views_bis.eers_view'),
     url(r'^bis/$', 'mfinvest.views_bis.eers_area_list_view'),
+    url(r'^bis_bb/(?P<p_code>\w+)/$', 'mfinvest.tests.bis_bb_view'),
+
+    url(r'^bis_cp/$', 'mfinvest.views_bis.eers_area_compare_view'),
+    url(r'^bis_cp/(?P<p_code_a>\w+)/(?P<p_code_b>\w+)/$', 'mfinvest.views_bis.eers_area_compare_view'),
 
     url(r'^bot/$', 'mfinvest.views_currency.tw_exchange_changing_view'),
 
@@ -39,6 +43,5 @@ urlpatterns = patterns('',
     url(r'^$', 'mfinvest.views.mf_japan_view_2'),
 
     url(r'^bb/(?P<p_fund_id>\w+(-\w+)?)/$', 'mfinvest.tests.bollinger_band_view'),
-    url(r'^bis_bb/(?P<p_code>\w+)/$', 'mfinvest.tests.bis_bb_view'),
     url(r'^bis/$', 'mfinvest.tests.bis_org_view'),
 )
