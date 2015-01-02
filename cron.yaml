@@ -19,14 +19,14 @@ cron:
   schedule: 3 of month 08:10
   timezone: Asia/Taipei
 
-- description: update BotGoldDataModel from BankOfTaiwan every month
+- description: update BotGoldDataModel from BankOfTaiwan every last day 23:00 of every month
   url: /bot2/task/update_g_db/
-  schedule: 3 of month 07:10
-  timezone: Asia/Taipei
+  schedule: 1 of month 00:00
+  timezone: Asia/Tokyo
 
-- description: update BotExchangeDataModel from BankOfTaiwan every month
+- description: update BotExchangeDataModel from BankOfTaiwan every last day 23:00 of every month
   url: /bot2/task/update_ex_db/
-  schedule: 3 of month 06:10
-  timezone: Asia/Taipei
+  schedule: 1 of month 00:00
+  timezone: Asia/Tokyo
 
   
