@@ -183,7 +183,7 @@ def _bb_view(p_fund_id,p_b_type,p_timeframe,p_sdw):
     t_fund = FundClearInfoModel.get_fund(p_fund_id)
 
     if p_b_type == BB_TYPE_DAILY:
-        BB_VIEW_MONTHS = 6
+        BB_VIEW_MONTHS = 7
         t_date_since = date.today() + relativedelta(months=-(BB_VIEW_MONTHS*2))
         year_since = t_date_since.year
         t_value_list = t_fund.get_value_list(year_since)
