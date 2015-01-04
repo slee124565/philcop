@@ -143,10 +143,12 @@ class FundClearInfoModel(db.Model):
         t_year = str(t_date.year)
         year_value_list = self.get_value_list_for_year(t_year)
         
+        '''
         #-> return 0 if no data exist
         if len(year_value_list) == 0:
             logging.debug('{}: no year value exist for year {}'.format(func,t_year))
             return 0.0
+        '''
         
         #-> return value of most close to p_date
         t_key = t_date.strftime('%Y/%m/%d')
@@ -161,7 +163,7 @@ class FundClearInfoModel(db.Model):
             t_count += 1
             t_key = t_date.strftime('%Y/%m/%d')
             if t_count > 30:
-                logging.warning('{}: loop protection breached!'.format(func))
+                logging.error('{}: loop protection breached!'.format(func))
                 return 0.0
         
         return self.nav_year_dict[t_year][t_key][NAV_INDEX_VALUE]
