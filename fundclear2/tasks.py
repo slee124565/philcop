@@ -41,18 +41,22 @@ def funddata_init(request):
 
 def chain_update_taskhandler(request):
     '''
-    function request 2 param: 
+    function request 3 param: 
     code_index(mondatory): the start index of FundCodeModel.get_codename_list(),
     type(optional): fund data update type; <all> means update all years data
+    year(optional): which year nav to download
     '''
     
     p_code_index = int(request.REQUEST['PARAM1'])
     p_type = ''
+    p_year = date.today().year-1
     if 'PARAM2' in request.REQUEST.keys():
         p_type = str(request.REQUEST['PARAM2'])
+    if 'PARAM3' in request.REQUEST.keys():
+        p_year = str(request.REQUEST['PARAM3'])
 
     codename_list = FundCodeModel.get_codename_list()
-    #codename_list = codename_list[:5]
+    #codename_list = codename_list[10:15]
     response = HttpResponse('chain_update_taskhandler with code_index {code_index}'.format(code_index=p_code_index))
     if p_code_index < len(codename_list):
         #-> add update_funddata_task for p_code_index
@@ -63,6 +67,7 @@ def chain_update_taskhandler(request):
                       countdown = 5,
                       params = {
                                 'PARAM1': p_code,
+                                'PARAM2': p_year,
                                 'PARAM3': p_type,
                                 })
         logging.info('chain_update_taskhandler: add update task for fund_id {fund_id}'.format(fund_id=p_code))
@@ -75,6 +80,7 @@ def chain_update_taskhandler(request):
                           params = {
                                     'PARAM1': p_next_index,
                                     'PARAM2': p_type,
+                                    'PARAM3': p_year,
                                     })
             logging.info('chain_update_taskhandler: add chain_update task for index {index}'.format(index=p_next_index))        
         else:

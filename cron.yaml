@@ -14,9 +14,9 @@ cron:
   schedule: 8 of month 07:10
   timezone: Asia/Taipei
 
-- description: update FundClearDataModel from FundClear every month
+- description: update FundClearDataModel from FundClear on 5th January
   url: /fc2/task/update/
-  schedule: 3 of month 08:10
+  schedule: 5 of january 23:00
   timezone: Asia/Taipei
 
 - description: update BotGoldDataModel from BankOfTaiwan every last day 23:00 of every month
