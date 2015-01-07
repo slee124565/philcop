@@ -9,7 +9,7 @@ from fundclear.models import FundClearModel
 import bankoftaiwan2.models_exchange as bot_ex
 
 def home(request):
-    return HttpResponseRedirect('/mf/fund_jpy/')
+    return HttpResponseRedirect('/mf/fc/')
     #return render_to_response('dashboard.tpl.html')
 
 def test_l10n(request):
