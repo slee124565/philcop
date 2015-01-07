@@ -64,7 +64,7 @@ class IndexReviewModel(db.Model):
         t_date_list = get_sample_date_list(CONFIG_REVIEW_MONTH_COUNT, False)
         
         #-> get sample index list
-        t_sample_index_list = cls.get_sample_index_list(p_index_list, t_date_list)
+        t_sample_index_list = p_db_parent.get_sample_value_list(t_date_list) 
         t_indexreview._index_list_dump = pickle.dumps(t_sample_index_list)
         t_indexreview._yoy_1_list_dump = pickle.dumps(cls.get_12_yoy_list(t_sample_index_list, 1))
         t_indexreview._yoy_2_list_dump = pickle.dumps(cls.get_12_yoy_list(t_sample_index_list, 2))
@@ -78,21 +78,7 @@ class IndexReviewModel(db.Model):
 
         '''
         return t_indexreview
-        
-    @classmethod
-    def get_sample_index_list(cls,p_index_list,p_date_list):
-        t_list = []
-        t_date_list = [row[0] for row in p_index_list]
-        for t_date in p_date_list:
-            try:
-                t_index = p_index_list[t_date_list.index(t_date)][1]
-            except:
-                logging.warning('get_sample_index_list index error for date {date}'.format(date=str(t_date)))
-                t_index = 0.0
-            t_list.append([t_date,t_index])
-        return t_list
-
-    
+            
     @classmethod
     def get_12_yoy_list(cls,p_index_list,p_ycount=1,p_total_sample_count=12):
         '''

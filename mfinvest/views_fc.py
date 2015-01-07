@@ -110,6 +110,7 @@ def nav_view(request,p_fund_id):
     t_fund = FundClearInfoModel.get_fund(f_fund_id)
     year_since = date.today().year - 3
     t_fund.get_value_list(year_since)
+    IndexReviewModel._update_review(t_fund)
     t_review = IndexReviewModel.get_index_review(t_fund)
     
     if t_review is None:
@@ -187,8 +188,9 @@ def _bb_view(p_fund_id,p_b_type,p_timeframe,p_sdw):
         t_date_since = date.today() + relativedelta(months=-(BB_VIEW_MONTHS*2))
         year_since = t_date_since.year
         t_value_list = t_fund.get_value_list(year_since)
-        t_index = [row[0] for row in t_value_list].index(t_date_since)
-        t_value_list = t_value_list[t_index:]
+        if t_date_since > t_value_list[0][0]:
+            t_index = [row[0] for row in t_value_list].index(t_date_since)
+            t_value_list = t_value_list[t_index:]
     else: #-> BB_TYPE_WEEKLY
         BB_VIEW_MONTHS = 14
         t_date_since = date.today() + relativedelta(months=-(2*BB_VIEW_MONTHS))
