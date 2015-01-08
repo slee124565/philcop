@@ -246,7 +246,7 @@ class FundClearDataModel(db.Model):
                     #logging.info('t_count ' + str(t_count))
                     (t_date,t_value) = dataset[t_count]
                     #logging.debug(str(t_count) + ' ' + str(dataset[t_count]))
-                    if (t_value == '--') or (t_value == 'N/A'):
+                    if (t_value == '--') or (t_value == 'N/A') or (t_value == '.000000'):
                         del dataset[t_count]
                         continue
                     csv_content += dataset[t_count][0] + ',' + str(float(dataset[t_count][1])) + '\n'
