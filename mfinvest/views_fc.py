@@ -188,7 +188,7 @@ def _bb_view(p_fund_id,p_b_type,p_timeframe,p_sdw):
         t_date_since = date.today() + relativedelta(months=-(BB_VIEW_MONTHS*2))
         year_since = t_date_since.year
         t_value_list = t_fund.get_value_list(year_since)
-        if t_date_since > t_value_list[0][0]:
+        if len(t_value_list) > 0 and t_date_since > t_value_list[0][0]:
             t_index = [row[0] for row in t_value_list].index(t_date_since)
             t_value_list = t_value_list[t_index:]
     else: #-> BB_TYPE_WEEKLY
