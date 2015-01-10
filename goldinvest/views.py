@@ -38,18 +38,21 @@ def price_view(request, p_currency=bot_ex.CURRENCY_TWD,p_view_months=3):
         t_ex = bot_ex.BotExchangeInfoModel.get_bot_exchange(t_currency)
     '''
     t_date_after = date.today() + relativedelta(months=-MONTH_TO_VIEW)
-    t_price_list = []
-    t_price_list_2 = []
+    t_price_list = t_gold.get_price_list(p_csv_field=bot_gold.CSV_COL_SELL_ONDEMAND)
+    t_price_list_2 = t_gold.get_price_list(p_csv_field=bot_gold.CSV_COL_BUY_ONDEMAND)
     t_diff_list = []
-    while t_date_after <= date.today():
-        t_price_1 = t_gold.get_value(t_date_after,bot_gold.CSV_COL_SELL_ONDEMAND)
-        t_price_list.append([t_date_after,t_price_1])
-        t_price_2 = t_gold.get_value(t_date_after,bot_gold.CSV_COL_BUY_ONDEMAND)
-        t_price_list_2.append([t_date_after,t_price_2])
-        t_diff_list.append([t_date_after,100*(t_price_1-t_price_2)/t_price_1])
-        t_date_after += relativedelta(days=1)
+    t_count = 0
+    for t_entry in zip(t_price_list,t_price_list_2)[::-1]:
+        if t_entry[0][0] >= t_date_after:
+            t_diff_list.append([t_entry[0][0],100*(t_entry[0][1]-t_entry[1][1])/t_entry[0][1]])
+            t_count += 1
+        else:
+            break
+    logging.debug('t_diff_list: \n{}'.format(str(t_diff_list)))
+    logging.debug('t_price_list[{}]: {}'.format(t_count,str(t_price_list[t_count])))
+    t_price_list = t_price_list[-t_count:]
+    t_price_list_2 = t_price_list_2[-t_count:]
     
-    logging.debug('{}'.format(str(t_price_list)))
     for t_entry in t_price_list:
         '''
         if t_currency == bot_ex.CURRENCY_USD:
@@ -92,7 +95,7 @@ def price_view(request, p_currency=bot_ex.CURRENCY_TWD,p_view_months=3):
     t_content_rows = collections.OrderedDict(sorted(t_content_rows.items()))
     tbl_content = {
                    'heads': t_content_heads,
-                   'rows': t_content_rows.values(),
+                   'rows': reversed(t_content_rows.values()),
                    }
 
     args = {
