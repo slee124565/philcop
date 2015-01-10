@@ -203,6 +203,7 @@ def _bb_view(p_fund_id,p_b_type,p_timeframe,p_sdw):
 
     t_content_heads = ['Date','NAV','BB2','BB1','SMA','TB1','TB2']
     t_content_rows = {}
+    t_lastdate = t_value_list[-1][0]
 
     t_view_date_since = date.today() + relativedelta(months=-BB_VIEW_MONTHS)
     t_ndx = 0
@@ -226,19 +227,20 @@ def _bb_view(p_fund_id,p_b_type,p_timeframe,p_sdw):
                    'rows': reversed(t_content_rows.values()),
                    }
         
+    t_label = ' lastDate:{}, {},TF:{},SDW:{}'.format(str(t_lastdate),p_b_type,p_timeframe,p_sdw)    
     plot = {
             'data': '{data: ' + str(sma).replace('L', '') + \
-                            ', label: "SMA", color: "black", lines: {show: true}, yaxis: 4},' + \
+                            ', label: "' + t_label + '", color: "black", lines: {show: true}, yaxis: 4},' + \
                     '{data: ' + str(t_value_list).replace('L', '') + \
-                            ', label: "NAV", color: "blue", lines: {show: true}, yaxis: 4},' + \
+                            ', color: "blue", lines: {show: true}, yaxis: 4},' + \
                     '{data: ' + str(tb1).replace('L', '') + \
-                            ', label: "TB1", color: "red", lines: {show: true}, yaxis: 4},' + \
+                            ', color: "red", lines: {show: true}, yaxis: 4},' + \
                     '{data: ' + str(tb2).replace('L', '') + \
-                            ', label: "TB2", color: "purple", lines: {show: true}, yaxis: 4},' + \
+                            ', color: "purple", lines: {show: true}, yaxis: 4},' + \
                     '{data: ' + str(bb1).replace('L', '') + \
-                            ', label: "BB1", color: "red", lines: {show: true}, yaxis: 4},' + \
+                            ', color: "red", lines: {show: true}, yaxis: 4},' + \
                     '{data: ' + str(bb2).replace('L', '') + \
-                            ', label: "BB2", color: "purple", lines: {show: true}, yaxis: 4},' 
+                            ', color: "purple", lines: {show: true}, yaxis: 4},' 
             }
     
     args = {
