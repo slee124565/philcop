@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     url(r'^bis/', include('bis_org.urls')),
     url(r'^tg/', include('treasury_gov.urls')),
     url(r'^ir/', include('indexreview.urls')),
+    url(r'^twse/', include('twse_gae.urls')),
     
     # Examples:
     # url(r'^$', 'phicops.views.home', name='home'),
