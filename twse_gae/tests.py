@@ -1,7 +1,21 @@
 from django.http import HttpResponse
 from twse_gae.models import TWSEStockModel
 import twse_gae.models as twse
+from datetime import date
+from dateutil.relativedelta import relativedelta 
 
+def test_get_index_by_date(request):
+    t_stock = TWSEStockModel.get_stock('0050')
+    t_content = ''
+    t_date = date.today()
+    t_end_ate = date.today() + relativedelta(years=-1)
+    while t_date > t_end_ate:
+        t_content += '{} get index {}<br/>\n'.format(t_date,t_stock.get_index_by_date(t_date))
+        t_date += relativedelta(days=-1)
+    return HttpResponse(t_content)
+    
+    
+    
 def test_get_last_ym(request):
     return HttpResponse(TWSEStockModel.get_last_ym('0050'))
     

@@ -48,16 +48,37 @@ class TWSEStockModel(db.Model):
     csv_dict_pickle = db.BlobProperty(default='')
     #update_list = db.StringProperty() #-> update_list is same with content_csv.keys()
     csv_dict = {}
+    
+    def get_index_by_date(self, p_date):
+        func = '{} {}'.format(__name__,'get_index_by_date')
+        t_date = str(p_date)        
+        t_ym = p_date.strftime('%Y%m')
+        t_count = 1
+        if t_ym in self.csv_dict.keys():
+            if t_date in self.csv_dict[t_ym].keys():
+                return float(self.csv_dict[t_ym][t_date][CSV_COL_CLOSE])
+            else:
+                return self.get_index_by_date(p_date + relativedelta(days=-1))
+        else:
+            return 0.0
+            
+    def get_sample_index_list(self, p_date_list):
+        func = '{} {}'.format(__name__,'get_sample_index_list')
+        t_list = []
+        for t_date in p_date_list:
+            t_nav = self.get_index_by_date(t_date)
+            t_list.append([t_date,t_nav])
+        return t_list
         
-    def get_index_list(self, p_col_name=CSV_COL_CLOSE):
+    def get_index_list(self):
         func = '{} {}'.format(__name__,'get_index_list')
         t_index_list = []
         for t_ym_dict in self.csv_dict.values():
             for t_entry in t_ym_dict.values():
-                t_index_list.append([t_entry[CSV_COL_DATE],t_entry[p_col_name]])
+                t_index_list.append([t_entry[CSV_COL_DATE],float(t_entry[CSV_COL_CLOSE])])
         
         t_index_list.sort(key=lambda x:x[0])
-        logging.debug('{}:{}'.format(func,str(t_index_list)))
+        #logging.debug('{}:{}'.format(func,str(t_index_list)))
         return t_index_list
     
     @classmethod

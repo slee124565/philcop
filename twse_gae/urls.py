@@ -17,6 +17,7 @@ urlpatterns = patterns('',
      #url(r'^view/analysis/$', 'fundclear2.views.fund_analysis_view'),
      #url(r'^view/analysis/(?P<p_key>\w+)/$', 'fundclear2.views.fund_analysis_view'),
      
+     url(r'^func/test5/$', 'twse_gae.tests.test_get_index_by_date'),
      url(r'^func/test4/$', 'twse_gae.tests.test_get_last_ym'),
      url(r'^func/test3/$', 'twse_gae.tests.test_get_index_list'),
      url(r'^func/test2/$', 'twse_gae.tests.test_parse_csv_col_date'),
