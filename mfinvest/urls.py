@@ -44,4 +44,10 @@ urlpatterns = patterns('',
 
     url(r'^bb/(?P<p_fund_id>\w+(-\w+)?)/$', 'mfinvest.tests.bollinger_band_view'),
     url(r'^bis/$', 'mfinvest.tests.bis_org_view'),
+
+    url(r'^twse/bb/(?P<p_stk_no>\w+?)/$', 'mfinvest.views_twse.bb_view'),
+    url(r'^twse/bb/(?P<p_stk_no>\w+?)/(?P<p_b_type>\w+)/$', 'mfinvest.views_twse.bb_view'),
+    url(r'^twse/bb/(?P<p_stk_no>\w+?)/(?P<p_b_type>\w+)/(?P<p_timeframe>\w+)/$', 'mfinvest.views_twse.bb_view'),
+    url(r'^twse/bb/(?P<p_stk_no>\w+?)/(?P<p_b_type>\w+)/(?P<p_timeframe>\w+)/(?P<p_sdw>\w+)/$', 'mfinvest.views_twse.bb_view'),
+
 )
