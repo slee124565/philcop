@@ -11,8 +11,8 @@ from dateutil.relativedelta import relativedelta
 import csv,StringIO
 import logging, httplib, pickle
 
-CONFIG_WEB_FETCH_MAX_MONTH = 12*1 # 3 years
-CONFIG_STOCK_LIST = ['0050'] #['0050','0051','2330']
+CONFIG_WEB_FETCH_MAX_MONTH = 12*2
+CONFIG_STOCK_LIST = ['0050','0056','2330']
 
 URL_TEMPLATE = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY_print.php?genpage=genpage/Report{Ym}/{Ym}_F3_1_8_{stk_no}.php&type=csv'
 
