@@ -16,8 +16,8 @@ def test_get_index_by_date(request):
     
     
     
-def test_get_last_ym(request):
-    return HttpResponse(TWSEStockModel.get_last_ym('0050'))
+def test_get_last_ym(request, p_stk_no='0050'):
+    return HttpResponse(TWSEStockModel.get_last_ym(p_stk_no))
     
     
 def test_get_index_list(request,p_col=twse.CSV_COL_CLOSE):
@@ -34,4 +34,15 @@ def test_parse_csv_col_date(request):
     
 def test_get_stock(request, p_stk_no='0050'):
     t_stock = TWSEStockModel.get_stock(p_stk_no)
-    return HttpResponse(str(t_stock.csv_dict))
+    t_content = ''
+    t_content += 'csv_dick.keys: {}<br/>\n'.format(sorted(t_stock.csv_dict.keys()))
+    for t_entry in t_stock.get_index_list():
+        t_content += '{}<br/>\n'.format(t_entry)
+    return HttpResponse(t_content)
+
+
+
+
+
+
+

@@ -10,10 +10,10 @@ from dateutil.relativedelta import relativedelta
 
 import csv,StringIO
 import logging, httplib, pickle
-from __builtin__ import classmethod
 
-CONFIG_WEB_FETCH_MAX_MONTH = 12*3 # 3 years
-CONFIG_STOCK_LIST = ['0050']
+CONFIG_WEB_FETCH_MAX_MONTH = 12*1 # 3 years
+CONFIG_STOCK_LIST = ['0050'] #['0050','0051','2330']
+
 URL_TEMPLATE = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY_print.php?genpage=genpage/Report{Ym}/{Ym}_F3_1_8_{stk_no}.php&type=csv'
 
 CSV_COL_DATE = 'date'
@@ -163,6 +163,7 @@ class TWSEStockModel(db.Model):
         logging.info('{}: query stock {}'.format(func,p_stk_no))
         t_stock = TWSEStockModel.get_by_key_name(cls.compose_key_name(p_stk_no))
         if t_stock is None or t_stock.csv_dict_pickle in [None,'']:
+            logging.warning('{}: stock is first loaded, needs init.'.format(func))
             t_stock = cls.update_monthly_csv_from_web(p_stk_no, date.today().strftime('%Y%m'))
         else:
             t_stock.csv_dict = pickle.loads(t_stock.csv_dict_pickle)
