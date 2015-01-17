@@ -119,10 +119,10 @@ class BotGoldInfoModel(db.Model):
             this_wkday = date.today().weekday()
             if this_wkday == 0:
                 check_date = date.today() + relativedelta(days=-3)
-            elif this_wkday in [1,2,3,4]:
+            elif this_wkday in [1,2,3,4,5]:
                 check_date = date.today() + relativedelta(days=-1)
-            else:
-                check_date = date.today() + relativedelta(days=(this_wkday-7))
+            else: #-> 6
+                check_date = date.today() + relativedelta(days=-2)
             logging.debug('{}: check_date {}'.format(func,str(check_date)))
             if not check_date.strftime('%Y%m%d') in t_gold.data_year_dict[this_year].keys():
                 logging.info('{}: update latest data from internet web.'.format(func))

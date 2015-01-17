@@ -5,6 +5,23 @@ from dateutil.relativedelta import relativedelta
 import bankoftaiwan2.models_exchange as bot
 from bankoftaiwan.exchange import CURRENCY_USD
 
+def test_weekday(request):
+    t_content = ''
+    t_date = date.today()
+    t_end_date = t_date + relativedelta(days=14)
+    while t_date <= t_end_date:
+        this_wkday = t_date.weekday()
+        if this_wkday == 0:
+            check_date = t_date + relativedelta(days=-3)
+        elif this_wkday in [1,2,3,4,5]:
+            check_date = t_date + relativedelta(days=-1)
+        else: #-> 6
+            check_date = t_date + relativedelta(days=-2)
+        t_content += '{} weekday is {}, check_date is {} {}<br/>\n'.format(t_date,this_wkday,check_date,check_date.weekday())
+        t_date += relativedelta(days=+1)
+    
+    return HttpResponse(t_content)
+    
 def test_get_exchange_list(request):
     t_currency = bot.CURRENCY_CNY
     t_ex = BotExchangeInfoModel.get_bot_exchange(t_currency)
