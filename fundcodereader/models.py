@@ -13,6 +13,9 @@ MODEL_KEY_NAME = 'FundCodeModel'
 HTTP_STATUS_CODE_OK = 200
 HTTP_STATUS_CODE_SERVER_ERROR = 500
 
+def get_update_handler_url():
+    return '/fr/task/download/'
+
 class FundCodeModel(db.Model):
     content_csv = db.BlobProperty(default='')
     lastupdated = db.DateProperty()
