@@ -12,23 +12,11 @@ import twse_gae.models as twse
 
 import logging, os
 
-def get_list_update_handler_url():
-    return '/twse/task/list_update/'
-    
-def get_chain_update_handler_url():
-    return '/twse/task/cupdate/'
-
-def get_stk_update_handler_url():
-    return '/twse/task/update/'
-
-def get_stk_reload_handler_url():
-    return '/twse/task/reload/'
-
 def add_stk_update_task(p_stk_no):
     func = '{} {}'.format(__name__,'add_stk_update_task')
     logging.info('{}: with stock {}'.format(func,p_stk_no))
     taskqueue.add(method = 'GET', 
-                      url = get_stk_update_handler_url() ,
+                      url = twse.get_stk_update_handler_url() ,
                       countdown = 2,
                       params = {
                                 'stk_no': p_stk_no,
@@ -47,7 +35,7 @@ def list_update_taskhandler(request):
     t_count = 2
     for t_stk_no in twse.CONFIG_STOCK_LIST:
         taskqueue.add(method = 'GET', 
-                          url = get_stk_update_handler_url() ,
+                          url = twse.get_stk_update_handler_url() ,
                           countdown = t_count,
                           params = {
                                     'stk_no': t_stk_no,
@@ -74,7 +62,7 @@ def reload_stk_task_handler(request):
 
     #-> start chain task
     taskqueue.add(method = 'GET', 
-                      url = get_stk_update_handler_url() ,
+                      url = twse.get_stk_update_handler_url() ,
                       countdown = 2,
                       params = {
                                 'stk_no': t_stk_no,
@@ -91,32 +79,16 @@ def update_stk_taskhandler(request):
     func = '{} {}'.format(__name__,'update_stk_taskhandler')
     response = HttpResponse(func)
     t_stk_no = request.GET['stk_no']
+
     logging.info('{}: with stock {}'.format(func,t_stk_no))
-    
-    t_yearmonth_since = date.today() + relativedelta(months=-twse.CONFIG_WEB_FETCH_MAX_MONTH)
-    t_init_ym = t_yearmonth_since.strftime('%Y%m')
-    t_stock = TWSEStockModel.get_stock(t_stk_no)
-    if t_stock is None:
-        #-> init stock
-        t_last_ym = t_init_ym
-        logging.debug('{}: stock {} is first loaded.'.format(func,t_stk_no))
-    else:
-        t_dict_ym_list = sorted(t_stock.csv_dict.keys())
-        if t_init_ym in t_dict_ym_list:
-            #-> update stock
-            t_last_ym = t_dict_ym_list[-1]
-            logging.debug('{}: stock {} update from last modified month {}'.format(func,t_stk_no,t_last_ym))
-        else:
-            #-> init stock
-            t_last_ym = t_init_ym
-            logging.debug('{}: stock {} has no history data {}, update as init'.format(func,t_stk_no,t_init_ym))
-    
+    t_last_ym = TWSEStockModel.get_stk_update_ym(t_stk_no)
+
     #-> start chain update task
     if t_last_ym == date.today().strftime('%Y%m'):
         logging.info('{}: stock {} already updted, task skipped'.format(func,t_stk_no))
     else:
         taskqueue.add(method = 'GET', 
-                      url = get_chain_update_handler_url() ,
+                      url = twse.get_chain_update_handler_url() ,
                       countdown = 2,
                       params = {
                                 'stk_no': t_stk_no,
@@ -147,7 +119,7 @@ def cupdate_stk_taskhandler(request):
         
         logging.info('{}: start updating task for stock {} with month {} and type {}'.format(func,t_stk_no,t_year_month,t_type))
         
-        if not TWSEStockModel.update_monthly_csv_from_web(t_stk_no,t_year_month) is None:
+        if not TWSEStockModel.update_monthly_csv_from_web(t_stk_no,t_year_month,True) is None:
             logging.info('{}: update success.'.format(func))
             response.status_code = httplib.OK
             #-> add next chain task for next month

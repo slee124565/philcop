@@ -22,7 +22,11 @@ urlpatterns = patterns('',
      url(r'^func/test3/$', 'twse_gae.tests.test_get_index_list'),
      url(r'^func/test2/$', 'twse_gae.tests.test_parse_csv_col_date'),
      url(r'^func/test1/$', 'twse_gae.tests.test_get_stock'),
+     
      url(r'^func/get_stock/(?P<p_stk_no>\w+)/$', 'twse_gae.tests.test_get_stock'),
+     url(r'^func/update_month/(?P<p_stk_no>\w+)/(?P<p_year_month>\w+)/$', 'twse_gae.tests.test_update_month'),
+     url(r'^func/get_update_ym/(?P<p_stk_no>\w+)/$', 'twse_gae.tests.test_get_stk_update_ym'),
+     
      
     
 )

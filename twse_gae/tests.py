@@ -3,6 +3,24 @@ from twse_gae.models import TWSEStockModel
 import twse_gae.models as twse
 from datetime import date
 from dateutil.relativedelta import relativedelta 
+import pickle
+
+def get_stk_content(p_stock):
+    t_content = ''
+    t_content += 'csv_dick.keys: {}<br/>\n'.format(sorted(p_stock.csv_dict.keys()))
+    for t_entry in p_stock.get_index_list():
+        t_content += '{}<br/>\n'.format(t_entry)
+    return t_content
+
+def test_get_stk_update_ym(request, p_stk_no):
+    return HttpResponse('get_stk_update_ym is {}'.format(TWSEStockModel.get_stk_update_ym(p_stk_no)))
+    
+def test_update_month(request,p_stk_no,p_year_month):
+    t_stock = TWSEStockModel.update_monthly_csv_from_web(p_stk_no,p_year_month,True)
+    if t_stock is None:
+        return HttpResponse('TWSEStockModel.update_monthly_csv_from_web({},{}) faile'.format(p_stk_no,p_year_month))
+    else:
+        return HttpResponse(get_stk_content(t_stock))
 
 def test_get_index_by_date(request):
     t_stock = TWSEStockModel.get_stock('0050')
@@ -33,7 +51,14 @@ def test_parse_csv_col_date(request):
     return HttpResponse(TWSEStockModel.parse_csv_col_date(t_date))
     
 def test_get_stock(request, p_stk_no='0050'):
-    t_stock = TWSEStockModel.get_stock(p_stk_no)
+    t_stock = TWSEStockModel.get_by_key_name(TWSEStockModel.compose_key_name(p_stk_no))
+    if t_stock is None:
+        return HttpResponse('get_stock {} fail'.format(p_stk_no))
+    
+    if t_stock.csv_dict_pickle in [None,'']:
+        return HttpResponse('get_stock {} with empty content'.format(p_stk_no))
+    
+    t_stock.csv_dict = pickle.loads(t_stock.csv_dict_pickle)
     t_content = ''
     t_content += 'csv_dick.keys: {}<br/>\n'.format(sorted(t_stock.csv_dict.keys()))
     for t_entry in t_stock.get_index_list():

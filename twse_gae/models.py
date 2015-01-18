@@ -1,5 +1,6 @@
 from google.appengine.ext import db
 from google.appengine.api import urlfetch
+from google.appengine.api import taskqueue
 
 from lxml.html import document_fromstring
 from lxml import etree
@@ -35,6 +36,17 @@ CSV_COLS = [CSV_COL_DATE,
            CSV_COL_DIFF,
            CSV_COL_DEAL]
 
+def get_list_update_handler_url():
+    return '/twse/task/list_update/'
+    
+def get_chain_update_handler_url():
+    return '/twse/task/cupdate/'
+
+def get_stk_update_handler_url():
+    return '/twse/task/update/'
+
+def get_stk_reload_handler_url():
+    return '/twse/task/reload/'
 
 class TWSEStockModel(db.Model):
     '''
@@ -86,7 +98,7 @@ class TWSEStockModel(db.Model):
         return stk_no
     
     @classmethod
-    def update_monthly_dict(cls, p_stk_no, p_monthly_dict):
+    def update_monthly_dict(cls, p_stk_no, p_monthly_dict, p_saved=True):
         func = '{} {}'.format(__name__,'update_monthly_dict')
         t_stock = TWSEStockModel.get_or_insert(TWSEStockModel.compose_key_name(p_stk_no))
         if not t_stock.csv_dict_pickle in [None, '']:
@@ -97,8 +109,9 @@ class TWSEStockModel(db.Model):
         t_ym = t_entry[CSV_COL_DATE].strftime('%Y%m')
         t_stock.csv_dict[t_ym] = p_monthly_dict
         t_stock.csv_dict_pickle = pickle.dumps(t_stock.csv_dict)
-        t_stock.put()
-        logging.info('{}: stock {} month {} updated'.format(func,p_stk_no,t_ym))
+        if p_saved:
+            t_stock.put()
+        logging.info('{}: stock {} month {} updated with saved {}'.format(func,p_stk_no,t_ym,p_saved))
         return t_stock
             
     @classmethod
@@ -129,7 +142,7 @@ class TWSEStockModel(db.Model):
         return data_dict
 
     @classmethod
-    def update_monthly_csv_from_web(cls, p_stk_no, p_year_month):
+    def update_monthly_csv_from_web(cls, p_stk_no, p_year_month, p_saved=False):
         '''
         return model entity
         '''
@@ -142,20 +155,35 @@ class TWSEStockModel(db.Model):
             if web_fetch.status_code == httplib.OK:
                 web_content = web_fetch.content
                 t_monthly_dict = cls.parse_csv_content_dict(web_content)
-                t_stock = cls.update_monthly_dict(p_stk_no,t_monthly_dict)
+                if len(t_monthly_dict) == 0:
+                    return None
+                t_stock = cls.update_monthly_dict(p_stk_no,t_monthly_dict,p_saved)
                 return t_stock
             else:
                 logging.warning('{}: urlfetch fail status code {}'.format(func,web_fetch.status_code))
                 return None
-        except urlfetch.DownloadError:
-            logging.warning('{} : Internet Download Error'.format(func))
+        except urlfetch.DownloadError, err:
+            logging.warning('{} : Internet Download Error: {}'.format(func, str(err)))
             return None
         '''
         except Exception, e:
             logging.error('{} : Exception {}'.format(func, str(e)))
             return None
         '''
-       
+    
+    
+    @classmethod
+    def add_stk_update_task(cls, p_stk_no):
+        func = '{} {}'.format(__name__,'add_stk_update_task')
+        logging.info('{}: with stock {}'.format(func,p_stk_no))
+        taskqueue.add(method = 'GET', 
+                          url = get_stk_update_handler_url() ,
+                          countdown = 2,
+                          params = {
+                                    'stk_no': p_stk_no,
+                                    })
+        
+        
     @classmethod
     def get_stock(cls, p_stk_no):
         func = '{} {}'.format(__name__,'get_stock')
@@ -163,14 +191,18 @@ class TWSEStockModel(db.Model):
         logging.info('{}: query stock {}'.format(func,p_stk_no))
         t_stock = TWSEStockModel.get_by_key_name(cls.compose_key_name(p_stk_no))
         if t_stock is None or t_stock.csv_dict_pickle in [None,'']:
-            logging.warning('{}: stock is first loaded, needs init.'.format(func))
+            logging.warning('{}: stock is first loaded, needs to update.'.format(func))
+            #t_date = date.today() + relativedelta(months=-CONFIG_WEB_FETCH_MAX_MONTH)
+            #t_stock = cls.update_monthly_csv_from_web(p_stk_no, t_date.strftime('%Y%m'))
             t_stock = cls.update_monthly_csv_from_web(p_stk_no, date.today().strftime('%Y%m'))
         else:
             t_stock.csv_dict = pickle.loads(t_stock.csv_dict_pickle)
             #-> update from web if today's index not exist
             t_ym = date.today().strftime('%Y%m')
             if (not t_ym in t_stock.csv_dict.keys()) or (not str(date.today()) in t_stock.csv_dict[t_ym].keys()):
-                t_stock = cls.update_monthly_csv_from_web(p_stk_no, date.today().strftime('%Y%m'))
+                t_stock_new = cls.update_monthly_csv_from_web(p_stk_no, date.today().strftime('%Y%m'))
+                if not t_stock_new is None:
+                    t_stock = t_stock_new
             else:
                 logging.info('{}: load stock data from DB.'.format(func))
         return t_stock
@@ -183,6 +215,27 @@ class TWSEStockModel(db.Model):
         logging.debug('{}: {}'.format(func,t_ym_list))
         return t_ym_list[-1]
     
+    @classmethod
+    def get_stk_update_ym(cls, p_stk_no):
+        func = '{} {}'.format(__name__,'get_stk_update_ym')
+        t_yearmonth_since = date.today() + relativedelta(months=-CONFIG_WEB_FETCH_MAX_MONTH)
+        t_init_ym = t_yearmonth_since.strftime('%Y%m')
+        t_stock = cls.get_stock(p_stk_no)
+
+        t_dict_ym_list = sorted(t_stock.csv_dict.keys())
+        t_check_date = date(t_yearmonth_since.year,t_yearmonth_since.month,1) + relativedelta(months=1)
+        if t_init_ym in t_dict_ym_list:
+            #-> update stock
+            t_last_ym = t_init_ym
+            while t_check_date.strftime('%Y%m') in t_dict_ym_list:
+                t_last_ym = t_check_date.strftime('%Y%m')
+                t_check_date += relativedelta(months=1)
+            logging.debug('{}: stock {} update from last modified month {}'.format(func,p_stk_no,t_last_ym))
+        else:
+            #-> init stock
+            t_last_ym = t_init_ym
+            logging.debug('{}: stock {} has no history data, update from month {}'.format(func,p_stk_no,t_init_ym))
+        return t_last_ym
             
         
     
