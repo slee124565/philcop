@@ -15,6 +15,8 @@ def update_codelist(request):
                       url = fr.get_update_handler_url() ,
                       countdown = 2,
                       )
+    response.status_code = httplib.OK
+    return response
 
 def update_fundcode_taskhandler(request):
     fname = '{} {}'.format(__name__,'download_fundcode_taskhandler')
