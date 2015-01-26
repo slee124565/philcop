@@ -2,9 +2,6 @@ from google.appengine.ext import db
 from google.appengine.api import urlfetch
 from google.appengine.api import taskqueue
 
-from lxml.html import document_fromstring
-from lxml import etree
-
 from datetime import date
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
@@ -183,13 +180,14 @@ class TWSEStockModel(db.Model):
                                     'stk_no': p_stk_no,
                                     })
         
-        
     @classmethod
     def get_stock(cls, p_stk_no):
         func = '{} {}'.format(__name__,'get_stock')
         
         logging.info('{}: query stock {}'.format(func,p_stk_no))
+        
         t_stock = TWSEStockModel.get_by_key_name(cls.compose_key_name(p_stk_no))
+        
         if t_stock is None or t_stock.csv_dict_pickle in [None,'']:
             logging.warning('{}: stock is first loaded, needs to update.'.format(func))
             #t_date = date.today() + relativedelta(months=-CONFIG_WEB_FETCH_MAX_MONTH)

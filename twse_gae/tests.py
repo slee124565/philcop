@@ -5,6 +5,7 @@ from datetime import date
 from dateutil.relativedelta import relativedelta 
 import pickle
 
+
 def get_stk_content(p_stock):
     t_content = ''
     t_content += 'csv_dick.keys: {}<br/>\n'.format(sorted(p_stock.csv_dict.keys()))
