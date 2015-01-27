@@ -39,7 +39,7 @@ def test_get_last_ym(request, p_stk_no='0050'):
     return HttpResponse(TWSEStockModel.get_last_ym(p_stk_no))
     
     
-def test_get_index_list(request,p_col=twse.CSV_COL_CLOSE):
+def test_get_index_list(request,p_col=twse.TWSEStockModel.CSV_COL_CLOSE):
     t_stock = TWSEStockModel.get_stock('0050')
     t_content = ''
     for t_entry in t_stock.get_index_list(p_col):
