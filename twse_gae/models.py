@@ -10,8 +10,6 @@ import csv,StringIO
 import logging, httplib, pickle
 
 CONFIG_WEB_FETCH_MAX_MONTH = 12*2
-CONFIG_STOCK_LIST = ['0050','0056','2330']
-
 
 def get_list_update_handler_url():
     return '/twse/task/list_update/'

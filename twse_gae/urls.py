@@ -2,29 +2,20 @@ from django.conf.urls import patterns, include, url
 
 urlpatterns = patterns('',
 
-     url(r'^task/list_update/$', 'twse_gae.tasks.list_update_taskhandler'),
-     url(r'^task/reload/$', 'twse_gae.tasks.reload_stk_task_handler'),
-     url(r'^task/update/$', 'twse_gae.tasks.update_stk_taskhandler'),
-     url(r'^task/cupdate/$', 'twse_gae.tasks.cupdate_stk_taskhandler'),
-     
-     #url(r'^task/view_scan/$', 'fundclear2.tasks.db_scan_review'),
-     #url(r'^task/db_scan/$', 'fundclear2.tasks.db_scan_task'),
-     #url(r'^task/db_scan_task/$', 'fundclear2.tasks.db_scan_taskhandler'),
+     #-> For GAE CRON task
+     url(r'^task/stk_cron_update/$', 'twse_gae.tasks_stock.cron_stk_update_taskhandler'),
+     url(r'^task/id_cron_update/$', 'twse_gae.tasks_stock.update_model'),
 
-     #url(r'^statistic/$', 'fundclear2.views.datamodel_statistic_report_view'),
-     
-     #url(r'^view/analysis/$', 'fundclear2.views.fund_analysis_view'),
-     #url(r'^view/analysis/(?P<p_key>\w+)/$', 'fundclear2.views.fund_analysis_view'),
-     
-     
+     #-> GAE Task Handler
+     url(r'^task/stk_cupdate/$', 'twse_gae.tasks_stock.cupdate_stk_taskhandler'),
+     url(r'^task/stk_update/$', 'twse_gae.tasks_stock.update_stk_taskhandler'),
+     url(r'^task/stk_reload/$', 'twse_gae.tasks_stock.reload_stk_task_handler'),
+     url(r'^task/id_update/$', 'twse_gae.tasks_stock.update_model_taskhandler'),
+          
      #-> STOCK
-     url(r'^stock/task/update/$', 'twse_gae.tasks_stock.update_model'),
-     url(r'^stock/task/update_task/$', 'twse_gae.tasks_stock.update_model_taskhandler'),
-
      url(r'^stock/func/update/$', 'twse_gae.tests_stock.test_stock_update_from_web'),
      url(r'^stock/func/update/(?P<p_type>\w+)/$', 'twse_gae.tests_stock.test_stock_update_from_web'),
      url(r'^stock/func/code_list/$', 'twse_gae.views_stock.code_list_view'),
-     
 
      #-> TWSE
      url(r'^twse/func/test5/$', 'twse_gae.tests.test_get_index_by_date'),

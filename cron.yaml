@@ -30,7 +30,12 @@ cron:
   timezone: Asia/Tokyo
 
 - description: update TWSEStockModel from TWSE every last day 23:00 of every month
-  url: /twse/task/list_update/
+  url: /twse/task/stk_cron_update/
+  schedule: 1 of month 00:00
+  timezone: Asia/Tokyo
+
+- description: update TWSEStockModel from TWSE every last day 23:00 of every month
+  url: /twse/task/id_cron_update/
   schedule: 1 of month 00:00
   timezone: Asia/Tokyo
   

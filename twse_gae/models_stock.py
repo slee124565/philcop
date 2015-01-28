@@ -12,8 +12,10 @@ from dateutil.relativedelta import relativedelta
 import csv,StringIO
 import logging, httplib, pickle, codecs
 from twse_gae.models import TWSEStockModel
+from twse_gae.models_otc import OTCStockModel
 
 
+CONFIG_STOCK_LIST = ['0050','2330','3293']
 
 
 class StockModel(db.Model):
@@ -62,17 +64,21 @@ class StockModel(db.Model):
         return t_type
 
     @classmethod
+    def get_type_by_stk_no(cls, p_stk_no):
+        t_model = cls.get_model()
+        return t_model.get_stock_type(p_stk_no)
+        
+        
+    @classmethod
     def get_stock(cls, p_stk_no):
         fname = '{} {}'.format(__name__,'get_stock')
         logging.debug('{}: with {}'.format(fname,p_stk_no))
         
-        t_model = cls.get_model()
-        t_stk_type = t_model.get_stock_type(p_stk_no)
+        t_stk_type = cls.get_type_by_stk_no(p_stk_no)
         if t_stk_type == cls.STOCK_TYPE_TWSE:
             t_stock = TWSEStockModel.get_stock(p_stk_no)
         elif t_stk_type == cls.STOCK_TYPE_OTC:
-            #TODO:
-            raise Exception('todo')
+            t_stock = OTCStockModel.get_stock(p_stk_no)
         else:
             t_stock = None
         logging.info('{}: with {}'.format(fname,t_stock))
