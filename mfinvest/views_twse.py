@@ -6,7 +6,7 @@ from dateutil.relativedelta import relativedelta
 
 from utils.util_bollingerbands import get_bollingerbands
 
-from twse_gae.models import TWSEStockModel
+from twse_gae.models_stock import StockModel
 
 import logging, calendar, collections
 
@@ -15,7 +15,7 @@ BB_TYPE_WEEKLY = 'weekly'
 
 def bb_view(request, p_stk_no, p_b_type, p_timeframe=None, p_sdw=None):
     fname = '{} {}'.format(__name__,'bb_view')
-    t_stock = TWSEStockModel.get_stock(p_stk_no)
+    t_stock = StockModel.get_stock(p_stk_no)
     
     if p_b_type == BB_TYPE_DAILY:
         BB_VIEW_MONTHS = 12

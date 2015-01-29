@@ -33,5 +33,8 @@ urlpatterns = patterns('',
      url(r'^otc/func/get_stock/(?P<p_stk_no>\w+)/$', 'twse_gae.tests_otc.func_get_stock'),
      url(r'^otc/func/test/$', 'twse_gae.tests_otc.test'),
      
+     #-> General Stock View
+     url(r'^(?P<p_stk_no>\w+)/update/$', 'twse_gae.views_stock.menu_update'),
+
     
 )
