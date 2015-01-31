@@ -1,0 +1,4 @@
+[submodule "twse_gae"]
+	path = twse_gae
+	url = https://github.com/slee124565/twse_gae.git
+	branch = master
