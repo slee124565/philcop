@@ -5,6 +5,15 @@ from fundcodereader.models import FundCodeModel
 
 import logging
 
+def current_nav(request,p_fund_id):
+    '''
+    get func latest NAV with id p_fund_id
+    '''
+    t_fund = FundClearInfoModel.get_fund(p_fund_id)
+    t_list = t_fund.get_value_list()
+    return HttpResponse(t_list[-1][1])
+    
+    
 def datamodel_statistic_report_view(request):
     #response = HttpResponse(content_type='text/plain')
     response = HttpResponse()
