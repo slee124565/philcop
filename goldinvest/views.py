@@ -227,6 +227,7 @@ def _bb_view(p_bb_type,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=None,p_sdw=Non
 
     logging.info('{}: param {} {} {}'.format(func,p_currency,p_timeframe,p_sdw))
     sma,tb1,tb2,bb1,bb2 = get_bollingerbands(t_price_list,p_timeframe,float(p_sdw)/100)
+    #logging.debug('{}: sma {}'.format(func,str(sma)))
     
     #-> compose tbl_content
     t_content_heads = ['Date','OnSell','BB2','BB1','SMA','TB1','TB2']
@@ -234,6 +235,7 @@ def _bb_view(p_bb_type,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=None,p_sdw=Non
     t_lastdate = t_price_list[-1][0]
 
     t_view_date_since = date.today() + relativedelta(months=-BB_VIEW_MONTHS)
+    logging.info('{}: view_date_since {}'.format(func,str(t_view_date_since)))
     t_ndx = 0
 
     for ndx2, t_list in enumerate([t_price_list,bb2,bb1,sma,tb1,tb2]):
@@ -247,7 +249,10 @@ def _bb_view(p_bb_type,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=None,p_sdw=Non
                 else:
                     t_content_rows[t_entry[0].strftime("%Y%m%d")] = (t_entry[0].strftime("%Y/%m/%d"), t_entry[1],)
                 t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000
-        del t_list[:(t_ndx+1)]
+        #logging.debug('{}: t_list len {}, t_ndx {}'.format(func,len(t_list),t_ndx))
+        if t_ndx < len(t_list):
+            del t_list[:(t_ndx+1)]
+    #logging.debug('{}: sma {}'.format(func,str(sma)))
     
     t_content_rows = collections.OrderedDict(sorted(t_content_rows.items()))
     tbl_content = {
