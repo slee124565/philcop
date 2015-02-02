@@ -10,6 +10,10 @@ urlpatterns = patterns('',
     url(r'^task/update_g_db/$', 'bankoftaiwan2.tasks.update_gold_taskhandler'),
     url(r'^task/g_cupdate/$', 'bankoftaiwan2.tasks.gold_chain_update_taskhandler'),
 
+    url(r'^view/$', 'bankoftaiwan2.views.get_exchange_view'),
+    url(r'^view/(?P<p_currency>\w+)/$', 'bankoftaiwan2.views.get_exchange_view'),
+    url(r'^view/(?P<p_currency>\w+)/(?P<p_date>\w+)/$', 'bankoftaiwan2.views.get_exchange_view'),
+
     url(r'^func/weekday/$', 'bankoftaiwan2.tests.test_weekday'),
 
     url(r'^func/test1/$', 'bankoftaiwan2.tests.test_update_from_web'),
