@@ -249,7 +249,7 @@ def _bb_view(p_bb_type,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=None,p_sdw=Non
                 else:
                     t_content_rows[t_entry[0].strftime("%Y%m%d")] = (t_entry[0].strftime("%Y/%m/%d"), t_entry[1],)
                 t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000
-        #logging.debug('{}: t_list len {}, t_ndx {}'.format(func,len(t_list),t_ndx))
+        logging.debug('{}: t_list len {}, t_ndx {}'.format(func,len(t_list),t_ndx))
         if t_ndx < len(t_list):
             del t_list[:(t_ndx+1)]
     #logging.debug('{}: sma {}'.format(func,str(sma)))
