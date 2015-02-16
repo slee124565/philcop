@@ -1,4 +1,4 @@
-#from django.test import TestCase
+from google.appengine.api import mail
 
 from django.http import HttpResponse
 
@@ -7,6 +7,14 @@ from bis_org.models import EERS_DS_KEY_NARROW
 
 import bis_org.models as bis
 
+def test_mail_api(request):
+    user_address = 'lee.shiueh@gmail.com'
+    sender_address = 'MyGAE <lee.shiueh@gmail.com>'
+    subject = 'update_bis_eers_taskhandler'
+    body = 'update_bis_eers_taskhandler %s'
+    mail.send_mail(sender_address, user_address, subject, body)
+    return HttpResponse('test_mail_api')
+    
 def test_get_indices(request):
     
     #t_basket = bis.EERS_DS_KEY_NARROW

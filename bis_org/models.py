@@ -1,5 +1,5 @@
 from google.appengine.ext import db
-from google.appengine.api import urlfetch
+from google.appengine.api import urlfetch, mail
 from google.appengine.api.urlfetch import DownloadError
 
 from lxml.html import document_fromstring
@@ -118,16 +118,28 @@ class BisEersModel(db.Model):
                 web_csv = web_fetch.content
                 eers.content_csv = web_csv
                 eers.put()
+                cls.mail_notify_admin('update_from_web: update success.')
                 logging.debug('update_from_web: update success.')
                 return True
             else:
+                cls.mail_notify_admin('update_from_web: csv content urlfetch fail.')
                 logging.warning('update_from_web: csv content urlfetch fail.')
                 return False
 
         except DownloadError:
+            cls.mail_notify_admin('update_from_web : Internet Download Error')
             logging.warning('update_from_web : Internet Download Error')
             return False
     
+    @classmethod
+    def mail_notify_admin(cls, p_msg):
+        user_address = 'lee.shiueh@gmail.com'
+        sender_address = 'MyGAE <lee.shiueh@gmail.com>'
+        subject = 'BisEersModel._update_from_web'
+        body = p_msg
+        mail.send_mail(sender_address, user_address, subject, body)
+        
+        
     def _parse_area_eers(self):
         '''
         area_list = [[code,name],[code,name], ... ]

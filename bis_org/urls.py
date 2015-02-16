@@ -8,4 +8,5 @@ urlpatterns = patterns('',
     url(r'^$', 'bis_org.views.default_view'),
 
     url(r'^test/$', 'bis_org.tests.test_get_indices'),
+    url(r'^test2/$', 'bis_org.tests.test_mail_api'),
 )
