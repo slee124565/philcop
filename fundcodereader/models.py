@@ -6,6 +6,7 @@ from datetime import date
 
 import csv,StringIO
 import logging,codecs
+from django.template.defaultfilters import join
 
 WEB_URL = 'http://announce.fundclear.com.tw/MOPSFundWeb/INQ41SERVLET3?dlType=2&xagentId=all'
 MODEL_KEY_NAME = 'FundCodeModel'
@@ -44,32 +45,29 @@ class FundCodeModel(db.Model):
         codename_list = cls.get_codename_list()
         return [row[0] for row in codename_list]
     
+    def change_content_csv_col_name(self):
+        t_lines = self.content_csv.split('\n')
+        t_lines[0] = 'code,name,'
+        t_content = '\n'.join(t_lines)
+        return t_content
+         
     @classmethod
     def get_codename_list(cls):
-        codemodel = FundCodeModel.get_by_key_name(MODEL_KEY_NAME)
-        csv_reader = csv.DictReader(StringIO.StringIO(codemodel.content_csv))
-        codename_list = []
-        for row in csv_reader:
-            t_set = dict(row).items()
-            t_name = t_set[0][1]
-            t_name = codecs.decode(t_name,'big5').encode('utf-8')
-            t_code = t_set[1][1].replace('=','').replace('"','')
-            t_item = [t_code, t_name]
-            #logging.debug(t_item)
-            codename_list.append(t_item)
+        codename_dict = FundCodeModel.get_codename_dict()
+        codename_list = codename_dict.items()
         codename_list.sort(key=lambda x: x[0])
         return codename_list
     
     @classmethod
     def get_codename_dict(cls):
         codemodel = FundCodeModel.get_by_key_name(MODEL_KEY_NAME)
-        csv_reader = csv.DictReader(StringIO.StringIO(codemodel.content_csv))
+        csv_reader = csv.DictReader(StringIO.StringIO(codemodel.change_content_csv_col_name()))
         codename_dict = {}
         for row in csv_reader:
-            t_set = dict(row).items()
-            t_name = t_set[0][1]
-            t_name = codecs.decode(t_name,'big5').encode('utf-8')
-            t_code = t_set[1][1].replace('=','').replace('"','')
+            t_set = dict(row)
+            logging.debug('%s' % t_set)
+            t_name = codecs.decode(t_set['name'],'big5').encode('utf-8')
+            t_code = str(t_set['code']).replace('=','').replace('"','')
             #logging.debug(t_item)
             codename_dict[t_code] = t_name
         return codename_dict

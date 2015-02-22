@@ -7,5 +7,6 @@ urlpatterns = patterns('',
 
      url(r'^func/test1/$', 'fundcodereader.tests.test_get_codename_list'),
      url(r'^func/test2/$', 'fundcodereader.tests.test_get_fundname'),
+     url(r'^func/test3/$', 'fundcodereader.tests.print_content'),
 
 )

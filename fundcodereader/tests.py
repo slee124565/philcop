@@ -2,6 +2,12 @@ from django.http import HttpResponse
 
 from models import FundCodeModel
 
+def print_content(request):
+    response = HttpResponse(content_type='text/plain')
+    fundcode = FundCodeModel.get_or_insert('FundCodeModel')
+    response.content = fundcode.change_content_csv_col_name()
+    return response
+    
 def test_get_codename_list(request):
     response = HttpResponse(content_type='text/plain')
     t_content = 'test_get_codename_list\n'
