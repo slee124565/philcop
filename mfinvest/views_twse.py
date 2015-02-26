@@ -16,6 +16,7 @@ BB_TYPE_WEEKLY = 'weekly'
 def bb_view(request, p_stk_no, p_b_type, p_timeframe=None, p_sdw=None):
     fname = '{} {}'.format(__name__,'bb_view')
     t_stock = StockModel.get_stock(p_stk_no)
+    t_stk_name = StockModel.get_name_by_stk_no(p_stk_no)
     
     if p_b_type == BB_TYPE_DAILY:
         BB_VIEW_MONTHS = 12
@@ -65,7 +66,7 @@ def bb_view(request, p_stk_no, p_b_type, p_timeframe=None, p_sdw=None):
                    'rows': reversed(t_content_rows.values()),
                    }
         
-    t_label = ' lastDate:{}, {},TF:{},SDW:{}'.format(str(t_lastdate),p_b_type,p_timeframe,p_sdw)    
+    t_label = '{}, lastDate:{}, {},TF:{},SDW:{}'.format(p_stk_no,str(t_lastdate),p_b_type,p_timeframe,p_sdw)    
     plot = {
             'data': '{data: ' + str(sma).replace('L', '') + \
                             ', label: "' + t_label + '", color: "black", lines: {show: true}, yaxis: 4},' + \
@@ -82,7 +83,7 @@ def bb_view(request, p_stk_no, p_b_type, p_timeframe=None, p_sdw=None):
             }
     
     args = {
-            'tpl_img_header' : p_stk_no, # FundCodeModel.get_fundname(p_fund_id),
+            'tpl_img_header' : u'{} {}'.format(p_stk_no,t_stk_name), 
             'plot' : plot,
             'tpl_section_title' :  'Fund {} View ;{}; TF:{}; SD_W: {}'.format(
                                                                     p_b_type,
