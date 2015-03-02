@@ -21,13 +21,13 @@ def bb_view(request, p_stk_no, p_b_type, p_timeframe=None, p_sdw=None):
     if p_b_type == BB_TYPE_DAILY:
         BB_VIEW_MONTHS = 12
         if p_timeframe is None:
-            p_timeframe = 25
-            p_sdw = 90
+            p_timeframe = 130
+            p_sdw = 100
         t_value_list = t_stock.get_index_list()
     else: #-> BB_TYPE_WEEKLY
         BB_VIEW_MONTHS = 14
         if p_timeframe is None:
-            p_timeframe = 5
+            p_timeframe = 26
             p_sdw = 100
         t_date_since = date.today() + relativedelta(months=-(2*BB_VIEW_MONTHS))
         t_offset = 2 - t_date_since.weekday()
