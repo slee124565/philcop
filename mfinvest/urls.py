@@ -50,6 +50,7 @@ urlpatterns = patterns('',
     url(r'^twse/bb/(?P<p_stk_no>\w+?)/(?P<p_b_type>\w+)/(?P<p_timeframe>\w+)/$', 'mfinvest.views_twse.bb_view'),
     url(r'^twse/bb/(?P<p_stk_no>\w+?)/(?P<p_b_type>\w+)/(?P<p_timeframe>\w+)/(?P<p_sdw>\w+)/$', 'mfinvest.views_twse.bb_view'),
 
-    url(r'^tw50/$', 'mfinvest.views_tw50.list_view'),
+    url(r'^task/tw50_cupdate/$', 'mfinvest.views_tw50.task_tw50_chain_update_bb_state'),
+    url(r'^tw50/$', 'mfinvest.views_tw50.default_view'),
 
 )
