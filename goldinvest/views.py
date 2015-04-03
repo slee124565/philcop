@@ -246,9 +246,9 @@ def _bb_view(p_bb_type,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=None,p_sdw=Non
             else:
                 t_key = t_entry[0].strftime('%Y%m%d')
                 if t_key in t_content_rows.keys():
-                    t_content_rows[t_entry[0].strftime("%Y%m%d")] += ('{:.2f}'.format(t_entry[1]),)
+                    t_content_rows[t_entry[0].strftime("%Y%m%d")] += ['{:.2f}'.format(t_entry[1])]
                 else:
-                    t_content_rows[t_entry[0].strftime("%Y%m%d")] = (t_entry[0].strftime("%Y/%m/%d"), t_entry[1],)
+                    t_content_rows[t_entry[0].strftime("%Y%m%d")] = [t_entry[0].strftime("%Y/%m/%d"), t_entry[1]]
                 t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000
         #logging.debug('{}: t_list len {}, t_ndx {}'.format(func,len(t_list),t_ndx))
         if t_ndx < len(t_list):
@@ -256,6 +256,21 @@ def _bb_view(p_bb_type,p_currency=bot_ex.CURRENCY_TWD,p_timeframe=None,p_sdw=Non
     #logging.debug('{}: sma {}'.format(func,str(sma)))
     
     t_content_rows = collections.OrderedDict(sorted(t_content_rows.items()))
+    
+    t_keys = sorted(t_content_rows.keys())
+    for i in range(5):
+        t_key_1, t_key_2 = t_keys[-i-1], t_keys[-i-2]
+        #-> add % for NAV
+        t_value_1 = float(t_content_rows[t_key_1][1])
+        t_value_2 = float(t_content_rows[t_key_2][1])
+        if t_value_2 != 0:
+            t_content_rows[t_key_1][1] = '{} ({:.2%})'.format(t_value_1,((t_value_1/t_value_2)-1))
+        #-> add % for SMA
+        t_value_1 = float(t_content_rows[t_key_1][4])
+        t_value_2 = float(t_content_rows[t_key_2][4])
+        if t_value_2 != 0:
+            t_content_rows[t_key_1][4] = '{} ({:.2%})'.format(t_value_1,((t_value_1/t_value_2)-1))
+
     tbl_content = {
                    'heads': t_content_heads,
                    'rows': reversed(t_content_rows.values()),
