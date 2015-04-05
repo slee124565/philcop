@@ -43,30 +43,65 @@ def eers_area_compare_view(request,p_code_a='CN',p_code_b='TW'):
 
     sma,tb1,tb2,bb1,bb2 = util_bollingerbands.get_bollingerbands(t_value_list)
 
-    for ndx2, t_list in enumerate([t_value_list,sma,tb1,tb2,bb1,bb2]):
+    t_content_heads = ['Date','BIS_CMP','BB2','BB1','SMA','TB1','TB2']
+    t_content_rows = {}
+    t_lastdate = t_value_list[-1][0]
+
+    for ndx2, t_list in enumerate([t_value_list,bb2,bb1,sma,tb1,tb2]):
+        t_ndx = 0
         for ndx,t_entry in enumerate(t_list):
+            t_key = t_entry[0].strftime('%Y%m%d')
+            if t_key in t_content_rows.keys():
+                t_content_rows[t_entry[0].strftime("%Y%m%d")] += ['{:.2f}'.format(t_entry[1])]
+            else:
+                t_content_rows[t_entry[0].strftime("%Y%m%d")] = [t_entry[0].strftime("%Y/%m/%d"), t_entry[1]]
             t_entry[0] = calendar.timegm((t_entry[0]).timetuple()) * 1000
 
+    t_content_rows = collections.OrderedDict(sorted(t_content_rows.items()))
+
+    t_keys = sorted(t_content_rows.keys())
+    for i in range(5):
+        t_key_1, t_key_2 = t_keys[-i-1], t_keys[-i-2]
+        #-> add % for NAV
+        t_value_1 = float(t_content_rows[t_key_1][1])
+        t_value_2 = float(t_content_rows[t_key_2][1])
+        if t_value_2 != 0:
+            t_content_rows[t_key_1][1] = '{} ({:.2%})'.format(t_value_1,((t_value_1/t_value_2)-1))
+        #-> add % for SMA
+        t_value_1 = float(t_content_rows[t_key_1][4])
+        t_value_2 = float(t_content_rows[t_key_2][4])
+        if t_value_2 != 0:
+            t_content_rows[t_key_1][4] = '{} ({:.2%})'.format(t_value_1,((t_value_1/t_value_2)-1))
+        #-> add bb width
+        t_value_1 = float(t_content_rows[t_key_1][2])
+        t_value_2 = float(t_content_rows[t_key_1][6])
+        t_content_rows[t_key_1][6] = '{} (BW:{})'.format(t_value_2,(t_value_2-t_value_1))
+
+    tbl_content = {
+                   'heads': t_content_heads,
+                   'rows': reversed(t_content_rows.values()),
+                   }
+    t_lable = ' lastDate:{}'.format(str(t_lastdate))    
     plot = {
             'data': '{data: ' + str(sma).replace('L', '') + \
-                            ', label: "SMA", color: "black", lines: {show: true}, yaxis: 4},' + \
+                            ', label: "' + t_lable + '", color: "black", lines: {show: true}, yaxis: 4},' + \
                     '{data: ' + str(t_value_list).replace('L', '') + \
-                            ', label: "Indices", color: "blue", lines: {show: true}, yaxis: 4},' + \
+                            ', color: "blue", lines: {show: true}, yaxis: 4},' + \
                     '{data: ' + str(tb1).replace('L', '') + \
-                            ', label: "TB1", color: "yellow", lines: {show: true}, yaxis: 4},' + \
+                            ', color: "red", lines: {show: true}, yaxis: 4},' + \
                     '{data: ' + str(tb2).replace('L', '') + \
-                            ', label: "TB2", color: "red", lines: {show: true}, yaxis: 4},' + \
+                            ', color: "purple", lines: {show: true}, yaxis: 4},' + \
                     '{data: ' + str(bb1).replace('L', '') + \
-                            ', label: "BB1", color: "yellow", lines: {show: true}, yaxis: 4},' + \
+                            ', color: "red", lines: {show: true}, yaxis: 4},' + \
                     '{data: ' + str(bb2).replace('L', '') + \
-                            ', label: "BB2", color: "red", lines: {show: true}, yaxis: 4},' 
+                            ', color: "purple", lines: {show: true}, yaxis: 4},' 
             }
     
     args = {
             'tpl_img_header' :  ' BIS EERs Indices {} vs. {} Compare '.format(t_area_1,t_area_2),
             'plot' : plot,
             'tpl_section_title' : _('BIS EERs Indices'), 
-            #'tbl_content' : tbl_content,
+            'tbl_content' : tbl_content,
             }
     
     return render_to_response('mf_simple_flot.tpl.html',args)
