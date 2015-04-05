@@ -75,7 +75,10 @@ def bb_view(request, p_stk_no, p_b_type, p_timeframe=None, p_sdw=None):
         t_value_2 = float(t_content_rows[t_key_2][4])
         if t_value_2 != 0:
             t_content_rows[t_key_1][4] = '{} ({:.2%})'.format(t_value_1,((t_value_1/t_value_2)-1))
-        
+        #-> add bb width
+        t_value_1 = float(t_content_rows[t_key_1][2])
+        t_value_2 = float(t_content_rows[t_key_1][6])
+        t_content_rows[t_key_1][6] = '{} (BW:{})'.format(t_value_2,(t_value_2-t_value_1))
     
     tbl_content = {
                    'heads': t_content_heads,
