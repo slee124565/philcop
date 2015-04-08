@@ -6,8 +6,23 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 
 import bankoftaiwan2.models_exchange as bot_ex
+import mfinvest.views_tool_bb as bb_tool
+
 from utils import util_date
 import calendar, logging, collections
+
+def bb_view(request,p_currency=bot_ex.CURRENCY_USD,p_b_type=bb_tool.BB_TYPE_DAILY,p_timeframe=None,p_sdw=None):
+    t_exchange = bot_ex.BotExchangeInfoModel.get_bot_exchange(p_currency)
+    if p_b_type == bb_tool.BB_TYPE_DAILY:
+        if p_timeframe is None:
+            p_timeframe = 130
+            p_sdw = 100
+        return bb_tool._bb_view(t_exchange, p_currency, p_b_type, p_timeframe, p_sdw)
+    else:
+        if p_timeframe is None:
+            p_timeframe = 26
+            p_sdw = 100
+        return bb_tool._bb_view(t_exchange, p_currency, p_b_type, p_timeframe, p_sdw)
  
 def tw_exchange_changing_view(request):
     target_currency = [bot_ex.CURRENCY_CNY, bot_ex.CURRENCY_USD, bot_ex.CURRENCY_JPY]

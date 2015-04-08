@@ -28,6 +28,10 @@ urlpatterns = patterns('',
     url(r'^bis_cp/(?P<p_code_a>\w+)/(?P<p_code_b>\w+)/$', 'mfinvest.views_bis.eers_area_compare_view'),
 
     url(r'^bot/$', 'mfinvest.views_currency.tw_exchange_changing_view'),
+    url(r'^bot/bb/(?P<p_currency>\w+(-\w+)?)/$', 'mfinvest.views_currency.bb_view'),
+    url(r'^bot/bb/(?P<p_currency>\w+(-\w+)?)/(?P<p_b_type>\w+)/$', 'mfinvest.views_currency.bb_view'),
+    url(r'^bot/bb/(?P<p_currency>\w+(-\w+)?)/(?P<p_b_type>\w+)/(?P<p_timeframe>\w+)/$', 'mfinvest.views_currency.bb_view'),
+    url(r'^bot/bb/(?P<p_currency>\w+(-\w+)?)/(?P<p_b_type>\w+)/(?P<p_timeframe>\w+)/(?P<p_sdw>\w+)/$', 'mfinvest.views_currency.bb_view'),
 
     url(r'^fc/$', 'mfinvest.views_fc.list_all_fund_view'),
     #url(r'^fc/bb/(?P<p_fund_id>\w+)/$', 'mfinvest.views_fc.bb_view'),

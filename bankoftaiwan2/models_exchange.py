@@ -133,7 +133,7 @@ class BotExchangeInfoModel(db.Model):
 
         return float(t_year_dict[t_key][p_exchange_field])
     
-    def get_exchange_list(self, p_exchange_field=CSV_COL_SELL_ONDEMAND):
+    def get_exchange_list(self,p_exchange_field=CSV_COL_SELL_ONDEMAND):
         t_dataset = BotExchangeDataModel.all().ancestor(self).order('year')
         t_list = []
         for t_data in t_dataset:
@@ -145,6 +145,20 @@ class BotExchangeInfoModel(db.Model):
                 t_list.append([datetime.strptime(t_dict[t_key][CSV_COL_DATE],DICT_KEY_DATE_FORMAT).date(),
                                float(t_dict[t_key][p_exchange_field])])
                 
+        t_list.sort(key=lambda x: x[0])    
+        return t_list
+    
+    def get_value_list(self, p_year_since=date.today().year, p_exchange_field=CSV_COL_SELL_ONDEMAND):
+        t_list = []
+        t_year = date.today().year
+        while t_year >= p_year_since:
+            if not str(t_year) in self.data_year_dict.keys():
+                self._load_year_data(t_year)
+            for t_key in self.data_year_dict[str(t_year)]:
+                t_list.append([datetime.strptime(self.data_year_dict[str(t_year)][t_key][CSV_COL_DATE],DICT_KEY_DATE_FORMAT).date(),
+                               float(self.data_year_dict[str(t_year)][t_key][p_exchange_field])])
+            t_year = t_year -1
+            
         t_list.sort(key=lambda x: x[0])    
         return t_list
    
