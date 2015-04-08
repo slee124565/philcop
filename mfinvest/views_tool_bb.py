@@ -10,7 +10,7 @@ from utils.util_date import get_sample_date_list_2
 
 import logging, calendar, collections
 
-BB_VIEW_MONTHS = 12
+BB_VIEW_MONTHS = 36
 BB_TYPE_DAILY = 'daily'
 BB_TYPE_WEEKLY = 'weekly'
 
@@ -18,12 +18,12 @@ def _bb_view(p_model,p_title,p_b_type,p_timeframe,p_sdw):
     func = '{} {}'.format(__name__,'_bb_view')
 
     if p_b_type == BB_TYPE_DAILY:
-        BB_VIEW_MONTHS = 7
+        #BB_VIEW_MONTHS = 7
         t_date_since = date.today() + relativedelta(months=-(BB_VIEW_MONTHS*2))
         year_since = t_date_since.year
         t_value_list = p_model.get_value_list(year_since)
     else: #-> BB_TYPE_WEEKLY
-        BB_VIEW_MONTHS = 14
+        #BB_VIEW_MONTHS = 14
         t_date_since = date.today() + relativedelta(months=-(2*BB_VIEW_MONTHS))
         t_offset = 2 - t_date_since.weekday()
         t_date_since += relativedelta(days=t_offset)
