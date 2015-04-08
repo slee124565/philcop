@@ -14,17 +14,15 @@ BB_VIEW_MONTHS = 36
 BB_TYPE_DAILY = 'daily'
 BB_TYPE_WEEKLY = 'weekly'
 
-def _bb_view(p_model,p_title,p_b_type,p_timeframe,p_sdw):
+def _bb_view(p_model,p_title,p_b_type,p_timeframe,p_sdw,p_month=BB_VIEW_MONTHS):
     func = '{} {}'.format(__name__,'_bb_view')
 
     if p_b_type == BB_TYPE_DAILY:
-        #BB_VIEW_MONTHS = 7
-        t_date_since = date.today() + relativedelta(months=-(BB_VIEW_MONTHS*2))
+        t_date_since = date.today() + relativedelta(months=-(int(p_month)*2))
         year_since = t_date_since.year
         t_value_list = p_model.get_value_list(year_since)
     else: #-> BB_TYPE_WEEKLY
-        #BB_VIEW_MONTHS = 14
-        t_date_since = date.today() + relativedelta(months=-(2*BB_VIEW_MONTHS))
+        t_date_since = date.today() + relativedelta(months=-(2*int(p_month)))
         t_offset = 2 - t_date_since.weekday()
         t_date_since += relativedelta(days=t_offset)
         t_date_list = []
@@ -39,7 +37,7 @@ def _bb_view(p_model,p_title,p_b_type,p_timeframe,p_sdw):
     t_content_rows = {}
     t_lastdate = t_value_list[-1][0]
 
-    t_view_date_since = date.today() + relativedelta(months=-BB_VIEW_MONTHS)
+    t_view_date_since = date.today() + relativedelta(months=-int(p_month))
     t_ndx = 0
 
     for ndx2, t_list in enumerate([t_value_list,bb2,bb1,sma,tb1,tb2]):
