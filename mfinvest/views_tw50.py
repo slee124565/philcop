@@ -117,7 +117,7 @@ def default_view(request):
                              '<a href="/mf/twse/bb/' + t_stk_no + '/weekly/">BB Weekly View</a>',
                              '<a href="/mf/twse/bb/' + t_stk_no + '/daily/">BB Daily View</a>',
                              ])
-    
+    content_rows.sort(key=lambda x: x[2])
     tbl_content = {
                    'heads': content_head_list,
                    'rows': content_rows,
