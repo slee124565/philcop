@@ -18,9 +18,7 @@ def _bb_view(p_model,p_title,p_b_type,p_timeframe,p_sdw,p_month=BB_VIEW_MONTHS):
     func = '{} {}'.format(__name__,'_bb_view')
 
     if p_b_type == BB_TYPE_DAILY:
-        t_date_since = date.today() + relativedelta(months=-(int(p_month)*2))
-        year_since = t_date_since.year
-        t_value_list = p_model.get_value_list(year_since)
+        t_value_list = p_model.get_index_list()
     else: #-> BB_TYPE_WEEKLY
         t_date_since = date.today() + relativedelta(months=-(2*int(p_month)))
         t_offset = 2 - t_date_since.weekday()
@@ -29,7 +27,7 @@ def _bb_view(p_model,p_title,p_b_type,p_timeframe,p_sdw,p_month=BB_VIEW_MONTHS):
         while t_date_since <= date.today():
             t_date_list.append(t_date_since)
             t_date_since += relativedelta(days=+7)
-        t_value_list = p_model.get_sample_value_list(t_date_list)
+        t_value_list = p_model.get_sample_index_list(t_date_list)
 
     sma,tb1,tb2,bb1,bb2 = get_bollingerbands(t_value_list,p_timeframe,float(p_sdw)/100)
 
@@ -78,7 +76,7 @@ def _bb_view(p_model,p_title,p_b_type,p_timeframe,p_sdw,p_month=BB_VIEW_MONTHS):
                    'rows': reversed(t_content_rows.values()),
                    }
         
-    t_label = ' lastDate:{}, {},TF:{},SDW:{}'.format(str(t_lastdate),p_b_type,p_timeframe,p_sdw)    
+    t_label = ' lastDate:{}, {},TF:{}, SDW:{}, month_len {}'.format(str(t_lastdate),p_b_type,p_timeframe,p_sdw,p_month)    
     plot = {
             'data': '{data: ' + str(sma).replace('L', '') + \
                             ', label: "' + t_label + '", color: "black", lines: {show: true}, yaxis: 4},' + \

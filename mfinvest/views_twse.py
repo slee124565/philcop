@@ -7,12 +7,31 @@ from dateutil.relativedelta import relativedelta
 from utils.util_bollingerbands import get_bollingerbands
 
 from twse_gae.models_stock import StockModel
+import mfinvest.views_tool_bb as bb_tool
 
 import logging, calendar, collections
 
 BB_TYPE_DAILY = 'daily'
 BB_TYPE_WEEKLY = 'weekly'
 
+def bb_view(request, p_stk_no, p_b_type, p_timeframe=None, p_sdw=None,p_month=36):
+    t_stock = StockModel.get_stock(p_stk_no)
+    t_stk_name = StockModel.get_name_by_stk_no(p_stk_no)
+    t_stk_title = u'{} {}'.format(p_stk_no,t_stk_name)
+
+    if p_b_type == bb_tool.BB_TYPE_DAILY:
+        if p_timeframe is None:
+            p_timeframe = 130
+            p_sdw = 100
+        return bb_tool._bb_view(t_stock, t_stk_title, p_b_type, p_timeframe, p_sdw, p_month)
+    else:
+        if p_timeframe is None:
+            p_timeframe = 26
+            p_sdw = 100
+        return bb_tool._bb_view(t_stock, t_stk_title, p_b_type, p_timeframe, p_sdw, p_month)
+
+
+'''
 def bb_view(request, p_stk_no, p_b_type, p_timeframe=None, p_sdw=None):
     fname = '{} {}'.format(__name__,'bb_view')
     t_stock = StockModel.get_stock(p_stk_no)
@@ -113,4 +132,4 @@ def bb_view(request, p_stk_no, p_b_type, p_timeframe=None, p_sdw=None):
             }
     
     return render_to_response('mf_simple_flot.tpl.html',args)
-    
+'''    

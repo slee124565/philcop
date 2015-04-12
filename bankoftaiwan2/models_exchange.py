@@ -99,6 +99,9 @@ class BotExchangeInfoModel(db.Model):
         logging.debug('_load_year_data: with year {}'.format(p_year))
         return True
     
+    def get_sample_index_list(self, p_date_list,p_exchange_field=CSV_COL_SELL_ONDEMAND):
+        return self.get_sample_value_list(p_date_list, p_exchange_field)
+    
     def get_sample_value_list(self, p_date_list,p_exchange_field=CSV_COL_SELL_ONDEMAND):
         t_list = []
         for t_date in p_date_list:
@@ -148,6 +151,9 @@ class BotExchangeInfoModel(db.Model):
         t_list.sort(key=lambda x: x[0])    
         return t_list
     
+    def get_index_list(self, p_year_since=date.today().year-3, p_exchange_field=CSV_COL_SELL_ONDEMAND):
+        return self.get_value_list(p_year_since, p_exchange_field)
+        
     def get_value_list(self, p_year_since=date.today().year, p_exchange_field=CSV_COL_SELL_ONDEMAND):
         t_list = []
         t_year = date.today().year
