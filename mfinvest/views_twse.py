@@ -14,7 +14,7 @@ import logging, calendar, collections
 BB_TYPE_DAILY = 'daily'
 BB_TYPE_WEEKLY = 'weekly'
 
-def bb_view(request, p_stk_no, p_b_type, p_timeframe=None, p_sdw=None,p_month=36):
+def bb_view(request, p_stk_no, p_b_type, p_timeframe=None, p_sdw=None,p_month=18):
     t_stock = StockModel.get_stock(p_stk_no)
     t_stk_name = StockModel.get_name_by_stk_no(p_stk_no)
     t_stk_title = u'{} {}'.format(p_stk_no,t_stk_name)
