@@ -23,11 +23,13 @@ def bb_view(request, p_stk_no, p_b_type, p_timeframe=None, p_sdw=None,p_month=18
         if p_timeframe is None:
             p_timeframe = 130
             p_sdw = 100
+            p_month = 2
         return bb_tool._bb_view(t_stock, t_stk_title, p_b_type, p_timeframe, p_sdw, p_month)
     else:
         if p_timeframe is None:
             p_timeframe = 26
             p_sdw = 100
+            p_month = 6
         return bb_tool._bb_view(t_stock, t_stk_title, p_b_type, p_timeframe, p_sdw, p_month)
 
 

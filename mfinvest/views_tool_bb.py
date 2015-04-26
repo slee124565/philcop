@@ -13,21 +13,29 @@ import logging, calendar, collections
 BB_VIEW_MONTHS = 36
 BB_TYPE_DAILY = 'daily'
 BB_TYPE_WEEKLY = 'weekly'
+BB_TYPE_WEEKLY_2 = 'weekly2' #-> add one more forecast week
 
 def _bb_view(p_model,p_title,p_b_type,p_timeframe,p_sdw,p_month=BB_VIEW_MONTHS):
     func = '{} {}'.format(__name__,'_bb_view')
 
     if p_b_type == BB_TYPE_DAILY:
         t_value_list = p_model.get_index_list()
-    else: #-> BB_TYPE_WEEKLY
+    elif (p_b_type == BB_TYPE_WEEKLY) or (p_b_type == BB_TYPE_WEEKLY_2): #-> BB_TYPE_WEEKLY
         t_date_since = date.today() + relativedelta(months=-(2*int(p_month)))
         t_offset = 2 - t_date_since.weekday()
         t_date_since += relativedelta(days=t_offset)
         t_date_list = []
-        while t_date_since <= date.today():
+        if p_b_type == BB_TYPE_WEEKLY:
+            t_date_end = date.today()
+        else:
+            t_date_end = date.today() + relativedelta(days=+6)
+        while t_date_since <= t_date_end:
             t_date_list.append(t_date_since)
             t_date_since += relativedelta(days=+7)
         t_value_list = p_model.get_sample_index_list(t_date_list)
+    else: #-> Monthly
+        b_p_type = BB_TYPE_DAILY
+        t_value_list = p_model.get_index_list()
 
     sma,tb1,tb2,bb1,bb2 = get_bollingerbands(t_value_list,p_timeframe,float(p_sdw)/100)
 
