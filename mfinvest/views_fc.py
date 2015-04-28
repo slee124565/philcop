@@ -17,6 +17,8 @@ import fundclear2.models as fc2
 import fundclear2.tasks as fc2task
 from fundcodereader.models import FundCodeModel
 from indexreview.models import IndexReviewModel
+import mfinvest.views_tool_bb as bb_tool
+
 
 import logging, calendar, collections
 
@@ -167,18 +169,24 @@ def nav_view(request,p_fund_id):
     return render_to_response('mf_my_japan.tpl.html', args)
     
     
-def bb_view(request,p_fund_id,p_b_type=BB_TYPE_DAILY,p_timeframe=None,p_sdw=None):
+def bb_view(request,p_fund_id,p_b_type=BB_TYPE_DAILY,p_timeframe=None,p_sdw=None,p_month=18):
+    t_fund = FundClearInfoModel.get_fund(p_fund_id)
     if p_b_type == BB_TYPE_DAILY:
         if p_timeframe is None:
-            p_timeframe = 18
+            p_timeframe = 130
             p_sdw = 100
-        return _bb_view(p_fund_id, p_b_type, p_timeframe, p_sdw)
+            p_month = 6
+        t_date_since = date.today() + relativedelta(months=-(p_month*2))
+        year_since = t_date_since.year
+        t_fund.get_value_list(year_since)
     else:
         if p_timeframe is None:
-            p_timeframe = 5
-            p_sdw = 85
-        return _bb_view(p_fund_id, p_b_type, p_timeframe, p_sdw)
-    
+            p_timeframe = 26
+            p_sdw = 100
+            p_month = 12
+
+    return bb_tool._bb_view(t_fund, t_fund.title, p_b_type, p_timeframe, p_sdw, p_month)
+        
 def _bb_view(p_fund_id,p_b_type,p_timeframe,p_sdw):
     func = '{} {}'.format(__name__,'_bb_view')
     t_fund = FundClearInfoModel.get_fund(p_fund_id)

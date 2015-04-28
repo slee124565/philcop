@@ -37,6 +37,7 @@ def _bb_view(p_model,p_title,p_b_type,p_timeframe,p_sdw,p_month=BB_VIEW_MONTHS):
         b_p_type = BB_TYPE_DAILY
         t_value_list = p_model.get_index_list()
 
+    logging.info('{}: type {} timeframe {} sdw {} month'.format(p_b_type,p_timeframe,p_sdw,p_month))
     sma,tb1,tb2,bb1,bb2 = get_bollingerbands(t_value_list,p_timeframe,float(p_sdw)/100)
 
     t_content_heads = ['Date','NAV','BB2','BB1','SMA','TB1','TB2']
@@ -70,14 +71,16 @@ def _bb_view(p_model,p_title,p_b_type,p_timeframe,p_sdw,p_month=BB_VIEW_MONTHS):
         if t_value_2 != 0:
             t_content_rows[t_key_1][1] = '{} ({:.2%})'.format(t_value_1,((t_value_1/t_value_2)-1))
         #-> add % for SMA
-        t_value_1 = float(t_content_rows[t_key_1][4])
-        t_value_2 = float(t_content_rows[t_key_2][4])
-        if t_value_2 != 0:
-            t_content_rows[t_key_1][4] = '{} ({:.2%})'.format(t_value_1,((t_value_1/t_value_2)-1))
+        if (len(t_content_rows[t_key_1]) >= 5 and len(t_content_rows[t_key_2]) >=5):
+            t_value_1 = float(t_content_rows[t_key_1][4])
+            t_value_2 = float(t_content_rows[t_key_2][4])
+            if t_value_2 != 0:
+                t_content_rows[t_key_1][4] = '{} ({:.2%})'.format(t_value_1,((t_value_1/t_value_2)-1))
         #-> add bb width
-        t_value_1 = float(t_content_rows[t_key_1][2])
-        t_value_2 = float(t_content_rows[t_key_1][6])
-        t_content_rows[t_key_1][6] = '{} (BW:{})'.format(t_value_2,(t_value_2-t_value_1))
+        if len(t_content_rows[t_key_1]) >= 7:
+            t_value_1 = float(t_content_rows[t_key_1][2])
+            t_value_2 = float(t_content_rows[t_key_1][6])
+            t_content_rows[t_key_1][6] = '{} (BW:{})'.format(t_value_2,(t_value_2-t_value_1))
 
     tbl_content = {
                    'heads': t_content_heads,
