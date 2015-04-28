@@ -61,6 +61,9 @@ class FundClearInfoModel(db.Model):
         logging.debug('get_fund: with id {} success'.format(p_fund_id))
         return fundinfo
     
+    def get_sample_index_list(self, p_date_list):
+        return self.get_sample_value_list(p_date_list)
+    
     def get_sample_value_list(self, p_date_list):
         '''
         return a list of [date, nav] according to date list p_date_list
