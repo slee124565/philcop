@@ -70,9 +70,11 @@ def task_tw50_chain_update_bb_state(request):
                 t_bb_state = 'TB3'
                 
             t_model = MFModle.get_model()
-            t_model.dict_data[t_stk_no] = t_bb_state
+            t_model.dict_data[t_stk_no] = {}
+            t_model.dict_data[t_stk_no]['state'] = t_bb_state
+            t_model.dict_data[t_stk_no]['closed'] = t_current_nav
             t_model.save_dict_data()
-            t_msg = '{} {} with state {}'.format(fname,t_stk_no,t_bb_state)
+            t_msg = '{} {} with state {}'.format(fname,t_stk_no,str(t_model.dict_data))
             logging.info(t_msg)
 
         t_next_index = int(t_index)+1
@@ -95,13 +97,13 @@ def task_tw50_chain_update_bb_state(request):
 def default_view(request):
     tw50_id_list = TW50Model.get_id_list()
     
-    content_head_list = ['ID', 'Name', 'Weekly BB Area', 'Weekly BB', 'Daily BB']
+    content_head_list = ['ID','Name','Price','Weekly BB Area','Weekly BB','Daily BB']
     content_rows = []
     t_model = MFModle.get_model()
     
     for t_stk_no in tw50_id_list:
         if t_stk_no in t_model.dict_data:
-            t_bb_state = t_model.dict_data[t_stk_no]
+            t_bb_state = t_model.dict_data[t_stk_no]['state']
         else:
             t_bb_state = 'NA'
         if t_bb_state in ['TB3','TB2']:
@@ -113,11 +115,12 @@ def default_view(request):
         content_rows.append([
                              t_stk_no,
                              StockModel.get_name_by_stk_no(t_stk_no),
+                             t_model.dict_data[t_stk_no]['closed'],
                              t_bb_state,
                              '<a href="/mf/twse/bb/' + t_stk_no + '/weekly/">BB Weekly View</a>',
                              '<a href="/mf/twse/bb/' + t_stk_no + '/daily/">BB Daily View</a>',
                              ])
-    content_rows.sort(key=lambda x: x[2])
+    content_rows.sort(key=lambda x: x[3])
     tbl_content = {
                    'heads': content_head_list,
                    'rows': content_rows,
