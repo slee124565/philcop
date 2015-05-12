@@ -151,6 +151,9 @@ class BotGoldInfoModel(db.Model):
         logging.debug('{}: with year {}'.format(func,p_year))
         return True
 
+    def get_sample_index_list(self, p_date_list,p_csv_field=CSV_COL_SELL_ONDEMAND):
+        return self.get_sample_value_list(p_date_list, p_csv_field)
+    
     def get_sample_value_list(self, p_date_list,p_csv_field=CSV_COL_SELL_ONDEMAND):
         t_list = []
         for t_date in p_date_list:
@@ -164,7 +167,7 @@ class BotGoldInfoModel(db.Model):
             return 0.0
         
         #-> if datetime is today, get from web directly
-        if p_datetime == date.today():
+        if p_datetime >= date.today():
             t_current_price = get_current_price(p_currency=self.key().name(),p_field=p_csv_field)
             if not t_current_price is None:
                 return t_current_price
@@ -188,6 +191,9 @@ class BotGoldInfoModel(db.Model):
                 return 0.0
         return float(t_year_dict[t_key][p_csv_field])
 
+    def get_index_list(self,p_csv_field=CSV_COL_SELL_ONDEMAND):
+        return self.get_price_list(p_csv_field)
+    
     def get_price_list(self, p_csv_field=CSV_COL_SELL_ONDEMAND):
         t_dataset = BotGoldDataModel.all().ancestor(self).order('year')
         t_list = []
