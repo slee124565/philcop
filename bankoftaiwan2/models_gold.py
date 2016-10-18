@@ -15,11 +15,13 @@ import csv,StringIO
 import logging, httplib
 import codecs
 
-URL_GOLD_TW_TEMPLATE = 'http://rate.bot.com.tw/Pages/UIP005/Download.ashx?lang=zh-TW&fileType=1&whom=GB0030001000&date1={begin_date}&date2={end_date}&afterOrNot=1&curcd={currency_type}'
+URL_GOLD_TW_TEMPLATE = 'http://rate.bot.com.tw/Pages/UIP005/Download.ashx?\
+lang=zh-TW&fileType=1&whom=GB0030001000&date1={begin_date}&date2={end_date}&afterOrNot=1&curcd={currency_type}'
 
 DUTY_ON = 0
 DUTY_OFF = 1
-URL_GOLD_TODAY_TEMPLATE = 'http://rate.bot.com.tw/Pages/UIP005/UIP00511.aspx?lang=zh-TW&whom=GB0030001000&date={today}&afterOrNot={duty_type}&curcd={currency_type}'
+URL_GOLD_TODAY_TEMPLATE = 'http://rate.bot.com.tw/Pages/UIP005/UIP00511.aspx?\
+lang=zh-TW&whom=GB0030001000&date={today}&afterOrNot={duty_type}&curcd={currency_type}'
 
 DICT_KEY_DATE_FORMAT = '%Y%m%d'
 

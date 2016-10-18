@@ -7,11 +7,29 @@ from django.conf import settings
 
 from fundclear.models import FundClearModel
 import bankoftaiwan2.models_exchange as bot_ex
+import os
+from django.conf import settings
 
 def home(request):
     return HttpResponseRedirect('/mf/fc/')
     #return render_to_response('dashboard.tpl.html')
 
+def django_settings_view(request):
+    t_content = ''
+    for t_key in dir(settings):
+        t_content += '{}:{}\n'.format(t_key,getattr(settings, t_key))
+    response = HttpResponse(content_type='text/plain')
+    response.content = t_content
+    return response
+    
+def os_environment_view(request):
+    t_content = ''
+    for t_key in os.environ:
+        t_content += '{}:{}\n'.format(t_key,str(os.environ[t_key]))
+    response = HttpResponse(content_type='text/plain')
+    response.content = t_content
+    return response
+    
 def test_l10n(request):
     return render_to_response('dashboard.tpl.html')
     

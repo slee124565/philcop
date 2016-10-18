@@ -65,7 +65,7 @@ class FundCodeModel(db.Model):
         codename_dict = {}
         for row in csv_reader:
             t_set = dict(row)
-            logging.debug('%s' % t_set)
+            #logging.debug('%s' % t_set)
             t_name = codecs.decode(t_set['name'],'big5').encode('utf-8')
             t_code = str(t_set['code']).replace('=','').replace('"','')
             #logging.debug(t_item)

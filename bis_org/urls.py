@@ -9,4 +9,5 @@ urlpatterns = patterns('',
 
     url(r'^test/$', 'bis_org.tests.test_get_indices'),
     url(r'^test2/$', 'bis_org.tests.test_mail_api'),
+    url(r'^test3/$', 'bis_org.tests.test_conf'),
 )

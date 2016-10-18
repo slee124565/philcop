@@ -94,7 +94,7 @@ def task_tw50_chain_update_bb_state(request):
     response.status_code = httplib.OK
     return response
 
-def default_view(request):
+def default_view(request, p_bb_level=''):
     tw50_id_list = TW50Model.get_id_list()
     
     content_head_list = ['ID','Name','Price','Weekly BB Area','Weekly BB','Daily BB']
@@ -106,21 +106,31 @@ def default_view(request):
             t_bb_state = t_model.dict_data[t_stk_no]['state']
         else:
             t_bb_state = 'NA'
+            
         if t_bb_state in ['TB3','TB2']:
-            t_bb_state = '<p class="text-danger"><strong>{}</strong></p>'.format(t_bb_state)
+            t_bb_state_html = '<p class="text-danger"><strong>{}</strong></p>'.format(t_bb_state)
         elif t_bb_state in ['BB2','BB3']:
-            t_bb_state = '<p class="text-success"><strong>{}</strong></p>'.format(t_bb_state)
+            t_bb_state_html = '<p class="text-success"><strong>{}</strong></p>'.format(t_bb_state)
         else:
-            t_bb_state = '<p class="text-muted"><strong>{}</strong></p>'.format(t_bb_state)
-        content_rows.append([
+            t_bb_state_html = '<p class="text-muted"><strong>{}</strong></p>'.format(t_bb_state)
+            
+        if ((p_bb_level == '') or
+            ((p_bb_level == 'BB2') and (t_bb_state in ['BB2','BB3'])) or
+            ((p_bb_level == 'BB3') and (t_bb_state == 'BB3')) or
+            ((p_bb_level == 'TP2') and (t_bb_state in ['TP2','TP3'])) or
+            ((p_bb_level == 'TP3') and (t_bb_state == 'TP3')) ):
+            content_rows.append([
                              t_stk_no,
                              StockModel.get_name_by_stk_no(t_stk_no),
                              t_model.dict_data[t_stk_no]['closed'],
-                             t_bb_state,
-                             '<a href="/mf/twse/bb/' + t_stk_no + '/weekly/">BB Weekly View</a>',
+                             t_bb_state_html,
+                             '<a href="/mf/twse/bb/' + t_stk_no + '/weekly2/">BB Weekly View</a>',
                              '<a href="/mf/twse/bb/' + t_stk_no + '/daily/">BB Daily View</a>',
                              ])
-    content_rows.sort(key=lambda x: x[3])
+    if p_bb_level == "":
+        content_rows.sort(key=lambda x: (x[3],x[0]))
+    else:
+        content_rows.sort(key=lambda x: x[0])
     tbl_content = {
                    'heads': content_head_list,
                    'rows': content_rows,

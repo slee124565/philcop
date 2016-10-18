@@ -36,10 +36,10 @@ class FundClearInfoModel(db.Model):
     
     @classmethod
     def get_fund(cls,p_fund_id):
-        fund_id_list = FundCodeModel.get_code_list()
-        if not p_fund_id in fund_id_list:
-            logging.warning('get_fund: id {fund_id} not in fund id list!'.format(fund_id=p_fund_id))
-            return None
+        #fund_id_list = FundCodeModel.get_code_list()
+        #if not p_fund_id in fund_id_list:
+        #    logging.warning('get_fund: id {fund_id} not in fund id list!'.format(fund_id=p_fund_id))
+        #    return None
         p_year = str(date.today().year)
         key_name = FundClearInfoModel.compose_key_name(p_fund_id)
         fundinfo = FundClearInfoModel.get_by_key_name(key_name)
@@ -166,7 +166,8 @@ class FundClearInfoModel(db.Model):
             t_count += 1
             t_key = t_date.strftime('%Y/%m/%d')
             if t_count > 30:
-                logging.error('{}: loop protection breached!'.format(func))
+                logging.error('{}: loop protection breached for data {}!'.format(func,
+                                                                                 p_date))
                 return 0.0
         
         return self.nav_year_dict[t_year][t_key][NAV_INDEX_VALUE]
@@ -272,7 +273,7 @@ class FundClearDataModel(db.Model):
             fund.year = str(p_year)
             fund.content_csv = csv_content
             fund.put()
-            logging.warning('_update_from_web : Internet Download Error')
+            logging.error('_update_from_web : Internet Download Error', exc_info=True)
             return False
 
     def _get_nav_dict(self):

@@ -1,12 +1,16 @@
 from google.appengine.api import mail
 
 from django.http import HttpResponse
+from bis_org.settings import *
 
 from models import BisEersModel
 from bis_org.models import EERS_DS_KEY_NARROW
 
 import bis_org.models as bis
 
+def test_conf(request):
+    return HttpResponse(ADMIN_EMAIL)
+    
 def test_mail_api(request):
     user_address = 'lee.shiueh@gmail.com'
     sender_address = 'MyGAE <lee.shiueh@gmail.com>'

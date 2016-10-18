@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^tg/', include('treasury_gov.urls')),
     url(r'^ir/', include('indexreview.urls')),
     url(r'^twse/', include('twse_gae.urls')),
+    url(r'^fetch/', include('urlfetch_gae.urls')),
     
     # Examples:
     # url(r'^$', 'phicops.views.home', name='home'),
@@ -21,5 +22,7 @@ urlpatterns = patterns('',
     
     url(r'^print_config/$', 'phicops.views.print_config'),
     url(r'^test_l10n/$', 'phicops.views.test_l10n'),
+    url(r'^env/$', 'phicops.views.os_environment_view'),
+    url(r'^conf/$', 'phicops.views.django_settings_view'),
     url(r'^$', 'phicops.views.home'),
 )

@@ -2,6 +2,7 @@ from google.appengine.ext import db
 from google.appengine.api import urlfetch, mail
 from google.appengine.api.urlfetch import DownloadError
 
+from bis_org.settings import *
 from lxml.html import document_fromstring
 from lxml import etree
 

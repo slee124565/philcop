@@ -102,3 +102,4 @@ LOCALE_PATHS = (
                 os.path.join(BASE_DIR,'conf','locale'),
                 )
 
+#ADMIN_EMAIL = 'lee.shiueh@gmail.com'
