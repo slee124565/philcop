@@ -1,3 +1,5 @@
 *.pyc
 .metadata/
+.settings/
 /assets/js/flot/examples
+.pydevproject
