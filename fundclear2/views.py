@@ -1,9 +1,13 @@
 from django.http import HttpResponse
+from django.views.generic import View
+
 from fundclear2.models import FundClearInfoModel, FundClearDataModel
 import fundclear2.tasks as fundtask
 from fundcodereader.models import FundCodeModel
 
 import logging
+import collections
+import json
 
 def current_nav(request,p_fund_id):
     '''
@@ -143,4 +147,16 @@ def _get_fund_id_not_in_list():
     
     return code_list
 
+class FundJsonView(View):
+    
+    def get(self, request, p_fund_id, p_year, *args, **kwargs):
+        t_fund = FundClearInfoModel.get_fund(p_fund_id)
+        t_fdata = FundClearDataModel.get_by_key_name(
+                                                    FundClearDataModel.compose_key_name(p_fund_id, p_year),
+                                                    t_fund)
+        nav_dict = t_fdata._get_nav_dict()
+        nav_dict = collections.OrderedDict(sorted(nav_dict.items()))
+        json_nav = [ [key, nav_dict[key][1]] for key in nav_dict]
+        
+        return HttpResponse(json.dumps(json_nav,indent=2))
 

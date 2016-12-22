@@ -23,7 +23,7 @@ CSV_ITEM_KEY_NAV = 'NAV'
 NAV_INDEX_DATE = 0
 NAV_INDEX_VALUE = 1
 
-URL_TEMPLATE = 'http://announce.fundclear.com.tw/MOPSFundWeb/D02_02P.jsp?fundId={fund_id}&beginDate={begin_date}&endDate={end_date}'
+URL_TEMPLATE = 'https://announce.fundclear.com.tw/MOPSFundWeb/D02_02P.jsp?fundId={fund_id}&beginDate={begin_date}&endDate={end_date}'
 
 class FundClearInfoModel(db.Model):
     title = db.StringProperty(default='')
@@ -206,6 +206,7 @@ class FundClearDataModel(db.Model):
         csv_content = CSV_ITEM_KEY_DATE + ',' + CSV_ITEM_KEY_NAV + '\n'
         try :
             web_fetch = urlfetch.fetch(url)
+            logging.debug('web_fetch status code: %s' % web_fetch.status_code)
             if web_fetch.status_code == HTTP_STATUS_CODE_OK:
                 #logging.debug('web_content:\n{}'.format(web_fetch.content))
                 #web_content = document_fromstring(str(web_fetch.content).decode('big5'))
@@ -273,7 +274,7 @@ class FundClearDataModel(db.Model):
             fund.year = str(p_year)
             fund.content_csv = csv_content
             fund.put()
-            logging.error('_update_from_web : Internet Download Error', exc_info=True)
+            logging.error('_update_from_web : Internet Download Error' , exc_info=True)
             return False
 
     def _get_nav_dict(self):
