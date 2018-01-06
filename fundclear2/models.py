@@ -13,6 +13,7 @@ from fundcodereader.models import FundCodeModel
 
 import csv,StringIO
 import logging, codecs
+from macpath import split
 
 HTTP_STATUS_CODE_OK = 200
 HTTP_STATUS_CODE_SERVER_ERROR = 500
@@ -188,7 +189,81 @@ class FundClearDataModel(db.Model):
         return str(p_fund_id) + '_' + str(p_year)
 
     @classmethod
+    def web_html_to_csv(cls, web_html):
+
+        csv_content = CSV_ITEM_KEY_DATE + ',' + CSV_ITEM_KEY_NAV + '\n'
+        web_content = document_fromstring(codecs.decode(web_html.content,'big5','ignore'))
+        t_tables = web_content.xpath("//table")
+        #logging.debug('table len: {}'.format(len(t_tables)))
+        TABLE_TITLE_INDEX = 4
+        TABLE_NAV_INDEX_START = 5
+        
+        fund_title = t_tables[TABLE_TITLE_INDEX][0][0].text.replace('\r\n','')
+        #fund_title = codecs.encode(fund_title,'utf-8','ignore')
+        #logging.debug('get fund title: {}'.format(fund_title))
+        
+        dataset = []
+        t_total = len(t_tables)
+        #logging.debug('t_total: ' + str(t_total))
+        t_count = TABLE_NAV_INDEX_START
+        while (t_count <= (t_total-1)):
+            if len(t_tables[t_count]) == 2:
+                t_date_list = [t_child.text for t_child in t_tables[t_count][0]]
+                t_value_list = [t_child.text for t_child in t_tables[t_count][1]]
+                for i in range(0,len(t_date_list)):
+                    if i != 0:
+                        if (t_date_list[i].strip() != ''):
+                            dataset.append([t_date_list[i],t_value_list[i]])
+                        #else:
+                        #    logging.debug('remove element ('+ str(t_count) + '#' + str(i) + '): ' + str([t_date_list[i],t_value_list[i]]))
+            #else:
+            #    logging.debug('skip table:\n' + etree.tostring(t_tables[t_count]))
+            t_count += 1
+        
+        t_count = 0
+        while (t_count < len(dataset)):
+            #logging.info('t_count ' + str(t_count))
+            (_,t_value) = dataset[t_count]
+            #logging.debug(str(t_count) + ' ' + str(dataset[t_count]))
+            if (t_value == '--') or (t_value == 'N/A') or (t_value == '.000000'):
+                del dataset[t_count]
+                continue
+            csv_content += dataset[t_count][0] + ',' + str(float(dataset[t_count][1])) + '\n'
+            t_count += 1
+        
+        return (fund_title, csv_content)   
+    
+    @classmethod
+    def save_fund_csv_data(cls, p_fund_id, p_year, fund_title, csv_content):
+
+        model_parent = FundClearInfoModel.get_or_insert(FundClearInfoModel.compose_key_name(p_fund_id))
+        fund = FundClearDataModel.get_or_insert(FundClearDataModel.compose_key_name(p_fund_id, p_year),
+                                                parent=model_parent)
+        model_parent.title = fund_title
+        fund.year = str(p_year)
+        fund.content_csv = csv_content
+        fund.put()
+        logging.info('Fund {id} with year {year} saved.'.format(id=str(p_fund_id),
+                                                                    year=str(p_year)))
+
+                     
+    @classmethod
     def _update_from_web(cls,p_fund_id,p_year=date.today().year):
+        
+        try_count = 0
+        
+        while try_count < 2:
+            try:
+                cls._try_update_from_web(p_fund_id, p_year)
+                return True
+            except DownloadError:
+                try_count += 1
+                logging.warning('DownloadError Except, try %d' % try_count)
+        logging.error('_update_from_web failed')
+        return False
+    
+    @classmethod
+    def _try_update_from_web(cls,p_fund_id,p_year=date.today().year):
         model_parent = FundClearInfoModel.get_or_insert(FundClearInfoModel.compose_key_name(p_fund_id))
         fund = FundClearDataModel.get_or_insert(FundClearDataModel.compose_key_name(p_fund_id, p_year),
                                                 parent=model_parent)
@@ -204,78 +279,62 @@ class FundClearDataModel(db.Model):
         logging.info('_update_from_web, url: ' + url)
 
         csv_content = CSV_ITEM_KEY_DATE + ',' + CSV_ITEM_KEY_NAV + '\n'
-        try :
-            web_fetch = urlfetch.fetch(url)
-            logging.debug('web_fetch status code: %s' % web_fetch.status_code)
-            if web_fetch.status_code == HTTP_STATUS_CODE_OK:
-                #logging.debug('web_content:\n{}'.format(web_fetch.content))
-                #web_content = document_fromstring(str(web_fetch.content).decode('big5'))
-                #web_content = document_fromstring(codecs.decode(web_fetch.content,'big5').encode('utf-8'))
-                web_content = document_fromstring(codecs.decode(web_fetch.content,'big5','ignore'))
-                #web_content = document_fromstring(web_fetch.content)
-                
-                #xpath: /html/body/table/tbody/tr[1]/td/table/tbody/tr[2]/td/table[2]/tbody
-                #t_tables = web_content.xpath("/html/body/table/tr[1]/td/table/tr[2]/td/table[2]")
-                #return etree.tostring(t_tables[0])
-                
-                t_tables = web_content.xpath("//table")
-                #logging.debug('table len: {}'.format(len(t_tables)))
-                TABLE_TITLE_INDEX = 4
-                TABLE_NAV_INDEX_START = 5
-                
-                fund_title = t_tables[TABLE_TITLE_INDEX][0][0].text.replace('\r\n','')
-                #fund_title = codecs.encode(fund_title,'utf-8','ignore')
-                #logging.debug('get fund title: {}'.format(fund_title))
-                model_parent.title = fund_title
-                
-                dataset = []
-                t_total = len(t_tables)
-                #logging.debug('t_total: ' + str(t_total))
-                t_count = TABLE_NAV_INDEX_START
-                while (t_count <= (t_total-1)):
-                    if len(t_tables[t_count]) == 2:
-                        t_date_list = [t_child.text for t_child in t_tables[t_count][0]]
-                        t_value_list = [t_child.text for t_child in t_tables[t_count][1]]
-                        for i in range(0,len(t_date_list)):
-                            if i != 0:
-                                if (t_date_list[i].strip() != ''):
-                                    dataset.append([t_date_list[i],t_value_list[i]])
-                                #else:
-                                #    logging.debug('remove element ('+ str(t_count) + '#' + str(i) + '): ' + str([t_date_list[i],t_value_list[i]]))
-                    #else:
-                    #    logging.debug('skip table:\n' + etree.tostring(t_tables[t_count]))
-                    t_count += 1
-                
-                t_count = 0
-                while (t_count < len(dataset)):
-                    #logging.info('t_count ' + str(t_count))
-                    (t_date,t_value) = dataset[t_count]
-                    #logging.debug(str(t_count) + ' ' + str(dataset[t_count]))
-                    if (t_value == '--') or (t_value == 'N/A') or (t_value == '.000000'):
-                        del dataset[t_count]
-                        continue
-                    csv_content += dataset[t_count][0] + ',' + str(float(dataset[t_count][1])) + '\n'
-                    t_count += 1
-                #return csv_content
-                t_result = True
-            else:
-                logging.warning('_update_from_web fail, HTTP STATUS CODE: ' + str(web_fetch.status_code))
-                t_result = False
-                        
-            fund.year = str(p_year)
-            fund.content_csv = csv_content
-            fund.put()
-            logging.info('Fund {id} with year {year} with item {item} saved.'.format(
-                                                                    id=str(p_fund_id),
-                                                                    year=str(p_year),
-                                                                        item=t_count))
-            return t_result
-        except DownloadError:
-            fund.year = str(p_year)
-            fund.content_csv = csv_content
-            fund.put()
-            logging.error('_update_from_web : Internet Download Error' , exc_info=True)
-            return False
+        web_fetch = urlfetch.fetch(url)
+        logging.debug('web_fetch status code: %s' % web_fetch.status_code)
+        if web_fetch.status_code == HTTP_STATUS_CODE_OK:
+            fund_title, csv_content = cls.web_html_to_csv(web_fetch)
+            model_parent.title = fund_title
+            t_result = True
+        else:
+            logging.warning('_update_from_web fail, HTTP STATUS CODE: ' + str(web_fetch.status_code))
+            t_result = False
+                    
+        fund.year = str(p_year)
+        fund.content_csv = csv_content
+        fund.put()
+        logging.info('Fund {id} with year {year} saved.'.format(id=str(p_fund_id),
+                                                                year=str(p_year)))
+
+#     @classmethod
+#     def _try_update_from_web(cls,p_fund_id,p_year=date.today().year):
+#         model_parent = FundClearInfoModel.get_or_insert(FundClearInfoModel.compose_key_name(p_fund_id))
+#         fund = FundClearDataModel.get_or_insert(FundClearDataModel.compose_key_name(p_fund_id, p_year),
+#                                                 parent=model_parent)
+#         
+#         begin_date = date(int(p_year),1,1).strftime("%Y/%m/%d")
+#         if int(p_year) == date.today().year:
+#             end_date = date.today().strftime("%Y/%m/%d")
+#         else:
+#             end_date = date(int(p_year),12,31).strftime("%Y/%m/%d")  
+#         url = URL_TEMPLATE.format(fund_id=p_fund_id,
+#                                   begin_date=begin_date,
+#                                   end_date=end_date)
+#         logging.info('_update_from_web, url: ' + url)
+# 
+#         csv_content = CSV_ITEM_KEY_DATE + ',' + CSV_ITEM_KEY_NAV + '\n'
+#         try :
+#             web_fetch = urlfetch.fetch(url)
+#             logging.debug('web_fetch status code: %s' % web_fetch.status_code)
+#             if web_fetch.status_code == HTTP_STATUS_CODE_OK:
+#                 fund_title, csv_content = cls.web_html_to_csv(web_fetch.content)
+#                 model_parent.title = fund_title
+#                 t_result = True
+#             else:
+#                 logging.warning('_update_from_web fail, HTTP STATUS CODE: ' + str(web_fetch.status_code))
+#                 t_result = False
+#                         
+#             fund.year = str(p_year)
+#             fund.content_csv = csv_content
+#             fund.put()
+#             logging.info('Fund {id} with year {year} saved.'.format(id=str(p_fund_id),
+#                                                                     year=str(p_year)))
+#             return t_result
+#         except DownloadError:
+#             #fund.year = str(p_year)
+#             #fund.content_csv = csv_content
+#             #fund.put()
+#             logging.error('_update_from_web : Internet Download Error' , exc_info=True)
+#             return True
 
     def _get_nav_dict(self):
         csv_reader = csv.DictReader(StringIO.StringIO(self.content_csv))

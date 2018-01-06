@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic import View
 
 from fundclear2.models import FundClearInfoModel, FundClearDataModel
@@ -150,6 +150,7 @@ def _get_fund_id_not_in_list():
 class FundJsonView(View):
     
     def get(self, request, p_fund_id, p_year, *args, **kwargs):
+        
         t_fund = FundClearInfoModel.get_fund(p_fund_id)
         t_fdata = FundClearDataModel.get_by_key_name(
                                                     FundClearDataModel.compose_key_name(p_fund_id, p_year),
@@ -160,3 +161,21 @@ class FundJsonView(View):
         
         return HttpResponse(json.dumps(json_nav,indent=2))
 
+    def post(self, request, p_fund_id, p_year, *args, **kwargs):
+        
+        csv_content = request.POST.get('csv_content','').encode('utf-8')
+        fund_title = request.POST.get('fund_title','')
+        
+        if csv_content == '' or fund_title == '':
+            return HttpResponseBadRequest('Param Error\nfund_title length%d' %
+                                          (len(fund_title)))
+        
+        FundClearDataModel.save_fund_csv_data(p_fund_id, p_year, fund_title, csv_content)
+        
+        return HttpResponse('OK')
+    
+    
+    
+    
+    
+    

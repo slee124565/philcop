@@ -8,4 +8,4 @@ else
 	version=$1
 fi
 
-appcfg.py -A trusty-catbird-645 --no_cookies -V $version update . 
+gcloud app deploy -v $version app.yaml

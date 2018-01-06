@@ -4,43 +4,43 @@ cron:
 #  schedule: 5 of month 07:10
 #  timezone: Asia/Taipei
 
-- description: update BIS EERs on 09:00 every saturday
-  url: /bis/task/eers_update/
-  schedule: every saturday 09:00
-  timezone: Asia/Taipei  
-
-- description: update Mutual Fund code from FundClear every month
-  url: /fr/task/update/
-  schedule: 19 of month 12:10
-  timezone: Asia/Taipei
-
-- description: update FundClearDataModel from FundClear on 5th January
-  url: /fc2/task/update/
-  schedule: 5 of january 23:00
-  timezone: Asia/Taipei
-
-- description: update BotGoldDataModel from BankOfTaiwan every last day 23:00 of every month
-  url: /bot2/task/update_g_db/
-  schedule: 1 of month 00:00
-  timezone: Asia/Tokyo
-
-- description: update BotExchangeDataModel from BankOfTaiwan every last day 23:00 of every month
-  url: /bot2/task/update_ex_db/
-  schedule: 1 of month 00:00
-  timezone: Asia/Tokyo
-
-- description: update TWSEStockModel from TWSE every last day 23:00 of every month
-  url: /twse/task/stk_cron_update/
-  schedule: 1 of month 00:00
-  timezone: Asia/Tokyo
-
-- description: update TWSEStockModel from TWSE every last day 23:00 of every month
-  url: /twse/task/id_cron_update/
-  schedule: 1 of month 00:00
-  timezone: Asia/Tokyo
-
-- description: update TW50 Weekly BB State from Datastore on 16:00 every Wed
-  url: /mf/task/tw50_cupdate/
-  schedule: every wednesday 16:00
-  timezone: Asia/Taipei
+#- description: update BIS EERs on 09:00 every saturday
+#  url: /bis/task/eers_update/
+#  schedule: every saturday 09:00
+#  timezone: Asia/Taipei
+#
+#- description: update Mutual Fund code from FundClear every month
+#  url: /fr/task/update/
+#  schedule: 19 of month 12:10
+#  timezone: Asia/Taipei
+#
+#- description: update FundClearDataModel from FundClear on 5th January
+#  url: /fc2/task/update/
+#  schedule: 5 of january 23:00
+#  timezone: Asia/Taipei
+#
+#- description: update BotGoldDataModel from BankOfTaiwan every last day 23:00 of every month
+#  url: /bot2/task/update_g_db/
+#  schedule: 1 of month 00:00
+#  timezone: Asia/Tokyo
+#
+#- description: update BotExchangeDataModel from BankOfTaiwan every last day 23:00 of every month
+#  url: /bot2/task/update_ex_db/
+#  schedule: 1 of month 00:00
+#  timezone: Asia/Tokyo
+#
+#- description: update TWSEStockModel from TWSE every last day 23:00 of every month
+#  url: /twse/task/stk_cron_update/
+#  schedule: 1 of month 00:00
+#  timezone: Asia/Tokyo
+#
+#- description: update TWSEStockModel from TWSE every last day 23:00 of every month
+#  url: /twse/task/id_cron_update/
+#  schedule: 1 of month 00:00
+#  timezone: Asia/Tokyo
+#
+#- description: update TW50 Weekly BB State from Datastore on 16:00 every Wed
+#  url: /mf/task/tw50_cupdate/
+#  schedule: every wednesday 16:00
+#  timezone: Asia/Taipei
   

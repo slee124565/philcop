@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, include, url
+from django.views.decorators.csrf import csrf_exempt
 
 from fundclear2.views import FundJsonView
 
@@ -20,7 +21,7 @@ urlpatterns = patterns('',
      url(r'^view/analysis/(?P<p_key>\w+)/$', 'fundclear2.views.fund_analysis_view'),
      url(r'^view/current/(?P<p_fund_id>\w+)/$', 'fundclear2.views.current_nav'),
      
-     url(r'^view/json/(?P<p_fund_id>\w+)/(?P<p_year>\w+)/$', FundJsonView.as_view()),
+     url(r'^view/json/(?P<p_fund_id>\w+)/(?P<p_year>\w+)/$', csrf_exempt(FundJsonView.as_view())),
 
      url(r'^func/test7/$', 'fundclear2.tests.test_get_fund_with_err_id'),
      url(r'^func/test6/$', 'fundclear2.tests.test_load_all_nav'),
